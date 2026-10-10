@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import {CAMERA_OFFSET} from './movement.js';
+import {anchorOffsetY} from './anchor.js';
 
 // Placeholder character only; source image dimensions are not a production constraint.
 export function createCharacter(scene){
@@ -14,6 +15,8 @@ export function createCharacter(scene){
   g.fillStyle='#faf4e7';g.fillRect(50,124,28,21);g.fillStyle='#6b3a3e';g.fillRect(47,154,13,20);g.fillRect(68,154,13,20);
   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
   const height=1.88;
+  // Placeholder shoes finish at canvas Y=174, not at the image boundary Y=192.
+  const footOffset=anchorOffsetY(height,174,canvas.height);
   const hero=new THREE.Mesh(new THREE.PlaneGeometry(1.25,height),new THREE.MeshBasicMaterial({
     map:texture,transparent:true,alphaTest:.35,depthTest:true,depthWrite:true,side:THREE.DoubleSide
   }));
@@ -24,7 +27,7 @@ export function createCharacter(scene){
   }));
   shadow.rotation.x=-Math.PI/2;scene.add(shadow);
   return {
-    setPosition(x,z,surfaceY=0){hero.position.set(x,height/2+.02,z);shadow.position.set(x,surfaceY+.006,z)},
+    setPosition(x,z,surfaceY=0){hero.position.set(x,surfaceY+height/2-footOffset+.006,z);shadow.position.set(x,surfaceY+.006,z)},
     dispose(){scene.remove(hero,shadow);hero.geometry.dispose();hero.material.dispose();texture.dispose();shadow.geometry.dispose();shadow.material.dispose()}
   };
 }
