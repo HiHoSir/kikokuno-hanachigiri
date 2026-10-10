@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
-import {demoArea} from './areas/demo.js?v=0.4.3';
+import {demoArea} from './areas/demo.js?v=0.5.0';
 import {createGameState,interact} from './events.js';
 import {createWorld} from './world.js';
-import {createCharacter} from './character.js?v=0.4.3';
+import {surfaceHeightAt} from './surfaces.js?v=0.5.0';
+import {createCharacter} from './character.js?v=0.5.0';
 import {createInput} from './input.js';
 import {createCameraController} from './camera.js';
 
@@ -41,12 +42,12 @@ function frame(now){
     const next=moveWithCollision(state.player,vector.x,vector.z,dt,3.2,obstacles);
     state.player.x=next.x;state.player.z=next.z;
   }
-  character.setPosition(state.player.x,state.player.z);
+  character.setPosition(state.player.x,state.player.z,surfaceHeightAt(demoArea,state.player.x,state.player.z));
   cameraControl.update(state.player,dt);
   if(msg.style.display==='block'&&now>messageUntil)msg.style.display='none';
   renderer.render(scene,camera);
   window.__kikokuRendered=true;
   requestAnimationFrame(frame);
 }
-character.setPosition(state.player.x,state.player.z);
+character.setPosition(state.player.x,state.player.z,surfaceHeightAt(demoArea,state.player.x,state.player.z));
 requestAnimationFrame(frame);
