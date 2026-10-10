@@ -10,9 +10,9 @@ export const outdoorArea={
   [-3,.32,-2,1.4,.65,1.3,0x90958a,true],
   [3,.38,-3,1.4,.75,1.25,0x9c9687,true]
  ],trees:[[-6,-3],[6,-4],[-6,5],[6,5]],
+ portals:[{id:'return',x:0,z:4.7,width:3,depth:.65,to:'prototype-teahouse',spawn:{x:0,z:3.2}}],
  npcs:[{id:'traveler',x:1.8,z:1.3,color:0x496d9a,name:'旅人'}],
  interactions:[
-  {id:'outdoor-return',x:0,z:4,range:1.1,trigger:'action',text:'茶屋へ戻ります。',transition:{to:'prototype-teahouse',spawn:{x:0,z:3.6}}},
   {id:'traveler',x:1.8,z:1.3,range:1.65,trigger:'action',text:'旅人：「この先にも道が続いているそうですよ。」',flag:'metTraveler',afterText:'旅人：「また会いましたね。」'}
  ],defaultAction:'街道の風が心地よい。'
 };
