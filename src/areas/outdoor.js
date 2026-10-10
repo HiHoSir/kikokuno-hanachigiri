@@ -3,6 +3,7 @@ export const outdoorArea={
  id:'outdoor-path',name:'茶屋の外れ道',bounds:19,spawn:{x:0,z:3.8},
  walkSurfaces:[{x:0,z:0,width:42,depth:42,top:-.015}],
  blocks:[
+  [0,-.001,4.7,3,.025,.65,0xd8c385,false],
   [0,-.24,0,42,.45,42,0x7caa73,false],
   [0,-.007,0,3.2,.018,16,0xc5ad7e,false],
   [0,.9,-5,3.2,1.8,.35,0x9a4d40,false],
