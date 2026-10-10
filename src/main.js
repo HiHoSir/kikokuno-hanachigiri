@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
-import {demoArea} from './areas/demo.js?v=0.4.2';
+import {demoArea} from './areas/demo.js?v=0.4.3';
 import {createGameState,interact} from './events.js';
 import {createWorld} from './world.js';
-import {createCharacter} from './character.js?v=0.4.2';
+import {createCharacter} from './character.js?v=0.4.3';
 import {createInput} from './input.js';
 import {createCameraController} from './camera.js';
 
@@ -45,6 +45,7 @@ function frame(now){
   cameraControl.update(state.player,dt);
   if(msg.style.display==='block'&&now>messageUntil)msg.style.display='none';
   renderer.render(scene,camera);
+  window.__kikokuRendered=true;
   requestAnimationFrame(frame);
 }
 character.setPosition(state.player.x,state.player.z);
