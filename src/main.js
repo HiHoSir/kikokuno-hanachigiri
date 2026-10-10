@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
-import {demoArea} from './areas/demo.js?v=0.5.0';
+import {demoArea} from './areas/demo.js?v=0.5.1';
 import {createGameState,interact} from './events.js';
 import {createWorld} from './world.js';
-import {surfaceHeightAt} from './surfaces.js?v=0.5.0';
-import {createCharacter} from './character.js?v=0.5.0';
+import {surfaceHeightAt} from './surfaces.js?v=0.5.1';
+import {createCharacter} from './character.js?v=0.5.1';
 import {createInput} from './input.js';
 import {createCameraController} from './camera.js';
 
