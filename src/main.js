@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
-import {demoArea} from './areas/demo.js?v=0.5.1';
+import {demoArea} from './areas/demo.js?v=0.5.2';
 import {createGameState,interact} from './events.js';
 import {createWorld} from './world.js';
-import {surfaceHeightAt} from './surfaces.js?v=0.5.1';
-import {createCharacter} from './character.js?v=0.5.1';
+import {surfaceHeightAt} from './surfaces.js?v=0.5.2';
+import {createCharacter} from './character.js?v=0.5.2';
 import {createInput} from './input.js';
 import {createCameraController} from './camera.js';
 
@@ -39,7 +39,7 @@ function frame(now){
   const direction=input.getDirection();
   if(direction.x||direction.y){
     const vector=worldFromScreen(direction.x,direction.y);
-    const next=moveWithCollision(state.player,vector.x,vector.z,dt,3.2,obstacles);
+    const next=moveWithCollision(state.player,vector.x,vector.z,dt,3.2,obstacles,(x,z)=>surfaceHeightAt(demoArea,x,z));
     state.player.x=next.x;state.player.z=next.z;
   }
   character.setPosition(state.player.x,state.player.z,surfaceHeightAt(demoArea,state.player.x,state.player.z));
