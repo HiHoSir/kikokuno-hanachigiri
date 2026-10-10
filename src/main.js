@@ -1,10 +1,12 @@
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
-import {demoArea} from './areas/demo.js?v=0.5.2';
+import {demoArea} from './areas/demo.js?v=0.6.0';
+import {resolveArea} from './areas/registry.js?v=0.6.0';
+import {applyTransition} from './transitions.js?v=0.6.0';
 import {createGameState,interact} from './events.js';
 import {createWorld} from './world.js';
-import {surfaceHeightAt} from './surfaces.js?v=0.5.2';
-import {createCharacter} from './character.js?v=0.5.2';
+import {surfaceHeightAt} from './surfaces.js?v=0.6.0';
+import {createCharacter} from './character.js?v=0.6.0';
 import {createInput} from './input.js';
 import {createCameraController} from './camera.js';
 
@@ -16,13 +18,24 @@ renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene();
 const camera=new THREE.OrthographicCamera(-7,7,5,-5,.1,100);
 const state=createGameState(demoArea);
-const {obstacles}=createWorld(scene,demoArea);
+let area=demoArea;
+let world=createWorld(scene,area);
 const character=createCharacter(scene);
 const cameraControl=createCameraController(camera);
 const msg=document.querySelector('#msg');
+const areaName=document.querySelector('#area-name');
+function enterArea(event){
+  const next=applyTransition(state,event,resolveArea);
+  if(!next)return;
+  world.dispose();area=next;world=createWorld(scene,area);
+  areaName.textContent=area.name;
+  cameraControl.target.set(state.player.x,0,state.player.z);
+  character.setPosition(state.player.x,state.player.z,surfaceHeightAt(area,state.player.x,state.player.z));
+}
 let messageUntil=0;
 function action(){
-  const result=interact(demoArea,state);
+  const result=interact(area,state);
+  enterArea(result);
   msg.textContent=result.text;
   msg.style.display='block';messageUntil=performance.now()+3000;
 }
@@ -39,15 +52,15 @@ function frame(now){
   const direction=input.getDirection();
   if(direction.x||direction.y){
     const vector=worldFromScreen(direction.x,direction.y);
-    const next=moveWithCollision(state.player,vector.x,vector.z,dt,3.2,obstacles,(x,z)=>surfaceHeightAt(demoArea,x,z));
+    const next=moveWithCollision(state.player,vector.x,vector.z,dt,3.2,world.obstacles,(x,z)=>surfaceHeightAt(area,x,z));
     state.player.x=next.x;state.player.z=next.z;
   }
-  character.setPosition(state.player.x,state.player.z,surfaceHeightAt(demoArea,state.player.x,state.player.z));
+  character.setPosition(state.player.x,state.player.z,surfaceHeightAt(area,state.player.x,state.player.z));
   cameraControl.update(state.player,dt);
   if(msg.style.display==='block'&&now>messageUntil)msg.style.display='none';
   renderer.render(scene,camera);
   window.__kikokuRendered=true;
   requestAnimationFrame(frame);
 }
-character.setPosition(state.player.x,state.player.z,surfaceHeightAt(demoArea,state.player.x,state.player.z));
+character.setPosition(state.player.x,state.player.z,surfaceHeightAt(area,state.player.x,state.player.z));
 requestAnimationFrame(frame);
