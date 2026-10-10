@@ -24,7 +24,7 @@ export function createCharacter(scene){
   }));
   shadow.rotation.x=-Math.PI/2;scene.add(shadow);
   return {
-    setPosition(x,z){hero.position.set(x,height/2+.02,z);shadow.position.set(x,.012,z)},
+    setPosition(x,z,surfaceY=0){hero.position.set(x,height/2+.02,z);shadow.position.set(x,surfaceY+.006,z)},
     dispose(){scene.remove(hero,shadow);hero.geometry.dispose();hero.material.dispose();texture.dispose();shadow.geometry.dispose();shadow.material.dispose()}
   };
 }
