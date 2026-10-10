@@ -6,7 +6,7 @@ import {applyTransition} from './transitions.js?v=0.7.0';
 import {createGameState,interact} from './events.js';
 import {createWorld} from './world.js';
 import {surfaceHeightAt} from './surfaces.js?v=0.7.0';
-import {createCharacter} from './character.js?v=0.7.0';
+import {createCharacter} from './character.js?v=0.8.1';
 import {createInput} from './input.js?v=0.8.0';
 import {createCameraController} from './camera.js';
 import {crossingPortal} from './portals.js?v=0.7.0';
