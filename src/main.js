@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {worldFromScreen,moveWithCollision} from './movement.js';
+import {worldFromScreen,moveWithCollision,CAMERA_OFFSET} from './movement.js';
 // Clean-reboot 2D character x real 3D depth PoC. All assets are placeholders.
 const renderer=new THREE.WebGLRenderer({canvas:document.querySelector('#game'),antialias:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,2));
@@ -30,8 +30,11 @@ g.fillStyle='#deba62';g.beginPath();g.moveTo(59,55);g.lineTo(64,26);g.lineTo(69,
 g.fillStyle='#572b37';g.fillRect(53,80,6,4);g.fillRect(73,80,6,4);
 g.fillStyle='#faf4e7';g.fillRect(50,124,28,21);g.fillStyle='#6b3a3e';g.fillRect(47,154,13,20);g.fillRect(68,154,13,20);
 const tex=new THREE.CanvasTexture(texCanvas);tex.colorSpace=THREE.SRGBColorSpace;
-const hero=new THREE.Sprite(new THREE.SpriteMaterial({map:tex,transparent:true,alphaTest:.25,depthTest:true,depthWrite:true}));
-hero.center.set(.5,0);hero.scale.set(1.25,1.88,1);scene.add(hero);
+// Vertical cylindrical billboard: stays upright instead of tilting into foreground pillars.
+const heroHeight=1.88;
+const hero=new THREE.Mesh(new THREE.PlaneGeometry(1.25,heroHeight),new THREE.MeshBasicMaterial({map:tex,transparent:true,alphaTest:.35,depthTest:true,depthWrite:true,side:THREE.DoubleSide}));
+hero.rotation.y=Math.atan2(CAMERA_OFFSET.x,CAMERA_OFFSET.z);
+hero.position.y=heroHeight/2+.02;hero.renderOrder=1;scene.add(hero);
 const shadow=new THREE.Mesh(new THREE.CircleGeometry(.3,24),new THREE.MeshBasicMaterial({color:0x141d17,transparent:true,opacity:.25,depthWrite:false}));shadow.rotation.x=-Math.PI/2;scene.add(shadow);
 const player=new THREE.Vector3(0,0,3.6),keys=new Set(),pointerKeys=new Map();const dirs={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0],upleft:[-1,-1],upright:[1,-1],downleft:[-1,1],downright:[1,1]};const keyboard={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right',w:'up',a:'left',s:'down',d:'right'};
 window.addEventListener('keydown',e=>{const k=keyboard[e.key];if(k){keys.add(k);e.preventDefault()}if(e.key==='Enter'||e.key===' '){talk();e.preventDefault()}});window.addEventListener('keyup',e=>keys.delete(keyboard[e.key]));window.addEventListener('blur',()=>{keys.clear();pointerKeys.clear()});
@@ -43,7 +46,7 @@ document.querySelector('#talk').addEventListener('pointerdown',e=>{e.preventDefa
 function resize(){const w=window.innerWidth,h=window.innerHeight;renderer.setSize(w,h,false);const half=5.6;camera.left=-half*w/h;camera.right=half*w/h;camera.top=half;camera.bottom=-half;camera.updateProjectionMatrix()}
 window.addEventListener('resize',resize);resize();let prev=performance.now();
 function tick(now){const dt=Math.min((now-prev)/1000,.05);prev=now;let dx=0,dz=0;for(const name of [...keys,...pointerKeys.values()]){const v=dirs[name];if(v){dx+=v[0];dz+=v[1]}}if(dx||dz){const world=worldFromScreen(dx,dz),next=moveWithCollision(player,world.x,world.z,dt,3.2,solid);player.x=next.x;player.z=next.z}
-hero.position.set(player.x,.02,player.z);shadow.position.set(player.x,.012,player.z);
-target.lerp(new THREE.Vector3(player.x,0,player.z),Math.min(1,dt*5));camera.position.copy(target).add(new THREE.Vector3(11,14,16));camera.lookAt(target);sun.target.position.copy(target);sun.target.updateMatrixWorld();
+hero.position.set(player.x,heroHeight/2+.02,player.z);shadow.position.set(player.x,.012,player.z);
+target.lerp(new THREE.Vector3(player.x,0,player.z),Math.min(1,dt*5));camera.position.copy(target).add(new THREE.Vector3(CAMERA_OFFSET.x,CAMERA_OFFSET.y,CAMERA_OFFSET.z));camera.lookAt(target);sun.target.position.copy(target);sun.target.updateMatrixWorld();
 if(msg.style.display==='block'&&now>msgDeadline)msg.style.display='none';renderer.render(scene,camera);requestAnimationFrame(tick)}
 requestAnimationFrame(tick);
