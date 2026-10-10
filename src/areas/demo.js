@@ -2,6 +2,8 @@
 export const demoArea={
  id:'prototype-teahouse', name:'2.5D検証用の茶屋', bounds:19,
  spawn:{x:0,z:3.6},
+ // Highest visible top surface under the player's contact shadow.
+ shadowSurfaces:[{x:0,z:0,width:42,depth:42,top:-.015},{x:0,z:0,width:5,depth:4,top:.015}],
  blocks:[
   [0,-.24,0,42,.45,42,0x75a16c,false],
   [0,-.01,0,5,.05,4,0xb9a67b,false],
