@@ -21,9 +21,12 @@ export const demoArea={
   [5,.5,1,.8,1,.65,0x9b9d92,true]
  ],
  trees:[[-6,-3],[6,-4],[-6,5],[6,5],[9,0]],
+ npcs:[{id:'owner',x:1.8,z:-.1,color:0x9a704c,name:'茶屋の主人'}],
  interactions:[
+  {id:'teahouse-exit',x:0,z:3.6,range:1.1,trigger:'action',text:'茶屋の外れ道へ出ます。',transition:{to:'outdoor-path',spawn:{x:0,z:3.8}}},
+  {id:'owner',x:1.8,z:-.1,range:1.4,trigger:'action',text:'主人：「いらっしゃい。旅の支度は整いましたか？」',flag:'metOwner',afterText:'主人：「道中、気をつけて。」'},
   {id:'stone',x:5,z:1,range:2.5,trigger:'action',once:false,text:'石碑：「ここは立体背景の実験場です。」'},
-  {id:'teahouse-sign',x:0,z:1.65,range:1.4,trigger:'action',once:false,text:'茶屋：「ここでは2Dと3Dの重なりを検証できます。」'}
+  {id:'teahouse-sign',x:0,z:1.65,range:.85,trigger:'action',once:false,text:'茶屋：「ここでは2Dと3Dの重なりを検証できます。」'}
  ],
  defaultAction:'仮キャラクター：「茶屋の柱の前後を歩いてみよう！」'
 };
