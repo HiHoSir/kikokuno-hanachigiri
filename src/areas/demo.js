@@ -10,6 +10,7 @@ export const demoArea={
   {x:.7,z:.85,width:.64,depth:.62,top:.135}
  ],
  blocks:[
+  [0,-.001,4.7,3,.025,.65,0xd8c385,false],
   [0,-.24,0,42,.45,42,0x75a16c,false],
   [0,-.01,0,5,.05,4,0xb9a67b,false],
   [0,.26,-2,6,.48,2.3,0x785441,true],
