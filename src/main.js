@@ -19,13 +19,6 @@ const {obstacles}=createWorld(scene,demoArea);
 const character=createCharacter(scene);
 const cameraControl=createCameraController(camera);
 const msg=document.querySelector('#msg');
-function groundHeight(x,z){
-  let height=-Infinity;
-  for(const floor of demoArea.walkSurfaces){
-    if(Math.abs(x-floor.x)<=floor.w&&Math.abs(z-floor.z)<=floor.d)height=Math.max(height,floor.height);
-  }
-  return Number.isFinite(height)?height:0;
-}
 let messageUntil=0;
 function action(){
   const result=interact(demoArea,state);
@@ -48,11 +41,11 @@ function frame(now){
     const next=moveWithCollision(state.player,vector.x,vector.z,dt,3.2,obstacles);
     state.player.x=next.x;state.player.z=next.z;
   }
-  character.setPosition(state.player.x,state.player.z,groundHeight(state.player.x,state.player.z));
+  character.setPosition(state.player.x,state.player.z);
   cameraControl.update(state.player,dt);
   if(msg.style.display==='block'&&now>messageUntil)msg.style.display='none';
   renderer.render(scene,camera);
   requestAnimationFrame(frame);
 }
-character.setPosition(state.player.x,state.player.z,groundHeight(state.player.x,state.player.z));
+character.setPosition(state.player.x,state.player.z);
 requestAnimationFrame(frame);
