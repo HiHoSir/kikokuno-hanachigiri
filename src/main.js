@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
-import {demoArea} from './areas/demo.js?v=0.6.0';
-import {resolveArea} from './areas/registry.js?v=0.6.0';
-import {applyTransition} from './transitions.js?v=0.6.0';
+import {demoArea} from './areas/demo.js?v=0.6.1';
+import {resolveArea} from './areas/registry.js?v=0.6.1';
+import {applyTransition} from './transitions.js?v=0.6.1';
 import {createGameState,interact} from './events.js';
 import {createWorld} from './world.js';
-import {surfaceHeightAt} from './surfaces.js?v=0.6.0';
-import {createCharacter} from './character.js?v=0.6.0';
+import {surfaceHeightAt} from './surfaces.js?v=0.6.1';
+import {createCharacter} from './character.js?v=0.6.1';
 import {createInput} from './input.js';
 import {createCameraController} from './camera.js';
 
@@ -29,6 +29,7 @@ function enterArea(event){
   if(!next)return;
   world.dispose();area=next;world=createWorld(scene,area);
   areaName.textContent=area.name;
+  document.querySelector('#area-status').textContent='現在地：'+area.name;
   cameraControl.target.set(state.player.x,0,state.player.z);
   character.setPosition(state.player.x,state.player.z,surfaceHeightAt(area,state.player.x,state.player.z));
 }
