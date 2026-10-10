@@ -16,14 +16,16 @@ export function canStand(x,z,obstacles,radius=.28){
   if(Math.abs(x)>19||Math.abs(z)>19)return false;
   return !obstacles.some(o=>Math.abs(x-o.x)<o.w+radius&&Math.abs(z-o.z)<o.d+radius);
 }
-export function moveWithCollision(position,dx,dz,dt,speed,obstacles){
+export function moveWithCollision(position,dx,dz,dt,speed,obstacles,groundAt=null,maxStep=.2){
   const v=normalize(dx,dz),distance=Math.min(Math.max(dt,0),.05)*speed;
   const steps=Math.max(1,Math.ceil(distance/.06));
   let x=position.x,z=position.z;
   for(let i=0;i<steps;i++){
     const nx=x+v.x*distance/steps,nz=z+v.z*distance/steps;
-    if(canStand(nx,z,obstacles))x=nx;
-    if(canStand(x,nz,obstacles))z=nz;
+    // Only upward steps exceeding maxStep are impassable; walking down is allowed.
+    const traversable=(tx,tz)=>!groundAt||groundAt(tx,tz)-groundAt(x,z)<=maxStep+1e-9;
+    if(canStand(nx,z,obstacles)&&traversable(nx,z))x=nx;
+    if(canStand(x,nz,obstacles)&&traversable(x,nz))z=nz;
   }
   return {x,z};
 }
