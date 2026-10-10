@@ -2,8 +2,6 @@
 export const demoArea={
  id:'prototype-teahouse', name:'2.5D検証用の茶屋', bounds:19,
  spawn:{x:0,z:3.6},
- // Ground and raised wooden floor upper surfaces, highest matching surface wins.
- walkSurfaces:[{x:0,z:0,w:21,d:21,height:-0.015},{x:0,z:0,w:2.5,d:2,height:0.015}],
  blocks:[
   [0,-.24,0,42,.45,42,0x75a16c,false],
   [0,-.01,0,5,.05,4,0xb9a67b,false],
