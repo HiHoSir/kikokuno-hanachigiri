@@ -6,7 +6,9 @@ import {applyTransition} from './transitions.js?v=0.7.0';
 import {createGameState,interact} from './events.js?v=0.9.0';
 import {createWorld} from './world.js?v=0.9.0';
 import {surfaceHeightAt} from './surfaces.js?v=0.7.0';
-import {createCharacter} from './character.js?v=0.8.1';
+import {createLabCharacter} from '../field-lab/character.js?v=0.13.0';
+import {directionFromWorld,advanceGait} from '../field-lab/motion.js?v=0.12.1';
+import {CAMERA_OFFSET} from './movement.js';
 import {createInput} from './input.js?v=0.8.0';
 import {createCameraController} from './camera.js';
 import {crossingPortal} from './portals.js?v=0.7.0';
@@ -26,7 +28,8 @@ const explore=params.get('area')==='hozuki';
 const state=explore?(saved?.areaId===hozukiArea.id?saved:createGameState(hozukiArea)):(saved||createGameState(hozukiArea));
 let area=resolveArea(state.areaId);
 let world=createWorld(scene,area);
-const character=createCharacter(scene);
+const character=await createLabCharacter(scene,'./field-lab/');
+let facing=0,gait=0;let mode='idle',modeStarted=0,modeUntil=0;
 const cameraControl=createCameraController(camera);
 const msg=document.querySelector('#msg');
 const areaName=document.querySelector('#area-name');
@@ -38,11 +41,13 @@ function enterArea(event){
   areaName.textContent=area.name;
   refreshStatus();
   cameraControl.target.set(state.player.x,0,state.player.z);
-  character.setPosition(state.player.x,state.player.z,surfaceHeightAt(area,state.player.x,state.player.z));
+  gait=0;
   persist();
 }
 let messageUntil=0;
 function refreshStatus(){document.querySelector('#area-status').textContent='現在地：'+area.name+' ／ HP '+(state.hp??75)+'/'+(state.maxHp??100)+' ／ 薬草 '+(state.inventory?.['薬草']||0)+' ／ 特産野菜 '+(state.inventory?.['鬼灯の里の野菜']||0);}
+function playGesture(name){mode=name;modeStarted=performance.now();modeUntil=modeStarted+({surprise:750,wave:1300,bow:1100,cheer:1100}[name]||800);}
+for(const name of ['surprise','wave','bow','cheer'])document.querySelector('#'+name)?.addEventListener('click',()=>playGesture(name));
 function action(){
   const result=interact(area,state);
   enterArea(result);
@@ -65,6 +70,7 @@ let previous=performance.now();
 function frame(now){
   const dt=Math.min(Math.max((now-previous)/1000,0),.05);previous=now;
   const direction=input.getDirection();
+  const before={...state.player};
   if(direction.x||direction.y){
     const previous={...state.player};
     const vector=worldFromScreen(direction.x,direction.y);
@@ -73,8 +79,14 @@ function frame(now){
     const portal=crossingPortal(area,previous,state.player);
     if(portal){enterArea({transition:{to:portal.to,spawn:portal.spawn}});msg.textContent='現在地：'+area.name;msg.style.display='block';messageUntil=now+1700;}
   }
-  character.setPosition(state.player.x,state.player.z,surfaceHeightAt(area,state.player.x,state.player.z));
+  const movedX=state.player.x-before.x,movedZ=state.player.z-before.z;
+  const distance=Math.hypot(movedX,movedZ);
+  if(distance>0.00001)facing=directionFromWorld(movedX,movedZ,CAMERA_OFFSET);
+  gait=advanceGait(gait,distance);
+  if(now>modeUntil)mode='idle';
   cameraControl.update(state.player,dt);
+  const groundAt=(x,z)=>surfaceHeightAt(area,x,z);
+  character.update({x:state.player.x,z:state.player.z,y:groundAt(state.player.x,state.player.z),dt,time:now/1000,direction:facing,phase:gait,moving:distance>0.00001,velocity:{x:movedX,z:movedZ},camera,mode,actionElapsed:(now-modeStarted)/1000,source:0,groundAt,debug:false});
   world.update?.(now/1000);
   if(msg.style.display==='block'&&now>messageUntil)msg.style.display='none';
   if(now>=nextAutosave){persist();nextAutosave=now+3500;}
@@ -82,5 +94,4 @@ function frame(now){
   window.__kikokuRendered=true;
   requestAnimationFrame(frame);
 }
-character.setPosition(state.player.x,state.player.z,surfaceHeightAt(area,state.player.x,state.player.z));
 requestAnimationFrame(frame);
