@@ -15,7 +15,7 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  assert.equal(await page.locator('#error').isVisible(),false);
  assert.equal(await page.locator('#loading').isVisible(),false);
  await page.screenshot({path:`test-results/${name}-candidate.png`});
- assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.12.0-lab');
+ assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.12.1-lab');
  for(const [dir,keys] of [[0,['ArrowDown']],[1,['ArrowRight','ArrowDown']],[2,['ArrowRight']],[3,['ArrowRight','ArrowUp']],[4,['ArrowUp']],[5,['ArrowLeft','ArrowUp']],[6,['ArrowLeft']],[7,['ArrowLeft','ArrowDown']]]){
   for(const k of keys)await page.keyboard.down(k);await page.waitForFunction(dir=>window.__kikokuLab.direction===dir&&window.__kikokuLab.moving,dir,{timeout:10000});
   const m=await page.evaluate(()=>window.__kikokuLab);assert.equal(m.direction,dir);assert.ok(m.distance>0);assert.ok(m.stance.some(Boolean));
