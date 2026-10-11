@@ -153,20 +153,59 @@ export function createHozukiWorld(scene,area){
  }
  // Orchard vegetables can be stepped up to, but not walked through.
  obstacles.push({x:10.5,z:3.75,w:2.25,d:1.28});
- // Physically raised terrace: matches the height function used for feet and collision.
- // The gradual southern approach allows continuous eight-direction movement.
- box(11.3,.26,-14.6,7.5,.52,5.9,0x778d70);
- for(let i=0;i<6;i++){
-   const z=-10.6-i*.32;
-   box(11.3,(i+1)*.05,z,3.25,.10,.32,0xa49c82);
+ // The hill's render geometry uses the same elevation specification as feet/collision.
+ // Unlike the former 0.55-unit platform, the summit is nearly twice the heroine's height.
+ const hill=area.elevation, summit=hill.height, p=hill.plateau;
+ const rampLength=hill.zFront-hill.zTop;
+ function slopeHeight(z){return summit*Math.max(0,Math.min(1,(hill.zFront-z)/rampLength));}
+ function terrainMesh(vertices,indices,color){
+   const geo=new THREE.BufferGeometry();
+   geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));geo.setIndex(indices);
+   geo.computeVertexNormals();const mesh=new THREE.Mesh(geo,getMat(color));mesh.receiveShadow=true;mesh.castShadow=true;group.add(mesh);return mesh;
  }
- // Old shrine bell: quiet now. Low cliff plinth and broad open stair visuals.
- box(11.3,.53,-14.5,7.5,.04,5.9,0x8b9884);
- for(let i=0;i<6;i++)box(11.3,.1+i*.075,-10.6-i*.34,3.3,.12,.34,0xa09e89);
- for(const x of [8.9,13.7])for(const z of [-16.0,-12.4])box(x,1.8,z,.23,3.55,.23,0x795440);
- box(11.3,3.59,-14.2,6.1,.3,4.7,0x4e5048);
- cylinder(11.3,2.25,-14.2,.76,.85,1.7,0x899878);
- ball(11.3,3.15,-14.2,.75,0xa8a67e,[1,.24,1]);
+ // Broad summit, skirted by stone faces. Approached by a visible winding earth path.
+ const px0=p.xMin,px1=p.xMax,pz0=p.zMin,pz1=p.zMax;
+ box((px0+px1)/2,summit-.22,(pz0+pz1)/2,px1-px0,.44,pz1-pz0,0x779164);
+ for(const [cx,cz,w,d] of [
+   [(px0+px1)/2,pz0,px1-px0,.22],
+   [px0,(pz0+pz1)/2,.22,pz1-pz0],
+   [px1,(pz0+pz1)/2,.22,pz1-pz0]
+ ]){
+   box(cx,summit/2,cz,w,summit,d,0x807968);
+ }
+ // Mesh the incline as a continuous surface: flat at its foot, full-height at the summit.
+ const verts=[],inds=[],columns=12,rows=30;
+ for(let row=0;row<=rows;row++){
+   const t=row/rows,z=hill.zFront+(hill.zTop-hill.zFront)*t;
+   const y=slopeHeight(z);
+   for(let col=0;col<=columns;col++){
+     const lateral=col/columns*2-1,x=hill.cx+lateral*hill.halfWidth;
+     verts.push(x,y+.015,z);
+   }
+ }
+ for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){
+   const i=row*(columns+1)+col,j=i+columns+1;
+   inds.push(i,j,i+1,i+1,j,j+1);
+ }
+ terrainMesh(verts,inds,0xa5926d);
+ // Rocky flanks conceal the underside of the climb while leaving the central path clear.
+ for(const side of [-1,1]){
+   const x=hill.cx+side*(hill.halfWidth+.36);
+   for(let i=3;i<14;i++){
+     const z=hill.zFront-(i/14)*rampLength,y=slopeHeight(z);
+     ball(x,y*.48,z,.28+i*.038,i%3?0x777d69:0x898875,[1.2,Math.max(.4,y*.7),1.2]);
+   }
+ }
+ // Only the upper plateau's sheer edges block lateral approaches.
+ obstacles.push({x:px0-.1,z:(pz0+pz1)/2,w:.13,d:(pz1-pz0)/2});
+ obstacles.push({x:px1+.1,z:(pz0+pz1)/2,w:.13,d:(pz1-pz0)/2});
+ obstacles.push({x:(px0+px1)/2,z:pz0-.11,w:(px1-px0)/2,d:.13});
+ // Shrine architecture is lifted together with the summit, not left embedded in the earth.
+ for(const x of [8.9,13.7])for(const z of [-16,-13.1])
+   box(x,summit+1.65,z,.23,3.3,.23,0x795440);
+ box(11.3,summit+3.35,-14.4,6.1,.3,4.7,0x4e5048);
+ cylinder(11.3,summit+.9,-14.2,.76,.85,1.7,0x899878);
+ ball(11.3,summit+1.8,-14.2,.75,0xa8a67e,[1,.24,1]);
  obstacles.push({x:11.3,z:-14.2,w:.85,d:.85});
  // Moss and wildflowers near the edges. Deliberately not overbuilt.
  for(let i=0;i<70;i++){
