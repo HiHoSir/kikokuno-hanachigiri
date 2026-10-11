@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createHozukiWorld} from './hozuki-world.js?v=0.9.0';
+import {createHozukiWorld} from './hozuki-world.js?v=0.14.0';
 export function createWorld(scene,area){
  if(area.id==='hozuki-village')return createHozukiWorld(scene,area);
  scene.background=new THREE.Color('#b3ccbd');
