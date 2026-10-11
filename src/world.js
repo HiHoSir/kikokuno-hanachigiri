@@ -1,7 +1,13 @@
 import * as THREE from 'three';
 import {createHozukiWorld} from './hozuki-world.js?v=0.23.0';
+import {createPaintedShrine} from './painted-shrine.js?v=0.24.0';
 export function createWorld(scene,area){
- if(area.id==='hozuki-village')return createHozukiWorld(scene,area);
+ if(area.id==='hozuki-village'){
+   const world=createHozukiWorld(scene,area);
+   if(new URLSearchParams(location.search).get('visual')!=='paint')return world;
+   const overlay=createPaintedShrine(scene,area);
+   return {...world,dispose(){overlay.dispose();world.dispose();}};
+ }
  scene.background=new THREE.Color('#b3ccbd');
  scene.fog=new THREE.Fog('#b3ccbd',20,44);
  const group=new THREE.Group();scene.add(group);
