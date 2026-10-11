@@ -65,6 +65,25 @@ export function createHozukiWorld(scene,area){
  for(const [x,z,s] of [[-16,-15,1.4],[-7,-16,1.25],[3,-16,1.2],[16,-16,1.3],
   [-17,-6,1.3],[-17,2,1.1],[17,1,1.2],[16,12,1.2],[-16,13,1.3],[-9,13,1.1],
   [10,15,1.2],[-1,16,1.15],[16,-7,1.1]])tree(x,z,s);
+ // A rocky spring and stepped waterfall feed the stream from the northern slope.
+ for(const [x,z,r] of [[-14,-11,2.1],[-12.7,-10,1.8],[-13.5,-8,1.6],[-13,-6.3,1.25]]){
+   ball(x,.65,z,r,0x7c8477,[1,.58,.8]);
+   ball(x+.65,.55,z-.15,r*.52,0x5e775e,[1,.45,1]);
+ }
+ for(const [x,z,w] of [[-13,-11,1.5],[-12.9,-9.9,1.15],[-12.75,-8.6,1.0],[-12.3,-7.2,.85]]){
+   box(x,.82,z,w,.055,.85,0x84c6bd);
+   for(let k=0;k<3;k++)ball(x-w*.32+k*w*.32,.73,z+.35,.13,0xc1e3da,[1,.35,.8]);
+ }
+ // Hozuki plants give the settlement a distinct identity without urban decoration.
+ function hozuki(x,z){
+   cylinder(x,.35,z,.045,.06,.7,0x4f7746);
+   for(const [dx,dz,h] of [[-.19,0,.55],[.2,.15,.76],[.04,-.22,.96]]){
+     ball(x+dx,h,z+dz,.17,0xcb6e39,[.85,1.2,.8]);
+     ball(x+dx*.55,h-.12,z+dz*.55,.16,0x5c8e50,[1.25,.5,.9]);
+   }
+ }
+ for(const [x,z] of [[-15,-3],[-14,-2.6],[-6,-10],[-5.5,-10.1],[6,-5],[15,-4],
+  [15,4.9],[7,4.8],[-5,3.7],[-6,4],[-13,11],[-12.3,11.7]])hozuki(x,z);
  // A local village is meant to feel handmade, not like a decorated city.
  function house(x,z,w,d,roof=0x484c4b,wall=0xa98d66){
    box(x,.91,z,w,1.82,d,wall,true);
