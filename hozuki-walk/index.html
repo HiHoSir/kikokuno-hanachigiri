@@ -1,4 +1,4 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>鬼灯の里 — 絵の中を歩く実験 v0.27.0</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><title>鬼灯の里 — 絵の中を歩く実験 v0.28.0</title><style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#152622;color:#fff;font-family:system-ui,sans-serif}canvas{display:block;width:100vw;height:100dvh;touch-action:none}button{color:#fff;background:#152927e8;border:1px solid #e3d19e9c;border-radius:12px;min-height:40px;padding:7px 13px;font-weight:700;touch-action:none}button:active{background:#806337}#toolbar{position:fixed;top:calc(env(safe-area-inset-top) + 8px);left:8px;right:8px;display:flex;gap:7px;align-items:center;z-index:10;pointer-events:none}#toolbar button{pointer-events:auto}#title{flex:1;background:#122724d9;border-radius:9px;padding:8px 10px;font-size:12px;text-shadow:0 1px 3px black}#controls{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 12px);left:15px;right:15px;display:flex;align-items:end;justify-content:space-between;pointer-events:none;z-index:9}#pad{position:relative;width:146px;height:146px;background:#142720b8;border:1px solid #e9dbb267;border-radius:25px;pointer-events:auto;touch-action:none}#pad:before,#pad:after{content:"";position:absolute;background:#5f7662b8;border-radius:10px}#pad:before{left:49px;top:5px;width:48px;height:136px}#pad:after{top:49px;left:5px;height:48px;width:136px}#pad .arrow{position:absolute;z-index:2;pointer-events:none;font-size:21px;font-weight:bold}#pad .u{top:9px;left:61px}#pad .d{bottom:8px;left:61px}#pad .l{top:58px;left:16px}#pad .r{top:58px;right:16px}#action{pointer-events:auto;width:65px;height:65px;border-radius:50%;font-size:19px}#hint{position:fixed;bottom:calc(env(safe-area-inset-bottom) + 172px);left:50%;transform:translateX(-50%);padding:8px 12px;border-radius:12px;border:1px solid #eedba1;background:#182e2bee;font-size:12px;max-width:88vw;text-align:center;z-index:9}#debug{position:fixed;left:12px;top:calc(env(safe-area-inset-top) + 58px);background:#142925c7;padding:5px 9px;border-radius:7px;font-size:11px}body:not(.ready) canvas{opacity:.2}@media(max-width:370px){#title{font-size:10px;padding:6px}#toolbar button{font-size:11px;padding:5px 8px}}
 #reactions{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 93px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;width:174px;z-index:10}#reactions button{min-height:34px;font-size:11px;padding:5px 3px}#reactions button:disabled{opacity:.5}#hint{bottom:calc(env(safe-area-inset-bottom) + 179px)}@media(max-height:580px){#reactions{bottom:calc(env(safe-area-inset-bottom) + 85px)}#hint{bottom:calc(env(safe-area-inset-bottom) + 158px)}}
 </style></head><body><canvas id="view"></canvas><div id="toolbar"><div id="title">鬼灯の里 — 絵の中を歩く実験 v0.27.0</div><button id="overview">全体</button><button id="follow">主人公</button></div><div id="debug">読込中…</div><div id="hint">道をタップして移動 ／ 十字キーで散策</div><div id="controls"><div id="pad"><span class="arrow u">▲</span><span class="arrow d">▼</span><span class="arrow l">◀</span><span class="arrow r">▶</span></div><button id="action">A</button></div><div id="reactions"><button data-react="surprise">驚き</button><button data-react="wave">手振り</button><button data-react="bow">おじぎ</button><button data-react="cheer">喜ぶ</button></div><script>
@@ -31,6 +31,7 @@ async function loadHero(){
   await Promise.all(manifest.frames.map(async(f,i)=>sprites[i]={...f,image:await loadSprite(assetsBase+f.file+'?v=0.27.0')}));
   const actionDefs={wave:{footY:1439,ppu:775},cheer:{footY:1439,ppu:775},surprise:{footY:1452,ppu:790},bow:{footY:1384,ppu:800}};
   await Promise.all(Object.entries(actionDefs).map(async([key,params])=>{actions[key]={...params,image:await loadSprite(assetsBase+'actions/'+key+'.png?v=0.27.0')} }));
+  for(let i=0;i<8;i++)rigs[i]=prepareRig(i);
   visualReady=true;
   notice('本編の主人公・8方向スプライトとリアクションを読み込みました');
  }catch(e){console.error('Character artwork unavailable',e);notice('主人公素材の読込に失敗：再読み込みしてください')}
@@ -39,35 +40,99 @@ function beginAction(name){if(!durations[name]||!visualReady)return;goal=null;cu
 function direction8(dx,dy){
  const angle=Math.atan2(dx,dy);return (Math.round(angle*4/Math.PI)+8)%8;
 }
-function paintHero(p,scale,moving,now){
- const size=Math.max(23,Math.min(220,145*scale)),frame=sprites[player.dir]||sprites[0];
- if(!frame||!visualReady)return;
- const elapsed=now-actionStarted;
- if(currentAction&&elapsed>durations[currentAction])currentAction=null;
- const progress=currentAction?Math.min(1,elapsed/durations[currentAction]):0;
- // Preserve direction for side/back actions; only front uses the painted full-action frame.
- const special=currentAction&&player.dir===0?actions[currentAction]:null;
- const pxHeight=frame.height/frame.width,baseHeight=size;
- const rhythm=moving?Math.sin(player.phase)*size*.025:0;
- const wave=currentAction==='wave'?Math.sin(progress*Math.PI*10)*size*.028:0;
- const cheer=currentAction==='cheer'?Math.abs(Math.sin(progress*Math.PI*3))*size*.055:0;
- const surprise=currentAction==='surprise'?Math.sin(Math.min(progress/.45,1)*Math.PI)*size*.065:0;
- const bow=currentAction==='bow'?Math.sin(progress*Math.PI)**2*.12:0;
+// Canvas rig fitted to the original eight 362x543 direction paintings.
+// Both feet are articulated separately; the upper body stays anchored to the painted ground.
+const shoulderAnchors=[[[139,282],[234,282]],[[165,285],[265,291]],[[222,291]],[[134,291],[230,286]],[[132,260],[238,260]],[[135,263],[230,265]],[[142,263]],[[102,264],[205,264]]];
+const rigs=Array(8);
+function prepareRig(i){
+ const f=sprites[i];if(!f)return null;
+ // The source paintings have different anchors. Preserve the original foot coordinate.
+ const cut=Math.round(f.height*.69),width=f.width,legHeight=f.height-cut;
+ const left=document.createElement('canvas'),right=document.createElement('canvas'),torso=document.createElement('canvas');
+ for(const canvas of [left,right,torso]){canvas.width=width;canvas.height=f.height}
+ const tc=torso.getContext('2d');tc.drawImage(f.image,0,0);tc.clearRect(0,cut,width,f.height-cut);
+ const lc=left.getContext('2d'),rc=right.getContext('2d');
+ lc.drawImage(f.image,0,0);rc.drawImage(f.image,0,0);
+ // Foot seams are overlapped by the tunic/hem painted into the torso.
+ lc.clearRect(Math.floor(width*.52),0,width,f.height);
+ lc.clearRect(0,0,width,cut-23);
+ rc.clearRect(0,0,Math.floor(width*.48),f.height);
+ rc.clearRect(0,0,width,cut-23);
+ return {torso,left,right,cut,legHeight};
+}
+function drawRigPart(img,anchorX,footY,scaleX,scaleY,dx=0,dy=0,angle=0){
+ ctx.save();ctx.translate(dx,dy);ctx.rotate(angle);
+ ctx.drawImage(img,-anchorX*scaleX,-footY*scaleY,img.width*scaleX,img.height*scaleY);ctx.restore()
+}
+function paintHero(p,zoom,moving,now){
+ const f=sprites[player.dir]||sprites[0];if(!f||!visualReady)return;
+ if(currentAction&&now-actionStarted>=durations[currentAction])currentAction=null;
+ const elapsed=currentAction?Math.max(0,now-actionStarted)/1000:0;
+ const length=currentAction?durations[currentAction]/1000:1;
+ const progress=currentAction?Math.min(1,elapsed/length):0;
+ // The background is painted in world-image pixels. Hero size stays proportional
+ // to the width of doors, handrails and foreground steps, not screen pixels.
+ const worldHeight=78*(.89+.18*Math.max(0,Math.min(1,player.y/941)));
+ const imageScale=worldHeight/f.height*zoom;
+ const size=f.height*imageScale,tw=f.width*imageScale;
+ const phase=player.phase,step=moving?Math.sin(phase):0;
+ const lift1=moving?Math.max(0,step)*size*.055:0;
+ const lift2=moving?Math.max(0,-step)*size*.055:0;
+ const stride=moving?Math.cos(phase)*size*.067:0;
+ const bounce=moving?Math.abs(Math.sin(phase))*size*.014:0;
+ const strength=currentAction?Math.min(1,progress/.13,(1-progress)/.2):0;
+ const pulse=Math.sin(progress*Math.PI);
  ctx.save();ctx.translate(p.x,p.y);
- ctx.fillStyle='#172b2259';ctx.beginPath();ctx.ellipse(0,0,size*.26,size*.08,0,0,Math.PI*2);ctx.fill();
- ctx.translate(wave,-rhythm-cheer-surprise+bow*size*.24);
- if(special){
-   const pic=special.image;
-   const naturalHeight=pic.height/special.ppu;
-   const width=size*(pic.width/special.ppu)/(frame.height/270);
-   const height=size*naturalHeight/(frame.height/270);
-   ctx.drawImage(pic,-width/2,-height*(special.footY/pic.height)+bow*size*.02,width,height);
+ // Keep the shadow fixed at the foot contact point.
+ ctx.fillStyle='#1e35295c';ctx.beginPath();ctx.ellipse(0,0,size*.22,size*.055,0,0,Math.PI*2);ctx.fill();
+ ctx.translate(0,-bounce);
+ if(currentAction&&player.dir===0&&actions[currentAction]){
+   const a=actions[currentAction];const pic=a.image;
+   // Paintings were authored at ~790 pixels per unit; match visible body height.
+   const ratio=(f.height/270)/(pic.height/a.ppu);
+   const aw=pic.width/pic.height*worldHeight*zoom,ah=worldHeight*zoom;
+   const specialBow=currentAction==='bow'?pulse*pulse*.14:0;
+   ctx.drawImage(pic,-aw*a.image.width/2/pic.width,-ah*a.footY/pic.height+specialBow*size*.12,aw,ah);
  }else{
-   if(currentAction==='bow'){ctx.translate(0,-size*.55);ctx.rotate(.18*Math.sin(progress*Math.PI));ctx.translate(0,size*.55)}
-   if(currentAction==='surprise')ctx.rotate(.035*Math.sin(progress*Math.PI*5));
-   if(currentAction==='cheer')ctx.rotate(.025*Math.sin(progress*Math.PI*6));
-   const width=size*frame.width/frame.height;
-   ctx.drawImage(frame.image,-width*frame.footX/frame.width,-size*frame.footY/frame.height,width,size);
+   const rig=rigs[player.dir];
+   if(rig){
+    const back=currentAction==='bow'?strength*pulse*.18:0;
+    const actionHop=currentAction==='surprise'?Math.sin(Math.min(1,progress/.42)*Math.PI)*strength*size*.018:0;
+    const cheerHop=currentAction==='cheer'?Math.abs(Math.sin(progress*Math.PI*3))*strength*size*.024:0;
+    ctx.translate(0,-actionHop-cheerHop);
+    // Lower legs pivot/swing in opposite phases, with alternating foot lift.
+    ctx.save();
+    if(moving){drawRigPart(rig.left,f.footX,f.footY,imageScale,imageScale,-stride,-lift1,-step*.11);}
+    else drawRigPart(rig.left,f.footX,f.footY,imageScale,imageScale);
+    if(moving){drawRigPart(rig.right,f.footX,f.footY,imageScale,imageScale,stride,-lift2,step*.11);}
+    else drawRigPart(rig.right,f.footX,f.footY,imageScale,imageScale);
+    ctx.restore();
+    if(currentAction==='bow'){
+      ctx.save();ctx.translate(0,-size*.64);ctx.rotate(back);ctx.translate(0,size*.64);
+      drawRigPart(rig.torso,f.footX,f.footY,imageScale,imageScale);
+      ctx.restore();
+    }else drawRigPart(rig.torso,f.footX,f.footY,imageScale,imageScale);
+    // Direction-specific arm silhouette articulated from shoulder landmarks.
+    if(currentAction&&currentAction!=='bow'&&strength>.001){
+     const shoulders=shoulderAnchors[player.dir]||[];
+     shoulders.forEach(([sx,sy],j)=>{
+       const side=shoulders.length===1?(player.dir===2?-1:1):(j===0?-1:1);
+       const raise=currentAction==='wave'?(side>0?.58+.24*Math.sin(elapsed*12):.10):
+         currentAction==='cheer'?.52:currentAction==='surprise'?.38:0;
+       if(raise<=0)return;
+       const sxWorld=(sx-f.footX)*imageScale,syWorld=(sy-f.footY)*imageScale;
+       const lenArm=size*.25;
+       ctx.save();ctx.translate(sxWorld,syWorld);
+       ctx.rotate(side*raise*strength);
+       ctx.strokeStyle='#5e2440';ctx.lineWidth=Math.max(2,tw*.073);ctx.lineCap='round';
+       ctx.beginPath();ctx.moveTo(0,0);ctx.lineTo(side*size*.045,lenArm*.48);ctx.lineTo(side*size*.055,lenArm);ctx.stroke();
+       ctx.fillStyle='#f2cdb1';ctx.beginPath();ctx.arc(side*size*.055,lenArm,Math.max(2,size*.033),0,Math.PI*2);ctx.fill();
+       ctx.restore();
+     });
+    }
+   }else{
+     drawRigPart(f.image,f.footX,f.footY,imageScale,imageScale);
+   }
  }
  ctx.restore();
 }
@@ -87,7 +152,8 @@ addEventListener('keydown',e=>{if(['ArrowUp','ArrowDown','ArrowLeft','ArrowRight
 function tick(now){let dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;ctx.clearRect(0,0,W,H);ctx.fillStyle='#182f30';ctx.fillRect(0,0,W,H);if(ready){
 let dx=pad.x,dy=pad.y;if(keys.has('ArrowLeft')||keys.has('a'))dx--;if(keys.has('ArrowRight')||keys.has('d'))dx++;if(keys.has('ArrowUp')||keys.has('w'))dy--;if(keys.has('ArrowDown')||keys.has('s'))dy++;
 if(Math.hypot(dx,dy)<.05&&goal){let vx=goal.x-player.x,vy=goal.y-player.y,dist=Math.hypot(vx,vy);if(dist<5)goal=null;else{dx=vx/dist;dy=vy/dist}}
-const len=Math.hypot(dx,dy);if(currentAction){dx=0;dy=0;goal=null}if(len>.05&&!currentAction){dx/=len;dy/=len;let speed=127*dt;let x=player.x+dx*speed,y=player.y+dy*speed; if(walkable(x,y)){player.x=x;player.y=y}else if(walkable(x,player.y))player.x=x;else if(walkable(player.x,y))player.y=y;else goal=null;player.phase+=dt*10;player.dir=direction8(dx,dy)}
+if(currentAction&&now-actionStarted>=durations[currentAction])currentAction=null;
+const len=Math.hypot(dx,dy);if(currentAction){dx=0;dy=0;goal=null}if(len>.05&&!currentAction){dx/=len;dy/=len;let speed=127*dt;let x=player.x+dx*speed,y=player.y+dy*speed; if(walkable(x,y)){player.x=x;player.y=y}else if(walkable(x,player.y))player.x=x;else if(walkable(player.x,y))player.y=y;else goal=null;player.phase+=dt*12.8;player.dir=direction8(dx,dy)}
 camera(dt);
 ctx.drawImage(img,ox,oy,img.width*scale,img.height*scale);
 const p=project(player.x,player.y);
