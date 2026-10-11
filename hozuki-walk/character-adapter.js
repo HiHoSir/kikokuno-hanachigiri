@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createLabCharacter} from '../field-lab/character.js?v=0.14.1';
+import {createLabCharacter} from '../field-lab/character.js?v=0.30.0';
 import {STRIDE} from '../field-lab/rig.js?v=0.12.1';
 
 // Reuse the identical mesh-deformation renderer that runs in the main game.
