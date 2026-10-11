@@ -6,9 +6,12 @@ export function surfaceHeightAt(area,x,z){
   }
   if(area.elevation){
     const e=area.elevation,p=e.plateau;
-    const onRamp=x>=e.xMin&&x<=e.xMax&&z<=e.zBottom&&z>=e.zTop;
+    const onRamp=Math.abs(x-e.cx)<=e.halfWidth&&z<=e.zFront&&z>=e.zTop;
     const onPlateau=x>=p.xMin&&x<=p.xMax&&z>=p.zMin&&z<=p.zMax;
-    if(onRamp)top=Math.max(top,e.height*(e.zBottom-z)/(e.zBottom-e.zTop));
+    if(onRamp){
+      const t=(e.zFront-z)/(e.zFront-e.zTop);
+      top=Math.max(top,e.height*t);
+    }
     if(onPlateau)top=Math.max(top,e.height);
   }
   return Number.isFinite(top)?top:0;
