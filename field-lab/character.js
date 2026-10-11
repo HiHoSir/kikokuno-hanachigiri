@@ -115,7 +115,8 @@ export async function createLabCharacter(scene,basePath='./'){
    for(let i=0;i<fa.length;i+=3){const sourceY=f.footY-fb[i+1]*set.pixelsPerUnit,w=smoothstep(mark.hip,mark.knee,sourceY);fa[i]=fb[i]+groundDirection.x*step.along*blend*w;fa[i+1]=fb[i+1]+bodyDrop+(groundDirection.y*step.along+step.lift)*blend*w-bodyDrop*w;fa[i+2]=fb[i+2];f.far.geo.attributes.aGroundDepth.array[i/3]=(groundDirection.z-groundDirection.y*elevationTangent)*step.along*blend*w;}
    f.far.geo.attributes.position.needsUpdate=true;f.far.geo.attributes.aGroundDepth.needsUpdate=true;f.far.geo.computeBoundingSphere();farLeg.position.copy(hero.position);farLeg.quaternion.copy(hero.quaternion);
   }
-  const af=source===0&&pose.strength>0.08?actionFrames[mode]:null;
+  // Dedicated action paintings face front; use the directional rig for any other heading.
+  const af=source===0&&direction===0&&pose.strength>0.08?actionFrames[mode]:null;
   actionMesh.visible=!!af;bowLegs.visible=!!af&&mode==='bow';hero.visible=!af;
   if(af){
    farLeg.visible=false;actionMesh.geometry=af.geo;actionMaterial.map=af.tex;
