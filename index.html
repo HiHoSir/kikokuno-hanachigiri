@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>新生 鬼哭の花契り v0.17.0 | 技術検証</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>新生 鬼哭の花契り v0.18.0 | 技術検証</title>
 <style>
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#192a27;color:#fff;font:14px system-ui,sans-serif;touch-action:none}canvas{display:block;width:100vw;height:100dvh}
 #info{position:fixed;top:max(8px,env(safe-area-inset-top));left:8px;padding:10px;background:#182927df;border:1px solid #bca579;border-radius:10px;max-width:80%;pointer-events:none}#info b{color:#ffe09c}#info small{display:block;margin-top:4px}
@@ -11,8 +11,31 @@
 #dpad span{position:absolute;z-index:1;color:white;font-size:21px;font-weight:700;pointer-events:none}
 #dpad .up{top:14px;left:74px}#dpad .down{bottom:13px;left:74px}#dpad .left{top:68px;left:19px}#dpad .right{top:68px;right:19px}
 #dpad .center{top:66px;left:67px;width:32px;height:32px;border-radius:50%;background:#26392e}button{pointer-events:auto;touch-action:none;user-select:none;color:#fff;background:#182624df;border:1px solid #ffffff66;border-radius:12px;font-size:21px;min-height:52px}button:active{background:#936d38}#talk{height:68px;width:68px;border-radius:50%}#msg{position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:#192b29ef;border:1px solid #ffe1a0;padding:12px 15px;border-radius:12px;display:none;width:min(90vw,490px);white-space:pre-line}#gestures{position:fixed;right:10px;bottom:118px;display:flex;gap:4px;flex-wrap:wrap;max-width:210px;justify-content:flex-end}#gestures button{font-size:12px;min-height:37px;padding:6px 9px}#error{position:fixed;top:40%;left:10%;right:10%;background:#641c1c;padding:12px;display:none} @media(max-height:600px){ #dpad{transform:scale(.78);transform-origin:bottom left;margin-right:-37px;margin-top:-37px}button{min-height:42px}#msg{bottom:110px}}
+
+/* Safe-area aware HUD: top strip is distinct from controls at the bottom. */
+#info{top:calc(env(safe-area-inset-top) + 7px);left:8px;right:8px;max-width:none;padding:8px 10px;line-height:1.35}
+#info small{font-size:10px;line-height:1.35}
+#area-status{position:fixed;top:calc(env(safe-area-inset-top) + 75px);left:8px;right:8px;z-index:3;padding:7px 10px;font-size:11px;background:#182927df;border:1px solid #bca579;border-radius:8px;pointer-events:none;white-space:normal}
+#go-hill{position:fixed;right:10px;top:calc(env(safe-area-inset-top) + 121px);z-index:5;background:#5c4731ef;color:#fff0c8;border:1px solid #f0ce83;padding:7px 11px;font-size:12px;min-height:40px}
+#gestures{right:10px;left:auto;bottom:calc(env(safe-area-inset-bottom) + 190px);width:186px;max-width:calc(100vw - 185px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+#gestures button{width:100%;font-size:12px;min-height:35px;padding:4px 2px}
+#msg{bottom:calc(env(safe-area-inset-bottom) + 282px);z-index:6;max-height:28vh;overflow-y:auto;pointer-events:none}
+#controls{z-index:4}
+@media(max-width:390px){
+ #info small{display:none}
+ #area-status{top:calc(env(safe-area-inset-top) + 48px);font-size:10px}
+ #go-hill{top:calc(env(safe-area-inset-top) + 89px)}
+ #gestures{width:164px;max-width:calc(100vw - 174px)}
+}
+@media(max-height:620px){
+ #info small{display:none}
+ #area-status{top:calc(env(safe-area-inset-top) + 44px);font-size:10px}
+ #go-hill{top:calc(env(safe-area-inset-top) + 85px)}
+ #gestures{bottom:calc(env(safe-area-inset-bottom) + 139px)}
+ #msg{bottom:calc(env(safe-area-inset-bottom) + 215px)}
+}
 </style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
-</head><body><canvas id="game"></canvas><div id="info"><b>新生 鬼哭の花契り — 2.5D技術検証 v0.17.0</b><small><span id="area-name">鬼灯の里 — 散策実験</span> ／ 8方向主人公＋小川・橋・兵具屋・宿屋・茶店<br>移動：スライドD-pad／WASD　調べる：A／Enter　壺・井戸・野菜　自動保存</small></div><div id="area-status" style="position:fixed;top:max(92px,calc(env(safe-area-inset-top) + 92px));left:8px;padding:7px 10px;background:#182927df;border:1px solid #bca579;border-radius:8px;pointer-events:none">現在地：鬼灯の里 — 散策実験</div><button id="go-hill" style="position:fixed;right:10px;top:max(145px,calc(env(safe-area-inset-top) + 145px));z-index:5;background:#5c4731e9;color:#fff0c8;border:1px solid #f0ce83;padding:10px;font-size:13px;min-height:46px">高台の入口へ</button><div id="gestures"><button id="surprise">驚き</button><button id="wave">手振り</button><button id="bow">おじぎ</button><button id="cheer">喜ぶ</button></div><div id="msg"></div><div id="error"></div><div id="controls"><div id="dpad" role="group" aria-label="8方向移動D-pad"><span class="up">▲</span><span class="down">▼</span><span class="left">◀</span><span class="right">▶</span><span class="center"></span></div><button id="talk">A</button></div><script>
+</head><body><canvas id="game"></canvas><div id="info"><b>新生 鬼哭の花契り — 2.5D技術検証 v0.18.0</b><small><span id="area-name">鬼灯の里 — 散策実験</span> ／ 8方向主人公＋小川・橋・兵具屋・宿屋・茶店<br>移動：スライドD-pad／WASD　調べる：A／Enter　壺・井戸・野菜　自動保存</small></div><div id="area-status">現在地：鬼灯の里 — 散策実験</div><button id="go-hill">高台の入口へ</button><div id="gestures"><button id="surprise">驚き</button><button id="wave">手振り</button><button id="bow">おじぎ</button><button id="cheer">喜ぶ</button></div><div id="msg"></div><div id="error"></div><div id="controls"><div id="dpad" role="group" aria-label="8方向移動D-pad"><span class="up">▲</span><span class="down">▼</span><span class="left">◀</span><span class="right">▶</span><span class="center"></span></div><button id="talk">A</button></div><script>
 (function(){
  const panel=document.querySelector('#error');
  let opaqueError=false;
