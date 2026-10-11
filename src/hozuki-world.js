@@ -9,6 +9,36 @@ export function createHozukiWorld(scene,area){
  const materials=new Map();
  const mat=(color,extra={})=>new THREE.MeshStandardMaterial({color,roughness:.93,...extra});
  const getMat=color=>{if(!materials.has(color))materials.set(color,mat(color));return materials.get(color)};
+ // Lightweight hand-painted surface patterns generated once, without network assets.
+ const textures=[];
+ function patternedMaterial(base,kind){
+   const canvas=document.createElement('canvas');canvas.width=canvas.height=128;
+   const ctx=canvas.getContext('2d');ctx.fillStyle=base;ctx.fillRect(0,0,128,128);
+   let seed=kind==='tiles'?271:kind==='plaster'?593:947;
+   const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+   if(kind==='tiles'){
+     for(let row=0;row<8;row++)for(let col=0;col<5;col++){
+       const x=col*29-(row%2)*14,y=row*17;
+       ctx.fillStyle=rand()>.5?'#777c72':'#666c64';ctx.fillRect(x+1,y+1,27,14);
+       ctx.strokeStyle='rgba(31,40,38,.34)';ctx.lineWidth=2;
+       ctx.strokeRect(x+1,y+1,27,14);
+       ctx.fillStyle='rgba(221,218,185,.12)';ctx.fillRect(x+2,y+2,24,2);
+     }
+   }else{
+     for(let i=0;i<500;i++){
+       const x=rand()*128,y=rand()*128;
+       ctx.fillStyle=kind==='plaster'?(rand()>.5?'rgba(90,77,56,.09)':'rgba(255,246,207,.15)'):(rand()>.5?'rgba(29,18,9,.22)':'rgba(225,180,113,.12)');
+       ctx.fillRect(x,y,kind==='wood'?rand()*27+3:rand()*3+1,kind==='wood'?1:rand()*3+1);
+     }
+   }
+   const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;
+   texture.wrapS=texture.wrapT=THREE.RepeatWrapping;
+   texture.anisotropy=2;textures.push(texture);
+   return new THREE.MeshStandardMaterial({map:texture,roughness:1,side:THREE.DoubleSide});
+ }
+ const tileMaterial=patternedMaterial('#60655c','tiles');
+ const woodMaterial=patternedMaterial('#846648','wood');
+ const plasterMaterial=patternedMaterial('#bca98a','plaster');
  function box(x,y,z,w,h,d,color,collision=false){
    const mesh=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),getMat(color));
    mesh.position.set(x,y,z);mesh.receiveShadow=true;mesh.castShadow=h>.25;group.add(mesh);
@@ -95,7 +125,7 @@ export function createHozukiWorld(scene,area){
    geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
    geo.setIndex([0,2,1,1,2,3,4,6,5,5,6,7]);
    geo.computeVertexNormals();
-   const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color,side:THREE.DoubleSide,roughness:1}));
+   const mesh=new THREE.Mesh(geo,tileMaterial);
    mesh.castShadow=true;mesh.receiveShadow=true;group.add(mesh);
    box(x-half/2,eaves-.12,z,half,.15,depth,0x675341);
    box(x+half/2,eaves-.12,z,half,.15,depth,0x675341);
@@ -137,14 +167,14 @@ export function createHozukiWorld(scene,area){
    const height=4.55,half=w/2,doorHalf=opening/2,front=z+d/2;
    const wallThickness=.22, sideWidth=half-doorHalf;
    // Interior floor and low threshold are traversable. The building has no solid collision box.
-   box(x,.06,z,w,.12,d,0x927f5d);
+   const floor=box(x,.06,z,w,.12,d,0x927f5d);floor.material=woodMaterial;
    for(const sx of [-1,1]){
-     box(x+sx*(half-wallThickness/2),height/2,z,wallThickness,height,d,wall,true);
-     box(x+sx*(doorHalf+sideWidth/2),height/2,front,sideWidth,height,wallThickness,wall,true);
+     const sideWall=box(x+sx*(half-wallThickness/2),height/2,z,wallThickness,height,d,wall,true);sideWall.material=plasterMaterial;
+     const frontWall=box(x+sx*(doorHalf+sideWidth/2),height/2,front,sideWidth,height,wallThickness,wall,true);frontWall.material=plasterMaterial;
      box(x+sx*(doorHalf+.10),height/2,front+.13,.17,height,.17,0x6b503a,true);
      box(x+sx*(half-.4),height*.52,front+.15,.45,.65,.08,0xd7bd84);
    }
-   box(x,height/2,z-d/2, w,height,wallThickness,wall,true);
+   const backWall=box(x,height/2,z-d/2,w,height,wallThickness,wall,true);backWall.material=plasterMaterial;
    // Door opening clears over 3 world units with comfortable headroom.
    const clearHeight=3.42;
    box(x,(clearHeight+height)/2,front,(opening-.15),height-clearHeight,.24,0x745841);
@@ -397,6 +427,7 @@ export function createHozukiWorld(scene,area){
  return {obstacles,doorways,sun,dispose(){
    group.traverse(object=>{if(object.isMesh){object.geometry.dispose(); if(!materialsHas(object.material))object.material.dispose()}});
    for(const m of materials.values())m.dispose();
+   for(const t of textures)t.dispose();
    scene.remove(group);
   },
   update(t,player){
