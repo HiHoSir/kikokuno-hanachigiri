@@ -1,0 +1,111 @@
+{
+  "version": "0.9.0-lab",
+  "status": "candidate-not-approved",
+  "pixelsPerUnit": 270,
+  "frames": [
+    {
+      "file": "0.png",
+      "width": 362,
+      "height": 543,
+      "footY": 521,
+      "footX": 188.0,
+      "bbox": [
+        38,
+        48,
+        328,
+        521
+      ]
+    },
+    {
+      "file": "1.png",
+      "width": 362,
+      "height": 543,
+      "footY": 525,
+      "footX": 223.0,
+      "bbox": [
+        34,
+        49,
+        348,
+        525
+      ]
+    },
+    {
+      "file": "2.png",
+      "width": 362,
+      "height": 543,
+      "footY": 524,
+      "footX": 237.5,
+      "bbox": [
+        33,
+        48,
+        315,
+        524
+      ]
+    },
+    {
+      "file": "3.png",
+      "width": 362,
+      "height": 543,
+      "footY": 523,
+      "footX": 197.5,
+      "bbox": [
+        48,
+        49,
+        338,
+        523
+      ]
+    },
+    {
+      "file": "4.png",
+      "width": 362,
+      "height": 543,
+      "footY": 489,
+      "footX": 183.0,
+      "bbox": [
+        35,
+        25,
+        335,
+        489
+      ]
+    },
+    {
+      "file": "5.png",
+      "width": 362,
+      "height": 543,
+      "footY": 494,
+      "footX": 181.0,
+      "bbox": [
+        38,
+        25,
+        317,
+        494
+      ]
+    },
+    {
+      "file": "6.png",
+      "width": 362,
+      "height": 543,
+      "footY": 489,
+      "footX": 137.5,
+      "bbox": [
+        48,
+        22,
+        328,
+        489
+      ]
+    },
+    {
+      "file": "7.png",
+      "width": 362,
+      "height": 543,
+      "footY": 492,
+      "footX": 152.5,
+      "bbox": [
+        27,
+        22,
+        326,
+        492
+      ]
+    }
+  ]
+}
