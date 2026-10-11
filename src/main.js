@@ -4,9 +4,9 @@ import {hozukiArea} from './areas/hozuki.js?v=0.9.0';
 import {resolveArea} from './areas/registry.js?v=0.9.0';
 import {applyTransition} from './transitions.js?v=0.7.0';
 import {createGameState,interact} from './events.js?v=0.9.0';
-import {createWorld} from './world.js?v=0.14.0';
+import {createWorld} from './world.js?v=0.14.1';
 import {surfaceHeightAt} from './surfaces.js?v=0.7.0';
-import {createLabCharacter} from '../field-lab/character.js?v=0.13.0';
+import {createLabCharacter} from '../field-lab/character.js?v=0.14.1';
 import {directionFromWorld,advanceGait} from '../field-lab/motion.js?v=0.12.1';
 import {CAMERA_OFFSET} from './movement.js';
 import {createInput} from './input.js?v=0.8.0';
@@ -71,7 +71,7 @@ function frame(now){
   const dt=Math.min(Math.max((now-previous)/1000,0),.05);previous=now;
   const direction=input.getDirection();
   const before={...state.player};
-  if(direction.x||direction.y){
+  if((direction.x||direction.y) && (mode==='idle'||now>modeUntil)){
     const previous={...state.player};
     const vector=worldFromScreen(direction.x,direction.y);
     const next=moveWithCollision(state.player,vector.x,vector.z,dt,3.2,world.obstacles,(x,z)=>surfaceHeightAt(area,x,z));
@@ -87,7 +87,7 @@ function frame(now){
   cameraControl.update(state.player,dt);
   const groundAt=(x,z)=>surfaceHeightAt(area,x,z);
   character.update({x:state.player.x,z:state.player.z,y:groundAt(state.player.x,state.player.z),dt,time:now/1000,direction:facing,phase:gait,moving:distance>0.00001,velocity:{x:movedX,z:movedZ},camera,mode,actionElapsed:(now-modeStarted)/1000,source:0,groundAt,debug:false});
-  world.update?.(now/1000);
+  world.update?.(now/1000,state.player);
   if(msg.style.display==='block'&&now>messageUntil)msg.style.display='none';
   if(now>=nextAutosave){persist();nextAutosave=now+3500;}
   renderer.render(scene,camera);
