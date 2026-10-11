@@ -1,5 +1,5 @@
 // Seconds since the button press, independent of the global clock and walking.
-export const ACTIONS={talk:{duration:1.6,label:'会話'},surprise:{duration:1.4,label:'驚き'},wave:{duration:2,label:'手を振る'},bow:{duration:1.8,label:'おじぎ'},cheer:{duration:1.8,label:'喜ぶ'}};
+export const ACTIONS={talk:{duration:1.6,label:'会話'},surprise:{duration:1.8,label:'驚き'},wave:{duration:2.8,label:'手を振る'},bow:{duration:2.4,label:'おじぎ'},cheer:{duration:2.4,label:'喜ぶ'}};
 export function actionPose(mode,elapsed){
  const spec=ACTIONS[mode];if(!spec||elapsed<0||elapsed>=spec.duration)return {strength:0,left:0,right:0,bow:0,jump:0};
  const t=elapsed/spec.duration,e=Math.min(1,t/.12,(1-t)/.2),pulse=Math.sin(t*Math.PI);

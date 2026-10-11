@@ -15,7 +15,7 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  assert.equal(await page.locator('#error').isVisible(),false);
  assert.equal(await page.locator('#loading').isVisible(),false);
  await page.screenshot({path:`test-results/${name}-candidate.png`});
- assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.11.1-lab');
+ assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.12.0-lab');
  for(const [dir,keys] of [[0,['ArrowDown']],[1,['ArrowRight','ArrowDown']],[2,['ArrowRight']],[3,['ArrowRight','ArrowUp']],[4,['ArrowUp']],[5,['ArrowLeft','ArrowUp']],[6,['ArrowLeft']],[7,['ArrowLeft','ArrowDown']]]){
   for(const k of keys)await page.keyboard.down(k);await page.waitForFunction(dir=>window.__kikokuLab.direction===dir&&window.__kikokuLab.moving,dir,{timeout:10000});
   const m=await page.evaluate(()=>window.__kikokuLab);assert.equal(m.direction,dir);assert.ok(m.distance>0);assert.ok(m.stance.some(Boolean));
@@ -45,10 +45,12 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  for(const action of ['surprise','wave','bow','cheer']){
   await page.locator('#'+action).tap();await page.waitForFunction(action=>__kikokuLab.action===action&&__kikokuLab.actionStrength>.8,action);
   assert.equal(await page.evaluate(()=>__kikokuLab.pose),false);
+  assert.equal(await page.evaluate(()=>__kikokuLab.actionArt),action);
+  assert.notEqual(await page.evaluate(()=>__kikokuLab.expression),'neutral');
   await page.screenshot({path:`test-results/${name}-action-${action}.png`});
   await page.waitForFunction(()=>__kikokuLab.action==='idle');
  }
- await page.keyboard.down('ArrowDown');await page.locator('#surprise').tap();await page.waitForFunction(()=>__kikokuLab.moving&&__kikokuLab.action==='surprise'&&__kikokuLab.actionStrength>.8);await page.keyboard.up('ArrowDown');
+ await page.keyboard.down('ArrowDown');await page.locator('#surprise').tap();await page.waitForFunction(()=>!__kikokuLab.moving&&__kikokuLab.actionArt==='surprise'&&__kikokuLab.actionStrength>.8);await page.waitForFunction(()=>__kikokuLab.moving&&__kikokuLab.action==='idle');await page.keyboard.up('ArrowDown');
  await open();await page.locator('#pose').uncheck();await page.selectOption('#source','1');await page.waitForFunction(()=>__kikokuLab.source.includes('v0.6'));await close();await page.screenshot({path:`test-results/${name}-v06.png`});
  assert.equal(await page.evaluate(()=>localStorage.getItem('kikoku-game-state-v1')),null);assert.deepEqual(errors,[]);
  // Real errors must remain visible even after the first successful frame.

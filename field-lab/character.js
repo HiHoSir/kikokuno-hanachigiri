@@ -1,14 +1,14 @@
-import {actionPose,SHOULDERS} from './actions.js?v=0.11.1';
+import {actionPose,SHOULDERS} from './actions.js?v=0.12.0';
 import * as THREE from 'three';
-import {legacyFrame} from './motion.js?v=0.11.1';
-import {LEG_LANDMARKS,LEG_DIVIDERS,footCycle,projectGround,updateBlend,smoothstep,shadowTriangleValid} from './rig.js?v=0.11.1';
+import {legacyFrame} from './motion.js?v=0.12.0';
+import {LEG_LANDMARKS,LEG_DIVIDERS,footCycle,projectGround,updateBlend,smoothstep,shadowTriangleValid} from './rig.js?v=0.12.0';
 import {CAMERA_OFFSET} from '../src/movement.js';
 function spriteGeometry(f,ppu,divider){
  const cuts=divider===null?[0,f.width]:[0,divider,f.width],positions=[],uvs=[],indices=[],limbs=[];
  for(let part=0;part<cuts.length-1;part++){
   const left=cuts[part],right=cuts[part+1],cols=Math.max(2,Math.ceil((right-left)/7)),rows=64,start=positions.length/3;
   for(let row=0;row<=rows;row++)for(let col=0;col<=cols;col++){
-   const x=left+(right-left)*col/cols,y=f.height*row/rows;
+   const x=left+(right-left)*col/cols,y=(f.cropTop||0)+((f.cropBottom||f.height)-(f.cropTop||0))*row/rows;
    positions.push((x-f.footX)/ppu,(f.footY-y)/ppu,0);uvs.push(x/f.width,1-y/f.height);limbs.push(part);
   }
   for(let row=0;row<rows;row++)for(let col=0;col<cols;col++){
@@ -26,10 +26,10 @@ function farLegGeometry(f,ppu,outline){
  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(outline.flatMap(([x,y])=>[(x-f.footX)/ppu,(f.footY-y)/ppu,0]),3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(outline.flatMap(([x,y])=>[x/f.width,1-y/f.height]),2));geo.setIndex(triangles.flat());geo.setAttribute('aGroundDepth',new THREE.Float32BufferAttribute(new Float32Array(outline.length),1));geo.computeVertexNormals();return {geo,base:geo.attributes.position.array.slice()};
 }
 export async function createLabCharacter(scene){
- const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.11.1');if(!r.ok)throw Error(p);return r.json()}));
+ const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.12.0');if(!r.ok)throw Error(p);return r.json()}));
  const loader=new THREE.TextureLoader();
  const sets=await Promise.all([candidate,legacy].map(async (set,j)=>({...set,frames:await Promise.all(set.frames.map(async (f,frame)=>{
-  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.11.1');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
+  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.12.0');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
   const {geo,limbs}=spriteGeometry(f,set.pixelsPerUnit,j?null:LEG_DIVIDERS[frame]);
   const base=geo.attributes.position.array.slice(),weights=[];
   for(let i=0;i<base.length;i+=3){
@@ -52,6 +52,19 @@ export async function createLabCharacter(scene){
  uprightPosition.z+=transformed.y*uUprightDepth+aGroundDepth;
  gl_Position.z=(projectionMatrix*uprightPosition).z;`)};
  material.customProgramCacheKey=()=> 'field-lab-upright-depth-v1';
+ const actionFrames={};
+ const actionSpecs={wave:{width:1023,height:1537,footX:531,footY:1439,ppu:775},cheer:{width:1023,height:1538,footX:530,footY:1439,ppu:775},surprise:{width:1024,height:1536,footX:528,footY:1452,ppu:790},bow:{width:1024,height:1536,footX:528,footY:1384,ppu:800,cropBottom:1060}};
+ await Promise.all(Object.entries(actionSpecs).map(async ([name,f])=>{
+  const tex=await loader.loadAsync('./art/actions/'+name+'.png?v=0.12.0');tex.colorSpace=THREE.SRGBColorSpace;
+  const {geo}=spriteGeometry(f,f.ppu,null);actionFrames[name]={...f,tex,geo,base:geo.attributes.position.array.slice()};
+ }));
+ const actionMaterial=material.clone();actionMaterial.onBeforeCompile=material.onBeforeCompile;actionMaterial.customProgramCacheKey=material.customProgramCacheKey;
+ const actionMesh=new THREE.Mesh(actionFrames.wave.geo,actionMaterial);actionMesh.visible=false;actionMesh.renderOrder=2;scene.add(actionMesh);
+ // Preserve the original planted legs; the bow upper pose ends at the skirt hem.
+ const bowLegFrame={...sets[0].frames[0],cropTop:405};
+ const bowLegGeometry=spriteGeometry(bowLegFrame,sets[0].pixelsPerUnit,null).geo;
+ const bowLegMaterial=material.clone();bowLegMaterial.map=bowLegFrame.tex;bowLegMaterial.onBeforeCompile=material.onBeforeCompile;bowLegMaterial.customProgramCacheKey=material.customProgramCacheKey;
+ const bowLegs=new THREE.Mesh(bowLegGeometry,bowLegMaterial);bowLegs.visible=false;bowLegs.renderOrder=1;scene.add(bowLegs);
  const hero=new THREE.Mesh(sets[0].frames[0].geo,material);hero.renderOrder=2;scene.add(hero);
  const farMaterial=material.clone();farMaterial.onBeforeCompile=material.onBeforeCompile;farMaterial.customProgramCacheKey=material.customProgramCacheKey;farMaterial.polygonOffset=true;farMaterial.polygonOffsetFactor=1;farMaterial.polygonOffsetUnits=1;const farLeg=new THREE.Mesh(new THREE.BufferGeometry(),farMaterial);farLeg.renderOrder=1;farLeg.visible=false;scene.add(farLeg);
  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const g=canvas.getContext('2d'),grad=g.createRadialGradient(64,64,3,64,64,60);grad.addColorStop(0,'rgba(20,28,18,.4)');grad.addColorStop(.6,'rgba(20,28,18,.18)');grad.addColorStop(1,'rgba(20,28,18,0)');g.fillStyle=grad;g.fillRect(0,0,128,128);
@@ -101,11 +114,36 @@ export async function createLabCharacter(scene){
    for(let i=0;i<fa.length;i+=3){const sourceY=f.footY-fb[i+1]*set.pixelsPerUnit,w=smoothstep(mark.hip,mark.knee,sourceY);fa[i]=fb[i]+groundDirection.x*step.along*blend*w;fa[i+1]=fb[i+1]+bodyDrop+(groundDirection.y*step.along+step.lift)*blend*w-bodyDrop*w;fa[i+2]=fb[i+2];f.far.geo.attributes.aGroundDepth.array[i/3]=(groundDirection.z-groundDirection.y*elevationTangent)*step.along*blend*w;}
    f.far.geo.attributes.position.needsUpdate=true;f.far.geo.attributes.aGroundDepth.needsUpdate=true;f.far.geo.computeBoundingSphere();farLeg.position.copy(hero.position);farLeg.quaternion.copy(hero.quaternion);
   }
+  const af=source===0&&pose.strength>0.08?actionFrames[mode]:null;
+  actionMesh.visible=!!af;bowLegs.visible=!!af&&mode==='bow';hero.visible=!af;
+  if(af){
+   farLeg.visible=false;actionMesh.geometry=af.geo;actionMaterial.map=af.tex;
+   const vertices=af.geo.attributes.position.array;
+   for(let i=0;i<vertices.length;i+=3){
+    let px=af.base[i],py=af.base[i+1],pz=0;
+    const sx=px*af.ppu+af.footX,sy=af.footY-py*af.ppu;
+    if(mode==='wave'){
+     const mask=smoothstep(720,820,sx)*(1-smoothstep(700,900,sy));
+     const angle=Math.sin(actionElapsed*12)*.32*pose.strength;
+     const dx=(sx-825)/af.ppu,dy=(700-sy)/af.ppu;
+     px+=(dx*Math.cos(angle)-dy*Math.sin(angle)-dx)*mask;
+     py+=(dx*Math.sin(angle)+dy*Math.cos(angle)-dy)*mask;
+    }
+    if(mode==='bow'){
+     const hinge=.405,angle=.62*pose.strength,h=Math.max(0,py-hinge);
+     py-=h*(1-Math.cos(angle));pz+=h*Math.sin(angle);
+    }
+    vertices[i]=px;vertices[i+1]=py;vertices[i+2]=pz;
+   }
+   af.geo.attributes.position.needsUpdate=true;af.geo.computeBoundingSphere();
+   actionMesh.position.copy(hero.position);actionMesh.quaternion.copy(hero.quaternion);
+   bowLegs.position.set(x,y+.014,z);bowLegs.quaternion.copy(hero.quaternion);
+  }
   const sa=shadow.geometry.attributes.position.array;
   for(let i=0;i<sa.length;i+=3){sa[i]=shadowBase[i];sa[i+1]=groundAt(x+shadowBase[i],z+shadowBase[i+2])-y+.009;sa[i+2]=shadowBase[i+2]}
   // Never bridge a discontinuous step with a floating diagonal shadow triangle.
   const indices=[];for(let i=0;i<shadowIndices.length;i+=3){const [a,b,c]=shadowIndices.slice(i,i+3);if(shadowTriangleValid(sa[a*3+1],sa[b*3+1],sa[c*3+1]))indices.push(a,b,c)}
   shadow.geometry.setIndex(indices);shadow.geometry.attributes.position.needsUpdate=true;shadow.geometry.computeBoundingSphere();shadow.position.set(x,y,z);foot.position.set(x,y+.014,z);foot.visible=debug;
-  return {action:mode,actionStrength:pose.strength,actionElapsed,jump:pose.jump,frame:index,source:source?'v0.6 / 4方向':'候補 / 8方向',feetY:y,anchor:[f.footX,f.footY],rigBlend:blend,visibleLegs:source?null:LEG_LANDMARKS[index].length,stance:cycle.map(c=>c.stance),footLift:cycle.map(c=>c.lift*blend),shadowTriangles:indices.length/3,depthMode:'upright',reusedFarLeg:!!f.far};
+  return {actionArt:af?mode:null,expression:af?({wave:'smile',cheer:'joy',surprise:'wide-eyes',bow:'eyes-down'}[mode]):'neutral',action:mode,actionStrength:pose.strength,actionElapsed,jump:pose.jump,frame:index,source:source?'v0.6 / 4方向':'候補 / 8方向',feetY:y,anchor:[f.footX,f.footY],rigBlend:blend,visibleLegs:source?null:LEG_LANDMARKS[index].length,stance:cycle.map(c=>c.stance),footLift:cycle.map(c=>c.lift*blend),shadowTriangles:indices.length/3,depthMode:'upright',reusedFarLeg:!!f.far};
  }};
 }
