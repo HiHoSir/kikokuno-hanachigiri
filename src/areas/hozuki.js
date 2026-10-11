@@ -1,6 +1,6 @@
 // Original, exploratory 2.5D hometown. All coordinates are game-world units.
 export const hozukiArea={
- id:'hozuki-village',name:'鬼灯の里 — 散策実験 v0.9.0',bounds:19,
+ id:'hozuki-village',name:'鬼灯の里 — 散策実験 v0.14.0',bounds:19,
  spawn:{x:3,z:13.1},
  walkSurfaces:[{x:0,z:0,width:38,depth:38,top:0}],
  blocks:[], trees:[], portals:[],npcs:[],
