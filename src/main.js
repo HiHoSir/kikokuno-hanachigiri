@@ -23,7 +23,7 @@ let saved=null;
 try{saved=decodeSave(localStorage.getItem(SAVE_KEY),resolveArea)}catch{}
 const params=new URLSearchParams(location.search);
 const explore=params.get('area')==='hozuki';
-const state=explore?createGameState(hozukiArea):(saved||createGameState(hozukiArea));
+const state=explore?(saved?.areaId===hozukiArea.id?saved:createGameState(hozukiArea)):(saved||createGameState(hozukiArea));
 let area=resolveArea(state.areaId);
 let world=createWorld(scene,area);
 const character=createCharacter(scene);
