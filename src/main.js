@@ -25,7 +25,10 @@ let saved=null;
 try{saved=decodeSave(localStorage.getItem(SAVE_KEY),resolveArea)}catch{}
 const params=new URLSearchParams(location.search);
 const explore=params.get('area')==='hozuki';
-const state=explore?(saved?.areaId===hozukiArea.id?saved:createGameState(hozukiArea)):(saved||createGameState(hozukiArea));
+const paintedDemo=explore&&params.get('visual')==='paint';
+const state=paintedDemo?createGameState(hozukiArea):(explore?(saved?.areaId===hozukiArea.id?saved:createGameState(hozukiArea)):(saved||createGameState(hozukiArea)));
+// Isolated visual test: always begin on shrine summit; do not affect normal saves.
+if(paintedDemo){state.player.x=11.3;state.player.z=-13.4;}
 let area=resolveArea(state.areaId);
 let world=createWorld(scene,area);
 const character=await createLabCharacter(scene,'./field-lab/');
@@ -33,7 +36,7 @@ let facing=0,gait=0;let mode='idle',modeStarted=0,modeUntil=0;
 const cameraControl=createCameraController(camera);
 const msg=document.querySelector('#msg');
 const areaName=document.querySelector('#area-name');
-function persist(){try{localStorage.setItem(SAVE_KEY,encodeSave(state))}catch{}}
+function persist(){if(paintedDemo)return;try{localStorage.setItem(SAVE_KEY,encodeSave(state))}catch{}}
 function enterArea(event){
   const next=applyTransition(state,event,resolveArea);
   if(!next)return;
@@ -59,12 +62,13 @@ function action(){
 const hillButton=document.querySelector('#go-hill');
 hillButton?.addEventListener('click',()=>{
  if(area.id!=='hozuki-village')return;
- // Stop at the foot of the long ascent, never on a steep or unsupported edge.
- state.player.x=11.3;state.player.z=-7.95;
+ // Painted demo can jump between summit and trail; normal village goes to trail foot.
+ const onSummit=surfaceHeightAt(area,state.player.x,state.player.z)>2.5;
+ state.player.x=11.3;state.player.z=paintedDemo&&!onSummit?-13.4:-7.95;
  facing=4;gait=0;mode='idle';modeUntil=0;
  cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z)+1.25,state.player.z);
  persist();
- msg.textContent='風魔の鈴へ続く登り道です。画面の上方向へ進んでください。';
+ msg.textContent=paintedDemo&&!onSummit?'イラスト検証：風魔の鈴の高台に移動しました。':'風魔の鈴へ続く登り道です。画面の上方向へ進んでください。';
  msg.style.display='block';messageUntil=performance.now()+4500;
 });
 const input=createInput(action);
@@ -99,7 +103,7 @@ function frame(now){
   const groundAt=(x,z)=>surfaceHeightAt(area,x,z);
   character.update({x:state.player.x,z:state.player.z,y:groundAt(state.player.x,state.player.z),dt,time:now/1000,direction:facing,phase:gait,moving:distance>0.00001,velocity:{x:movedX,z:movedZ},camera,mode,actionElapsed:(now-modeStarted)/1000,source:0,groundAt,debug:false});
   world.update?.(now/1000,state.player);
-  if(hillButton)hillButton.textContent=surfaceHeightAt(area,state.player.x,state.player.z)>2?'高台の入口へ戻る':'高台の入口へ';
+  if(hillButton)hillButton.textContent=paintedDemo?(surfaceHeightAt(area,state.player.x,state.player.z)>2.5?'坂の入口へ':'高台の絵を確認'):(surfaceHeightAt(area,state.player.x,state.player.z)>2?'高台の入口へ戻る':'高台の入口へ');
   if(msg.style.display==='block'&&now>messageUntil)msg.style.display='none';
   if(now>=nextAutosave){persist();nextAutosave=now+3500;}
   renderer.render(scene,camera);
