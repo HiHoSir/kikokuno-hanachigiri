@@ -84,6 +84,24 @@ export function createHozukiWorld(scene,area){
  }
  for(const [x,z] of [[-15,-3],[-14,-2.6],[-6,-10],[-5.5,-10.1],[6,-5],[15,-4],
   [15,4.9],[7,4.8],[-5,3.7],[-6,4],[-13,11],[-12.3,11.7]])hozuki(x,z);
+ // Pitched roofs use actual sloped surfaces; no hidden roof or top-only lid.
+ function pitchedRoof(x,z,w,d,eaves,rise,color){
+   const half=w/2+.3,depth=d+.55,front=z+depth/2,back=z-depth/2;
+   const vertices=[
+     x-half,eaves,front,x,eaves+rise,front,x-half,eaves,back,x,eaves+rise,back,
+     x,eaves+rise,front,x+half,eaves,front,x,eaves+rise,back,x+half,eaves,back
+   ];
+   const geo=new THREE.BufferGeometry();
+   geo.setAttribute('position',new THREE.Float32BufferAttribute(vertices,3));
+   geo.setIndex([0,2,1,1,2,3,4,6,5,5,6,7]);
+   geo.computeVertexNormals();
+   const mesh=new THREE.Mesh(geo,new THREE.MeshStandardMaterial({color,side:THREE.DoubleSide,roughness:1}));
+   mesh.castShadow=true;mesh.receiveShadow=true;group.add(mesh);
+   box(x-half/2,eaves-.12,z,half,.15,depth,0x675341);
+   box(x+half/2,eaves-.12,z,half,.15,depth,0x675341);
+   box(x,eaves+rise,z,.13,.13,depth,0x75624b);
+   for(const end of [front,back])box(x,eaves+rise*.58,end,.13,rise*.85,.13,0x7e6450);
+ }
  // A local village is meant to feel handmade, not like a decorated city.
  // Each entrance is a real collision-free opening, scaled to the heroine (~2 world units high).
  // Front = positive Z, toward the village paths. Wall sections, not whole-box collisions.
@@ -103,14 +121,11 @@ export function createHozukiWorld(scene,area){
    // Door opening clears over 3 world units with comfortable headroom.
    const clearHeight=3.42;
    box(x,(clearHeight+height)/2,front,(opening-.15),height-clearHeight,.24,0x745841);
-   // Roof height is scaled against the actual sprite; no hide-the-roof workaround.
-   const roofs=[];
-   roofs.push(box(x,height+.08,z-d*.24,w+.65,.3,d*.55,roof));
-   for(const sx of [-1,1])
-     roofs.push(box(x+sx*(doorHalf+(half-doorHalf)/2),height+.08,front-d*.19,
-       half-doorHalf+.42,.3,d*.58,roof));
-   roofs.push(box(x,height+.13,front+.26,w+.6,.18,.32,roof));
-   // Roofs remain visible: scaled structures provide actual head clearance.
+   // Real ridge roof: high enough for the existing sprite's full head and ornaments.
+   pitchedRoof(x,z,w,d,height+.18,1.55,roof);
+   for(const sx of [-1,1]){
+     box(x+sx*(half-.42),height*.52,z,.12,height-.2,.12,0x8a6949);
+   }
    box(x,.055,front+.45,opening,.11,.72,0x9b8663);
    // Back-room blocking furniture prevents walking through the rear wall.
    doorways.push({x,z:front,width:opening,clearHeight,insideZ:front-.75});
@@ -122,6 +137,16 @@ export function createHozukiWorld(scene,area){
  house(-12,-13.2,4.8,4.1,0x5b584f,0xa98d66,2.65); // birthplace
  house(-3,-14,3.6,3.8,0x5c574b,0xa98d66,2.35);
  house(4,-14.1,3.6,3.9,0x536054,0xa98d66,2.35);
+ // Entrance frames remain clear, while decorative window lattice adds architectural detail.
+ for(const [hx,hz,hw,hd] of [[-10,-6,5.8,4.7],[0,-8,6.4,5.3],[10,-3.4,5.5,4.4],[-12,-13.2,4.8,4.1]]){
+   const front=hz+hd/2;
+   for(const side of [-1,1]){
+     const wx=hx+side*(hw/2-.52);
+     box(wx,2.5,front+.16,.62,.82,.07,0xcbb38a);
+     for(let k=-1;k<=1;k++)box(wx+k*.18,2.5,front+.22,.045,.83,.06,0x6b4e38);
+     box(wx,2.5,front+.24,.66,.045,.07,0x6b4e38);
+   }
+ }
  // Forge, signs and humble porch seating.
  box(-11.3,.66,-2.65,1.5,1.32,.55,0x68615a,true);
  box(-11.3,1.38,-2.65,1,.14,.6,0xc96232);
