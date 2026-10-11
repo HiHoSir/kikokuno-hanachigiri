@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import {createLabCharacter} from '../field-lab/character.js?v=0.14.1';
-import {footCycle,STRIDE} from '../field-lab/rig.js?v=0.12.1';
+import {STRIDE} from '../field-lab/rig.js?v=0.12.1';
 
 // Reuse the identical mesh-deformation renderer that runs in the main game.
 // This transparent renderer is composited onto the illustration in screen space.
@@ -16,11 +16,11 @@ export async function createIllustratedCharacter(){
  const target=new THREE.Vector3(0,1,0);
  camera.position.set(11,15,17);camera.lookAt(target);camera.updateProjectionMatrix();
  const character=await createLabCharacter(scene,'../field-lab/');
- let stride=0,previousDir=0;
+ let stride=0;
  return {
    draw(ctx,p,scale,worldY,direction,moving,dx,dy,now,dt,mode,elapsed){
      const frame=now/1000;
-     if(moving)stride+=Math.hypot(dx,dy)/Math.max(worldY,.01)*STRIDE*.3;
+     if(moving)stride+=Math.hypot(dx,dy)/(Math.max(worldY,.01)/2)/STRIDE*Math.PI*2;
      const velocity={x:dx,z:dy};
      character.update({
        x:0,y:0,z:0,dt,time:frame,direction,phase:stride,
@@ -35,7 +35,6 @@ export async function createIllustratedCharacter(){
      // Subject feet are placed at the image coordinates, never resized by camera mode.
      const heightAboveFeet=(1.6667+1)*fullDrawHeight/fullHeight;
      ctx.drawImage(canvas,p.x-fullDrawWidth/2,p.y-heightAboveFeet,fullDrawWidth,fullDrawHeight);
-     previousDir=direction;
    },
    dispose(){renderer.dispose()}
  };
