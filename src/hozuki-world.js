@@ -85,20 +85,42 @@ export function createHozukiWorld(scene,area){
  for(const [x,z] of [[-15,-3],[-14,-2.6],[-6,-10],[-5.5,-10.1],[6,-5],[15,-4],
   [15,4.9],[7,4.8],[-5,3.7],[-6,4],[-13,11],[-12.3,11.7]])hozuki(x,z);
  // A local village is meant to feel handmade, not like a decorated city.
- function house(x,z,w,d,roof=0x484c4b,wall=0xa98d66){
-   box(x,.91,z,w,1.82,d,wall,true);
-   box(x,1.98,z,w+.65,.35,d+.75,roof);
-   box(x,1.07,z+d/2+.035,.95,1.65,.07,0x574633);
-   for(const dx of [-w*.32,w*.32])box(x+dx,1.32,z+d/2+.08,.55,.62,.08,0xd7bd84);
-   for(const dx of [-w/2+.22,w/2-.22])box(x+dx,1.01,z+d/2+.2,.18,2.05,.18,0x6b503a);
-   return {x,z};
+ // Each entrance is a real collision-free opening, scaled to the heroine (~2 world units high).
+ // Front = positive Z, toward the village paths. Wall sections, not whole-box collisions.
+ const doorways=[];
+ function house(x,z,w,d,roof=0x484c4b,wall=0xa98d66,opening=2.35){
+   const height=3.25,half=w/2,doorHalf=opening/2,front=z+d/2;
+   const wallThickness=.22, sideWidth=half-doorHalf;
+   // Interior floor and low threshold are traversable. The building has no solid collision box.
+   box(x,.06,z,w,.12,d,0x927f5d);
+   for(const sx of [-1,1]){
+     box(x+sx*(half-wallThickness/2),height/2,z,wallThickness,height,d,wall,true);
+     box(x+sx*(doorHalf+sideWidth/2),height/2,front,sideWidth,height,wallThickness,wall,true);
+     box(x+sx*(doorHalf+.10),height/2,front+.13,.17,height,.17,0x6b503a,true);
+     box(x+sx*(half-.4),height*.52,front+.15,.45,.65,.08,0xd7bd84);
+   }
+   box(x,height/2,z-d/2, w,height,wallThickness,wall,true);
+   // The lintel clears 2.55 units, exceeding the heroine's visible ~2.0-unit stature.
+   const clearHeight=2.58;
+   box(x,(clearHeight+height)/2,front,(opening-.15),height-clearHeight,.24,0x745841);
+   // A light cutaway roof leaves the front doorway and the inside visible from above.
+   box(x,height+.08,z-d*.24,w+.65,.3,d*.55,roof);
+   for(const sx of [-1,1])
+     box(x+sx*(doorHalf+(half-doorHalf)/2),height+.08,front-d*.19,
+       half-doorHalf+.42,.3,d*.58,roof);
+   // Thin front fascia (above head), and no collision at the opening.
+   box(x,height+.13,front+.26,w+.6,.18,.32,roof);
+   box(x,.055,front+.45,opening,.11,.72,0x9b8663);
+   // Back-room blocking furniture prevents walking through the rear wall.
+   doorways.push({x,z:front,width:opening,clearHeight,insideZ:front-.75});
+   return {x,z,front};
  }
- house(-10,-6,5.8,4.7,0x4c4543); // modest smithy
- house(.0,-8,6.4,5.3,0x535b58); // family-run inn
- house(10,-6.7,5.5,4.4,0x63574a); // tea stall
- house(-12,-13.2,4.8,4.1,0x5b584f); // protagonist home
- house(-3,-14.0,3.6,3.8,0x5c574b);
- house(4,-14.1,3.6,3.9,0x536054);
+ house(-10,-6,5.8,4.7,0x4c4543,0xa98d66,2.45); // smithy
+ house(0,-8,6.4,5.3,0x535b58,0xa98d66,2.8); // welcoming inn
+ house(10,-6.7,5.5,4.4,0x63574a,0xa98d66,2.6); // open teahouse
+ house(-12,-13.2,4.8,4.1,0x5b584f,0xa98d66,2.25); // birthplace
+ house(-3,-14,3.6,3.8,0x5c574b,0xa98d66,2.15);
+ house(4,-14.1,3.6,3.9,0x536054,0xa98d66,2.15);
  // Forge, signs and humble porch seating.
  box(-11.3,.66,-2.65,1.5,1.32,.55,0x68615a,true);
  box(-11.3,1.38,-2.65,1,.14,.6,0xc96232);
@@ -152,7 +174,7 @@ export function createHozukiWorld(scene,area){
  }
  // The sun and the distant coast are a lightweight atmospheric layer.
  ball(0,14,-29,2.15,0xffd89c);
- return {obstacles,sun,dispose(){
+ return {obstacles,doorways,sun,dispose(){
    group.traverse(object=>{if(object.isMesh){object.geometry.dispose(); if(!materialsHas(object.material))object.material.dispose()}});
    for(const m of materials.values())m.dispose();
    scene.remove(group);
