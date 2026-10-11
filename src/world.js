@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import {createHozukiWorld} from './hozuki-world.js?v=0.23.0';
+import {createHozukiHD2D} from './hozuki-hd2d.js?v=0.25.0';
 import {createPaintedShrine} from './painted-shrine.js?v=0.24.0';
 export function createWorld(scene,area){
  if(area.id==='hozuki-village'){
+   if(new URLSearchParams(location.search).get('visual')==='hd2d')return createHozukiHD2D(scene,area);
    const world=createHozukiWorld(scene,area);
    if(new URLSearchParams(location.search).get('visual')!=='paint')return world;
    const overlay=createPaintedShrine(scene,area);
