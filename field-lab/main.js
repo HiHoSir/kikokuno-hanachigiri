@@ -10,8 +10,8 @@ import {createInput} from '../src/input.js?v=0.8.0';
 import {createCameraController} from '../src/camera.js';
 import {crossingPortal} from '../src/portals.js?v=0.7.0';
 import {encodeSave,decodeSave} from '../src/save.js?v=0.7.0';
-import {createLabCharacter} from './character.js?v=0.9.1';
-import {directionFromWorld,advanceGait,NAMES} from './motion.js?v=0.9.1';
+import {createLabCharacter} from './character.js?v=0.9.2';
+import {directionFromWorld,advanceGait,NAMES} from './motion.js?v=0.9.2';
 const SAVE_KEY='kikoku-field-lab-v1';
 const renderer=new THREE.WebGLRenderer({canvas:document.querySelector('#game'),antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.shadowMap.enabled=true;renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-7,7,5,-5,.1,100),cameraControl=createCameraController(camera);
@@ -38,7 +38,7 @@ function frame(now){
  }
  phase=advanceGait(phase,distance);if(now>modeUntil)mode='idle';cameraControl.update(state.player,dt);
  const detail=character.update({...state.player,y:groundAt(state.player.x,state.player.z),dt,time:now/1000,direction,phase,moving:distance>.00001,camera,mode,source:Number(document.querySelector('#source').value),groundAt,debug:document.querySelector('#debug').checked});
- const metrics={...detail,area:area.id,direction,phase,distance,moving:distance>.00001,x:state.player.x,z:state.player.z,version:'0.9.1-lab'};window.__kikokuLab=metrics;
+ const metrics={...detail,area:area.id,direction,phase,distance,moving:distance>.00001,x:state.player.x,z:state.player.z,version:'0.9.2-lab'};window.__kikokuLab=metrics;
  document.querySelector('#telemetry').textContent=`${NAMES[direction]} / ${detail.source}\n高さ ${detail.feetY.toFixed(3)} / 速度 ${(dt?distance/dt:0).toFixed(2)}`;
  if(now>messageUntil)msg.style.display='none';if(now>autosave){persist();autosave=now+3500}renderer.render(scene,camera);window.__kikokuRendered=true;requestAnimationFrame(frame);
 }

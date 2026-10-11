@@ -1,16 +1,16 @@
 import * as THREE from 'three';
-import {legacyFrame} from './motion.js?v=0.9.1';
+import {legacyFrame} from './motion.js?v=0.9.2';
 export async function createLabCharacter(scene){
- const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.9.1');if(!r.ok)throw Error(p);return r.json()}));
+ const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.9.2');if(!r.ok)throw Error(p);return r.json()}));
  const loader=new THREE.TextureLoader();
  const sets=await Promise.all([candidate,legacy].map(async (set,j)=>({...set,frames:await Promise.all(set.frames.map(async f=>{
-  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.9.1');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
+  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.9.2');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
   const geo=new THREE.PlaneGeometry(f.width/set.pixelsPerUnit,f.height/set.pixelsPerUnit,24,36);
   geo.translate((f.width/2-f.footX)/set.pixelsPerUnit,(f.footY-f.height/2)/set.pixelsPerUnit,0);
   return {...f,tex,geo,base:geo.attributes.position.array.slice()};
  }))})));
  const material=new THREE.MeshBasicMaterial({transparent:true,alphaTest:.025,depthTest:true,depthWrite:true,side:THREE.DoubleSide});
- const viewDirection=new THREE.Vector3();
+ 
  const hero=new THREE.Mesh(sets[0].frames[0].geo,material);scene.add(hero);
  const canvas=document.createElement('canvas');canvas.width=canvas.height=128;const g=canvas.getContext('2d'),grad=g.createRadialGradient(64,64,3,64,64,60);grad.addColorStop(0,'rgba(20,28,18,.4)');grad.addColorStop(.6,'rgba(20,28,18,.18)');grad.addColorStop(1,'rgba(20,28,18,0)');g.fillStyle=grad;g.fillRect(0,0,128,128);
  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(.88,.64,12,12),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(canvas),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}));shadow.geometry.rotateX(-Math.PI/2);const shadowBase=shadow.geometry.attributes.position.array.slice();scene.add(shadow);
@@ -36,7 +36,7 @@ export async function createLabCharacter(scene){
    if(!moving&&mode==='surprise')a[i+1]+=Math.sin(time*12)*.005*upper;
    a[i+2]=b[i+2];
   }
-  f.geo.attributes.position.needsUpdate=true;f.geo.computeBoundingSphere();hero.position.set(x,y+.008,z);camera.getWorldDirection(viewDirection);hero.rotation.y=Math.atan2(-viewDirection.x,-viewDirection.z);
+  f.geo.attributes.position.needsUpdate=true;f.geo.computeBoundingSphere();hero.position.set(x,y+.008,z);hero.quaternion.copy(camera.quaternion);
   const sa=shadow.geometry.attributes.position.array;
   for(let i=0;i<sa.length;i+=3){sa[i]=shadowBase[i];sa[i+1]=groundAt(x+shadowBase[i],z+shadowBase[i+2])-y+.009;sa[i+2]=shadowBase[i+2]}
   shadow.geometry.attributes.position.needsUpdate=true;shadow.position.set(x,y,z);foot.position.set(x,y+.014,z);foot.visible=debug;
