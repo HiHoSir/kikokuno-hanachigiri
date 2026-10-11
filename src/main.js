@@ -10,7 +10,7 @@ import {createLabCharacter} from '../field-lab/character.js?v=0.14.1';
 import {directionFromWorld,advanceGait} from '../field-lab/motion.js?v=0.12.1';
 import {CAMERA_OFFSET} from './movement.js';
 import {createInput} from './input.js?v=0.8.0';
-import {createCameraController} from './camera.js?v=0.18.0';
+import {createCameraController} from './camera.js?v=0.19.0';
 import {crossingPortal} from './portals.js?v=0.7.0';
 import {SAVE_KEY,encodeSave,decodeSave} from './save.js?v=0.9.0';
 
@@ -40,7 +40,7 @@ function enterArea(event){
   world.dispose();area=next;world=createWorld(scene,area);
   areaName.textContent=area.name;
   refreshStatus();
-  cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z),state.player.z);
+  cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z)+1.25,state.player.z);
   gait=0;
   persist();
 }
@@ -62,7 +62,7 @@ hillButton?.addEventListener('click',()=>{
  // Stop at the foot of the long ascent, never on a steep or unsupported edge.
  state.player.x=11.3;state.player.z=-7.95;
  facing=4;gait=0;mode='idle';modeUntil=0;
- cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z),state.player.z);
+ cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z)+1.25,state.player.z);
  persist();
  msg.textContent='風魔の鈴へ続く登り道です。画面の上方向へ進んでください。';
  msg.style.display='block';messageUntil=performance.now()+4500;
