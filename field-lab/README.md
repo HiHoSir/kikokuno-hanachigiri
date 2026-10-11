@@ -1,8 +1,8 @@
-# v0.9.0-lab: audited integration checkpoint, not final character approval
+# v0.9.1-lab: audited integration checkpoint, not final character approval
 
 Stable source: 3bedb11ed94ad5316a473046ac908e9e759bf6ef. No files in src/, index.html, original motion demos, or original artwork changed.
 
-Route: /field-lab/?v=0.9.0. Audit: /field-lab/audit.html?v=0.9.0.
+Route: /field-lab/?v=0.9.1. Audit: /field-lab/audit.html?v=0.9.1.
 Reuses production world, movement, surfaces, camera, events, portals, save codec and D-pad. Separate save key kikoku-field-lab-v1. v0.7 artwork is not used. Original v0.6 set is available for direct field comparison.
 
 New candidate: generated using imagegen from the v0.6 20-frame contact sheet, then exact 362x543 cell extraction. No resampling, chroma key, alpha erosion, or body stretching. All candidate directions use 270 pixels/unit; all original frames use 150 pixels/unit. Anchor metadata derives from alpha >128 in bottom 16 (candidate) / 10 (legacy) pixel rows. This is an initial geometric foot estimate, not anatomically approved per-foot rigging.

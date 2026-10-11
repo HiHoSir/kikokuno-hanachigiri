@@ -4,10 +4,10 @@ import assert from 'node:assert/strict';
 await mkdir('test-results',{recursive:true});
 for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  const browser=await type.launch({headless:true,args:name==='chromium'?['--no-sandbox','--use-gl=angle','--use-angle=swiftshader','--enable-unsafe-swiftshader']:[]});
- const page=await browser.newPage({viewport:{width:393,height:852},deviceScaleFactor:2,isMobile:true,hasTouch:true});const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ const page=await browser.newPage({viewport:{width:393,height:852},deviceScaleFactor:2,isMobile:true,hasTouch:true});const errors=[];page.on('pageerror',e=>{errors.push(e.message);console.error(e.message)});page.on('requestfailed',r=>console.error(r.url(),r.failure()));
  await page.goto('http://localhost:8765/field-lab/');await page.waitForFunction(()=>window.__kikokuRendered,null,{timeout:45000});
  await page.screenshot({path:`test-results/${name}-candidate.png`});
- assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.9.0-lab');
+ assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.9.1-lab');
  for(const [dir,keys] of [[0,['ArrowDown']],[1,['ArrowRight','ArrowDown']],[2,['ArrowRight']],[3,['ArrowRight','ArrowUp']],[4,['ArrowUp']],[5,['ArrowLeft','ArrowUp']],[6,['ArrowLeft']],[7,['ArrowLeft','ArrowDown']]]){
   for(const k of keys)await page.keyboard.down(k);await page.waitForTimeout(140);
   const m=await page.evaluate(()=>window.__kikokuLab);assert.equal(m.direction,dir);assert.ok(m.distance>0);

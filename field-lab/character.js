@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import {legacyFrame} from './motion.js?v=0.9.0';
+import {legacyFrame} from './motion.js?v=0.9.1';
 export async function createLabCharacter(scene){
- const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.9.0');if(!r.ok)throw Error(p);return r.json()}));
+ const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.9.1');if(!r.ok)throw Error(p);return r.json()}));
  const loader=new THREE.TextureLoader();
  const sets=await Promise.all([candidate,legacy].map(async (set,j)=>({...set,frames:await Promise.all(set.frames.map(async f=>{
-  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.9.0');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
+  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.9.1');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
   const geo=new THREE.PlaneGeometry(f.width/set.pixelsPerUnit,f.height/set.pixelsPerUnit,24,36);
   geo.translate((f.width/2-f.footX)/set.pixelsPerUnit,(f.footY-f.height/2)/set.pixelsPerUnit,0);
   return {...f,tex,geo,base:geo.attributes.position.array.slice()};
