@@ -88,6 +88,7 @@ export function createHozukiWorld(scene,area){
  // Each entrance is a real collision-free opening, scaled to the heroine (~2 world units high).
  // Front = positive Z, toward the village paths. Wall sections, not whole-box collisions.
  const doorways=[];
+ const roofZones=[];
  function house(x,z,w,d,roof=0x484c4b,wall=0xa98d66,opening=2.35){
    const height=3.25,half=w/2,doorHalf=opening/2,front=z+d/2;
    const wallThickness=.22, sideWidth=half-doorHalf;
@@ -103,13 +104,15 @@ export function createHozukiWorld(scene,area){
    // The lintel clears 2.55 units, exceeding the heroine's visible ~2.0-unit stature.
    const clearHeight=2.58;
    box(x,(clearHeight+height)/2,front,(opening-.15),height-clearHeight,.24,0x745841);
-   // A light cutaway roof leaves the front doorway and the inside visible from above.
-   box(x,height+.08,z-d*.24,w+.65,.3,d*.55,roof);
+   // Roofs disappear when the heroine walks beneath them, avoiding false head penetration
+   // from a 2.5D billboard drawn at an oblique camera angle.
+   const roofs=[];
+   roofs.push(box(x,height+.08,z-d*.24,w+.65,.3,d*.55,roof));
    for(const sx of [-1,1])
-     box(x+sx*(doorHalf+(half-doorHalf)/2),height+.08,front-d*.19,
-       half-doorHalf+.42,.3,d*.58,roof);
-   // Thin front fascia (above head), and no collision at the opening.
-   box(x,height+.13,front+.26,w+.6,.18,.32,roof);
+     roofs.push(box(x+sx*(doorHalf+(half-doorHalf)/2),height+.08,front-d*.19,
+       half-doorHalf+.42,.3,d*.58,roof));
+   roofs.push(box(x,height+.13,front+.26,w+.6,.18,.32,roof));
+   roofZones.push({x,z,w,d,roofs});
    box(x,.055,front+.45,opening,.11,.72,0x9b8663);
    // Back-room blocking furniture prevents walking through the rear wall.
    doorways.push({x,z:front,width:opening,clearHeight,insideZ:front-.75});
@@ -179,7 +182,12 @@ export function createHozukiWorld(scene,area){
    for(const m of materials.values())m.dispose();
    scene.remove(group);
   },
-  update(t){for(const f of fish){f.m.position.x=f.x+Math.sin(t*.35+f.phase)*.4;f.m.position.z=f.z+Math.cos(t*.7+f.phase)*.11;}}
+  update(t,player){
+   if(player)for(const zone of roofZones){
+     const inside=Math.abs(player.x-zone.x)<zone.w/2+.38&&Math.abs(player.z-zone.z)<zone.d/2+.5;
+     for(const roof of zone.roofs)roof.visible=!inside;
+   }
+   for(const f of fish){f.m.position.x=f.x+Math.sin(t*.35+f.phase)*.4;f.m.position.z=f.z+Math.cos(t*.7+f.phase)*.11;}}
  };
  function materialsHas(m){for(const cached of materials.values())if(cached===m)return true;return false;}
 }
