@@ -1,11 +1,11 @@
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
-import {hozukiArea} from './areas/hozuki.js?v=0.9.0';
+import {hozukiArea} from './areas/hozuki.js?v=0.15.0';
 import {resolveArea} from './areas/registry.js?v=0.9.0';
 import {applyTransition} from './transitions.js?v=0.7.0';
 import {createGameState,interact} from './events.js?v=0.9.0';
-import {createWorld} from './world.js?v=0.14.1';
-import {surfaceHeightAt} from './surfaces.js?v=0.7.0';
+import {createWorld} from './world.js?v=0.15.0';
+import {surfaceHeightAt} from './surfaces.js?v=0.15.0';
 import {createLabCharacter} from '../field-lab/character.js?v=0.14.1';
 import {directionFromWorld,advanceGait} from '../field-lab/motion.js?v=0.12.1';
 import {CAMERA_OFFSET} from './movement.js';
