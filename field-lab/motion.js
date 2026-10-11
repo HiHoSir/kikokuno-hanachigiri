@@ -5,7 +5,7 @@ export function directionFromWorld(dx,dz,cameraOffset){
  const sy=(dx*cameraOffset.x+dz*cameraOffset.z)/h*e;
  return (Math.round(Math.atan2(sx,sy)*4/Math.PI)+8)%8;
 }
-export function advanceGait(phase,distance,stride=.84){return phase+Math.max(0,distance)/stride*Math.PI*2}
+export function advanceGait(phase,distance,stride=.64){return phase+Math.max(0,distance)/stride*Math.PI*2}
 export function legacyFrame(direction,phase,moving){
  const group=direction===0?0:direction<=2?1:direction<=5?2:3;
  return group*4+(moving?[0,1,0,3][Math.floor(phase/(Math.PI/2))%4]:0);
