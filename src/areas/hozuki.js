@@ -1,8 +1,11 @@
 // Original, exploratory 2.5D hometown. All coordinates are game-world units.
 export const hozukiArea={
- id:'hozuki-village',name:'鬼灯の里 — 散策実験 v0.14.0',bounds:19,
+ id:'hozuki-village',name:'鬼灯の里 — 散策実験 v0.15.0',bounds:19,
  spawn:{x:3,z:13.1},
  walkSurfaces:[{x:0,z:0,width:38,depth:38,top:0}],
+ // Southern graded approach to the raised wind-bell shrine.
+ // Kept separate from flat rectangles to prevent vertical teleporting at the stair edge.
+ elevation:{xMin:9.65,xMax:12.95,zTop:-11.5,zBottom:-10.55,height:.55,plateau:{xMin:7.55,xMax:15.05,zMin:-17.45,zMax:-11.5}},
  blocks:[], trees:[], portals:[],npcs:[],
  interactions:[
   {id:'pot-smith',kind:'pot',x:-9.2,z:2.1,range:1.65,trigger:'action',text:'壺の底から薬草を見つけた！'},
