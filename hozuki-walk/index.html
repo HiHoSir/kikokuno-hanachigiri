@@ -56,7 +56,7 @@ document.querySelector('#debug').textContent=(view==='overview'?'全体':'主人
 }requestAnimationFrame(tick)}
 img.onload=()=>{ready=true;document.body.classList.add('ready');notice('絵の中を歩く実験：全体／主人公カメラ切り替え対応')};img.onerror=()=>{document.querySelector('#debug').textContent='背景画像が読み込めません';notice('背景画像を読み込めませんでした')};requestAnimationFrame(tick);
 })();</script><script type="module">
-import {createIllustratedCharacter} from './character-adapter.js?v=0.29.0';
+import {createIllustratedCharacter} from './character-adapter.js?v=0.30.0';
 try{
  window.__hozukiHero=await createIllustratedCharacter();
  document.querySelector('#debug').textContent='本編と同じキャラクターアニメーションを読み込みました';
