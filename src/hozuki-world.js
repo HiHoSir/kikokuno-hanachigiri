@@ -102,6 +102,33 @@ export function createHozukiWorld(scene,area){
    box(x,eaves+rise,z,.13,.13,depth,0x75624b);
    for(const end of [front,back])box(x,eaves+rise*.58,end,.13,rise*.85,.13,0x7e6450);
  }
+ // Subtle clay tiles track the pitched roof's actual plane, with shared geometry.
+ // Keep strip count modest for iPhone Safari and leave the physical doorway unchanged.
+ function roofSeams(x,z,w,d,eaves,rise){
+   const half=w/2+.3,depth=d+.55;
+   for(const side of [-1,1]){
+     for(let i=1;i<=5;i++){
+       const fraction=i/6;
+       const px=x+side*half*fraction;
+       const py=eaves+rise*(1-fraction)+.018;
+       const line=box(px,py,z,.045,.032,depth,0x776d60);
+       line.castShadow=false;
+     }
+   }
+ }
+ // Plaster finish and beam rhythm, drawn as details without adding colliders.
+ function facadeDetail(x,z,w,d){
+   const front=z+d/2+.26;
+   for(const side of [-1,1]){
+     const beamX=x+side*(w/2-.18);
+     box(beamX,2.35,front,.13,4.15,.13,0x73543e);
+   }
+   box(x,4.3,front,w,.15,.15,0x75583e);
+   for(let i=0;i<3;i++){
+     const xp=x-w*.36+i*w*.36;
+     box(xp,1.23,z-d/2-.14,.1,2.2,.12,0x876b50);
+   }
+ }
  // A local village is meant to feel handmade, not like a decorated city.
  // Each entrance is a real collision-free opening, scaled to the heroine (~2 world units high).
  // Front = positive Z, toward the village paths. Wall sections, not whole-box collisions.
@@ -123,6 +150,8 @@ export function createHozukiWorld(scene,area){
    box(x,(clearHeight+height)/2,front,(opening-.15),height-clearHeight,.24,0x745841);
    // Real ridge roof: high enough for the existing sprite's full head and ornaments.
    pitchedRoof(x,z,w,d,height+.18,1.55,roof);
+   roofSeams(x,z,w,d,height+.18,1.55);
+   facadeDetail(x,z,w,d);
    for(const sx of [-1,1]){
      box(x+sx*(half-.42),height*.52,z,.12,height-.2,.12,0x8a6949);
    }
