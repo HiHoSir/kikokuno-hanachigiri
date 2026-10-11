@@ -185,7 +185,7 @@ export function createHozukiWorld(scene,area){
  }
  for(let row=0;row<rows;row++)for(let col=0;col<columns;col++){
    const i=row*(columns+1)+col,j=i+columns+1;
-   inds.push(i,j,i+1,i+1,j,j+1);
+   inds.push(i,i+1,j,i+1,j+1,j);
  }
  terrainMesh(verts,inds,0xa5926d);
  // Rocky flanks conceal the underside of the climb while leaving the central path clear.
