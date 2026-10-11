@@ -30,7 +30,7 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  await open();await page.selectOption('#scenario','clear');await page.locator('#pose').check();
  for(let dir=0;dir<8;dir++){
   await open();await page.selectOption('#direction',String(dir));await page.locator('#phase').fill('75');
-  await page.waitForFunction(dir=>__kikokuLab.direction===dir&&__kikokuLab.pose,dir);await close();
+  await page.waitForFunction(dir=>__kikokuLab.direction===dir&&__kikokuLab.pose&&Math.abs(__kikokuLab.phase-Math.PI*1.5)<1e-8,dir);await close();
   assert.ok((await page.evaluate(()=>__kikokuLab.footLift)).some(x=>x>.05));
   assert.equal(await page.evaluate(()=>__kikokuLab.reusedFarLeg),dir===2||dir===6);
   await page.screenshot({path:`test-results/${name}-direction-${dir}.png`});
