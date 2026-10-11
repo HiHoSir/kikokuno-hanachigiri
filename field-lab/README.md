@@ -23,3 +23,6 @@ Candidate anatomy/head ratio, lateral yaw, and pouch placement are not formally 
 - Shoulder-local sleeve/arm motion follows gait; head proportions and source PNG bytes remain unchanged. Sleeves still use a continuous mesh, so large independent elbow articulation is not supported.
 - Surprise now has a 1.4-second arm-open/hop response, also during walking. Wave, bow and cheer are accessible outside the inspector; actions exit frozen-pose inspection and restart on each tap. Actions are elapsed-time based with smooth return.
 - Mobile browser smoke checks tap every new button, check return to idle and surprise while moving, and capture action screenshots. Physical iPhone Safari remains untested.
+
+## v0.11.1 startup diagnosis
+The previous 3-second watchdog could show an opaque external-script error before textures loaded and never clear it after successful rendering. Loading now has its own non-blocking status cleared by the first successful frame. Slow loading is described as slow loading after 30 seconds, not as a proven failure. Concrete errors/rejections remain visible. Chromium/WebKit regression reproduces a 4.5-second texture delay with an opaque error, and checks real runtime errors remain visible.

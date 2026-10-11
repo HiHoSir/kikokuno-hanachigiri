@@ -1,7 +1,7 @@
-import {actionPose,SHOULDERS} from './actions.js?v=0.11.0';
+import {actionPose,SHOULDERS} from './actions.js?v=0.11.1';
 import * as THREE from 'three';
-import {legacyFrame} from './motion.js?v=0.11.0';
-import {LEG_LANDMARKS,LEG_DIVIDERS,footCycle,projectGround,updateBlend,smoothstep,shadowTriangleValid} from './rig.js?v=0.11.0';
+import {legacyFrame} from './motion.js?v=0.11.1';
+import {LEG_LANDMARKS,LEG_DIVIDERS,footCycle,projectGround,updateBlend,smoothstep,shadowTriangleValid} from './rig.js?v=0.11.1';
 import {CAMERA_OFFSET} from '../src/movement.js';
 function spriteGeometry(f,ppu,divider){
  const cuts=divider===null?[0,f.width]:[0,divider,f.width],positions=[],uvs=[],indices=[],limbs=[];
@@ -26,10 +26,10 @@ function farLegGeometry(f,ppu,outline){
  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(outline.flatMap(([x,y])=>[(x-f.footX)/ppu,(f.footY-y)/ppu,0]),3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(outline.flatMap(([x,y])=>[x/f.width,1-y/f.height]),2));geo.setIndex(triangles.flat());geo.setAttribute('aGroundDepth',new THREE.Float32BufferAttribute(new Float32Array(outline.length),1));geo.computeVertexNormals();return {geo,base:geo.attributes.position.array.slice()};
 }
 export async function createLabCharacter(scene){
- const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.11.0');if(!r.ok)throw Error(p);return r.json()}));
+ const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.11.1');if(!r.ok)throw Error(p);return r.json()}));
  const loader=new THREE.TextureLoader();
  const sets=await Promise.all([candidate,legacy].map(async (set,j)=>({...set,frames:await Promise.all(set.frames.map(async (f,frame)=>{
-  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.11.0');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
+  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.11.1');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
   const {geo,limbs}=spriteGeometry(f,set.pixelsPerUnit,j?null:LEG_DIVIDERS[frame]);
   const base=geo.attributes.position.array.slice(),weights=[];
   for(let i=0;i<base.length;i+=3){

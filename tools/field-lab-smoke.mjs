@@ -8,9 +8,14 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  const inspect=page.locator('#inspect');
  async function open(){await inspect.evaluate(el=>el.open=true)}
  async function close(){await inspect.evaluate(el=>el.open=false)}
+ // Reproduce slow image loading plus Safari's opaque cross-origin event.
+ await page.addInitScript(()=>setTimeout(()=>dispatchEvent(new ErrorEvent('error',{message:'Script error.'})),100));
+ await page.route('**/field-lab/art/0.png*',async route=>{await new Promise(r=>setTimeout(r,4500));await route.continue()});
  await page.goto('http://localhost:8765/field-lab/');await page.waitForFunction(()=>window.__kikokuRendered,null,{timeout:45000});
+ assert.equal(await page.locator('#error').isVisible(),false);
+ assert.equal(await page.locator('#loading').isVisible(),false);
  await page.screenshot({path:`test-results/${name}-candidate.png`});
- assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.11.0-lab');
+ assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.11.1-lab');
  for(const [dir,keys] of [[0,['ArrowDown']],[1,['ArrowRight','ArrowDown']],[2,['ArrowRight']],[3,['ArrowRight','ArrowUp']],[4,['ArrowUp']],[5,['ArrowLeft','ArrowUp']],[6,['ArrowLeft']],[7,['ArrowLeft','ArrowDown']]]){
   for(const k of keys)await page.keyboard.down(k);await page.waitForFunction(dir=>window.__kikokuLab.direction===dir&&window.__kikokuLab.moving,dir,{timeout:10000});
   const m=await page.evaluate(()=>window.__kikokuLab);assert.equal(m.direction,dir);assert.ok(m.distance>0);assert.ok(m.stance.some(Boolean));
@@ -46,5 +51,9 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  await page.keyboard.down('ArrowDown');await page.locator('#surprise').tap();await page.waitForFunction(()=>__kikokuLab.moving&&__kikokuLab.action==='surprise'&&__kikokuLab.actionStrength>.8);await page.keyboard.up('ArrowDown');
  await open();await page.locator('#pose').uncheck();await page.selectOption('#source','1');await page.waitForFunction(()=>__kikokuLab.source.includes('v0.6'));await close();await page.screenshot({path:`test-results/${name}-v06.png`});
  assert.equal(await page.evaluate(()=>localStorage.getItem('kikoku-game-state-v1')),null);assert.deepEqual(errors,[]);
+ // Real errors must remain visible even after the first successful frame.
+ await page.evaluate(()=>dispatchEvent(new ErrorEvent('error',{message:'diagnostic-test-error'})));
+ assert.equal(await page.locator('#error').isVisible(),true);
+ assert.match(await page.locator('#error').textContent(),/diagnostic-test-error/);
  await browser.close();console.log(name+' mobile movement, terrain, pose and save checks passed');
 }
