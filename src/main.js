@@ -10,7 +10,7 @@ import {createLabCharacter} from '../field-lab/character.js?v=0.14.1';
 import {directionFromWorld,advanceGait} from '../field-lab/motion.js?v=0.12.1';
 import {CAMERA_OFFSET} from './movement.js';
 import {createInput} from './input.js?v=0.8.0';
-import {createCameraController} from './camera.js';
+import {createCameraController} from './camera.js?v=0.18.0';
 import {crossingPortal} from './portals.js?v=0.7.0';
 import {SAVE_KEY,encodeSave,decodeSave} from './save.js?v=0.9.0';
 
@@ -40,7 +40,7 @@ function enterArea(event){
   world.dispose();area=next;world=createWorld(scene,area);
   areaName.textContent=area.name;
   refreshStatus();
-  cameraControl.target.set(state.player.x,0,state.player.z);
+  cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z),state.player.z);
   gait=0;
   persist();
 }
@@ -73,7 +73,7 @@ function resize(){
   renderer.setSize(w,h,false);cameraControl.resize(w,h);
 }
 window.addEventListener('resize',resize);resize();
-cameraControl.update(state.player,1);
+cameraControl.update(state.player,1,surfaceHeightAt(area,state.player.x,state.player.z));
 areaName.textContent=area.name;refreshStatus();
 window.addEventListener('pagehide',persist);
 let nextAutosave=performance.now()+3500;
@@ -95,7 +95,7 @@ function frame(now){
   if(distance>0.00001)facing=directionFromWorld(movedX,movedZ,CAMERA_OFFSET);
   gait=advanceGait(gait,distance);
   if(now>modeUntil)mode='idle';
-  cameraControl.update(state.player,dt);
+  cameraControl.update(state.player,dt,surfaceHeightAt(area,state.player.x,state.player.z));
   const groundAt=(x,z)=>surfaceHeightAt(area,x,z);
   character.update({x:state.player.x,z:state.player.z,y:groundAt(state.player.x,state.player.z),dt,time:now/1000,direction:facing,phase:gait,moving:distance>0.00001,velocity:{x:movedX,z:movedZ},camera,mode,actionElapsed:(now-modeStarted)/1000,source:0,groundAt,debug:false});
   world.update?.(now/1000,state.player);
