@@ -4,7 +4,7 @@ import {hozukiArea} from './areas/hozuki.js?v=0.19.0';
 import {resolveArea} from './areas/registry.js?v=0.19.0';
 import {applyTransition} from './transitions.js?v=0.7.0';
 import {createGameState,interact} from './events.js?v=0.9.0';
-import {createWorld} from './world.js?v=0.24.0';
+import {createWorld} from './world.js?v=0.25.0';
 import {surfaceHeightAt} from './surfaces.js?v=0.16.0';
 import {createLabCharacter} from '../field-lab/character.js?v=0.14.1';
 import {directionFromWorld,advanceGait} from '../field-lab/motion.js?v=0.12.1';
@@ -25,7 +25,7 @@ let saved=null;
 try{saved=decodeSave(localStorage.getItem(SAVE_KEY),resolveArea)}catch{}
 const params=new URLSearchParams(location.search);
 const explore=params.get('area')==='hozuki';
-const paintedDemo=explore&&params.get('visual')==='paint';
+const paintedDemo=explore&&['paint','hd2d'].includes(params.get('visual'));
 const state=paintedDemo?createGameState(hozukiArea):(explore?(saved?.areaId===hozukiArea.id?saved:createGameState(hozukiArea)):(saved||createGameState(hozukiArea)));
 // Isolated visual test: always begin on shrine summit; do not affect normal saves.
 if(paintedDemo){state.player.x=11.3;state.player.z=-13.4;}
