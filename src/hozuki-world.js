@@ -88,9 +88,8 @@ export function createHozukiWorld(scene,area){
  // Each entrance is a real collision-free opening, scaled to the heroine (~2 world units high).
  // Front = positive Z, toward the village paths. Wall sections, not whole-box collisions.
  const doorways=[];
- const roofZones=[];
  function house(x,z,w,d,roof=0x484c4b,wall=0xa98d66,opening=2.35){
-   const height=3.25,half=w/2,doorHalf=opening/2,front=z+d/2;
+   const height=4.55,half=w/2,doorHalf=opening/2,front=z+d/2;
    const wallThickness=.22, sideWidth=half-doorHalf;
    // Interior floor and low threshold are traversable. The building has no solid collision box.
    box(x,.06,z,w,.12,d,0x927f5d);
@@ -102,7 +101,7 @@ export function createHozukiWorld(scene,area){
    }
    box(x,height/2,z-d/2, w,height,wallThickness,wall,true);
    // The lintel clears 2.55 units, exceeding the heroine's visible ~2.0-unit stature.
-   const clearHeight=2.58;
+   const clearHeight=3.42;
    box(x,(clearHeight+height)/2,front,(opening-.15),height-clearHeight,.24,0x745841);
    // Roofs disappear when the heroine walks beneath them, avoiding false head penetration
    // from a 2.5D billboard drawn at an oblique camera angle.
@@ -112,18 +111,18 @@ export function createHozukiWorld(scene,area){
      roofs.push(box(x+sx*(doorHalf+(half-doorHalf)/2),height+.08,front-d*.19,
        half-doorHalf+.42,.3,d*.58,roof));
    roofs.push(box(x,height+.13,front+.26,w+.6,.18,.32,roof));
-   roofZones.push({x,z,w,d,roofs});
+   // Roofs remain visible: scaled structures provide actual head clearance.
    box(x,.055,front+.45,opening,.11,.72,0x9b8663);
    // Back-room blocking furniture prevents walking through the rear wall.
    doorways.push({x,z:front,width:opening,clearHeight,insideZ:front-.75});
    return {x,z,front};
  }
- house(-10,-6,5.8,4.7,0x4c4543,0xa98d66,2.45); // smithy
- house(0,-8,6.4,5.3,0x535b58,0xa98d66,2.8); // welcoming inn
- house(10,-6.7,5.5,4.4,0x63574a,0xa98d66,2.6); // open teahouse
- house(-12,-13.2,4.8,4.1,0x5b584f,0xa98d66,2.25); // birthplace
- house(-3,-14,3.6,3.8,0x5c574b,0xa98d66,2.15);
- house(4,-14.1,3.6,3.9,0x536054,0xa98d66,2.15);
+ house(-10,-6,5.8,4.7,0x4c4543,0xa98d66,2.8); // smithy
+ house(0,-8,6.4,5.3,0x535b58,0xa98d66,3.25); // welcoming inn
+ house(10,-6.7,5.5,4.4,0x63574a,0xa98d66,3.05); // open teahouse
+ house(-12,-13.2,4.8,4.1,0x5b584f,0xa98d66,2.65); // birthplace
+ house(-3,-14,3.6,3.8,0x5c574b,0xa98d66,2.35);
+ house(4,-14.1,3.6,3.9,0x536054,0xa98d66,2.35);
  // Forge, signs and humble porch seating.
  box(-11.3,.66,-2.65,1.5,1.32,.55,0x68615a,true);
  box(-11.3,1.38,-2.65,1,.14,.6,0xc96232);
@@ -155,9 +154,16 @@ export function createHozukiWorld(scene,area){
  }
  // Orchard vegetables can be stepped up to, but not walked through.
  obstacles.push({x:10.5,z:3.75,w:2.25,d:1.28});
+ // Physically raised terrace: matches the height function used for feet and collision.
+ // The gradual southern approach allows continuous eight-direction movement.
+ box(11.3,.26,-14.6,7.5,.52,5.9,0x778d70);
+ for(let i=0;i<6;i++){
+   const z=-10.6-i*.32;
+   box(11.3,(i+1)*.05,z,3.25,.10,.32,0xa49c82);
+ }
  // Old shrine bell: quiet now. Low cliff plinth and broad open stair visuals.
- box(11.3,.1,-14.5,7.5,.2,5.9,0x8b9884);
- for(let i=0;i<6;i++)box(11.3,.07+i*.015,-10.6-i*.46,3.3,.14,.42,0xa09e89);
+ box(11.3,.59,-14.5,7.5,.16,5.9,0x8b9884);
+ for(let i=0;i<6;i++)box(11.3,.1+i*.075,-10.6-i*.34,3.3,.12,.34,0xa09e89);
  for(const x of [8.9,13.7])for(const z of [-16.0,-12.4])box(x,1.8,z,.23,3.55,.23,0x795440);
  box(11.3,3.59,-14.2,6.1,.3,4.7,0x4e5048);
  cylinder(11.3,2.25,-14.2,.76,.85,1.7,0x899878);
@@ -183,10 +189,6 @@ export function createHozukiWorld(scene,area){
    scene.remove(group);
   },
   update(t,player){
-   if(player)for(const zone of roofZones){
-     const inside=Math.abs(player.x-zone.x)<zone.w/2+.38&&Math.abs(player.z-zone.z)<zone.d/2+.5;
-     for(const roof of zone.roofs)roof.visible=!inside;
-   }
    for(const f of fish){f.m.position.x=f.x+Math.sin(t*.35+f.phase)*.4;f.m.position.z=f.z+Math.cos(t*.7+f.phase)*.11;}}
  };
  function materialsHas(m){for(const cached of materials.values())if(cached===m)return true;return false;}
