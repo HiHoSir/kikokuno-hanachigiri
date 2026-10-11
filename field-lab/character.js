@@ -99,13 +99,30 @@ export async function createLabCharacter(scene,basePath='./'){
      const [ax,ay]=shoulders[arm],side=shoulders.length===1?(index===2?-1:1):(arm===0?-1:1);
      const outward=(sx-ax)*side;
      const mask=smoothstep(-5,24,outward)*smoothstep(ay-8,ay+40,sy)*(1-smoothstep(ay+92,ay+113,sy));
-     const angle=(side<0?pose.left:pose.right)+Math.sin(phase+(side<0?0:Math.PI))*.13*blend;
+     // Direction-aware reactions operate on the actual sleeve pixels.
+     // No synthetic appendages, stretched sprites or direction flipping.
+     const reaction=source===0&&direction!==0&&pose.strength>0;
+     const waveSide=direction>=3&&direction<=5?-1:1;
+     let gesture=(side<0?pose.left:pose.right);
+     if(reaction&&mode==='wave')gesture=(side===waveSide?(1.06+.28*Math.sin(actionElapsed*12))*pose.strength:0)*side;
+     if(reaction&&mode==='surprise')gesture=side*.88*pose.strength;
+     if(reaction&&mode==='cheer')gesture=side*(.96+.12*Math.sin(actionElapsed*11))*pose.strength;
+     if(reaction&&mode==='bow')gesture=side*.21*pose.strength;
+     const angle=gesture+Math.sin(phase+(side<0?0:Math.PI))*.13*blend;
      const dx=(sx-ax)/set.pixelsPerUnit,dy=(ay-sy)/set.pixelsPerUnit;
      a[i]+=(dx*Math.cos(angle)-dy*Math.sin(angle)-dx)*mask;
      a[i+1]+=(dx*Math.sin(angle)+dy*Math.cos(angle)-dy)*mask;
     }
    }
-   a[i+1]-=pose.bow*smoothstep(.5,1.5,py);
+   // Preserve planted feet while the shoulders and upper body bend.
+   const upperMask=smoothstep(.58,1.22,py);
+   const directionalBow=source===0&&direction!==0&&mode==='bow';
+   const bowAmount=directionalBow?Math.max(pose.bow,.20*pose.strength):pose.bow;
+   a[i+1]-=bowAmount*upperMask;
+   if(directionalBow){
+     const lean=(direction===2?1:direction===6?-1:direction===4?0:.32);
+     a[i]+=.15*pose.strength*lean*upperMask;
+   }
 
   }
   f.geo.attributes.position.needsUpdate=true;f.geo.attributes.aGroundDepth.needsUpdate=true;f.geo.computeBoundingSphere();hero.position.set(x,y+.014+pose.jump,z);hero.quaternion.copy(camera.quaternion);
