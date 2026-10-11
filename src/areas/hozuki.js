@@ -14,7 +14,7 @@ export const hozukiArea={
   {id:'vegetables',kind:'vegetable',x:10.5,z:3.7,range:2.4,trigger:'action',text:'鬼灯の里の特産野菜を収穫した！'},
   {id:'forge',x:-10,z:-3.4,range:2,trigger:'action',text:'兵具屋：「この島を守るため、昔から道具を鍛えている。」'},
   {id:'inn',x:0,z:-5.5,range:2,trigger:'action',text:'宿屋：「ここは鬼たちのふるさと。どうぞゆっくりお休み。」'},
-  {id:'tea',x:11,z:-4.3,range:2,trigger:'action',text:'茶店：「鬼灯茶はいかが？　島の草花を煎じたお茶だよ。」'},
+  {id:'tea',x:10,z:-.45,range:2,trigger:'action',text:'茶店：「鬼灯茶はいかが？　島の草花を煎じたお茶だよ。」'},
   {id:'home',x:-12,z:-11,range:2,trigger:'action',text:'ここは主人公の生家。懐かしい木の香りがする。'},
   {id:'bell',x:11.5,z:-13.6,range:2.4,trigger:'action',text:'風魔の鈴は、もう鳴らない……。かつて島を外の世界から隠していたのに。'},
   {id:'river',x:-5,z:7.8,range:1.5,trigger:'action',text:'澄んだ小川。小魚が静かに泳いでいる。'}
