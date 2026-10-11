@@ -1,3 +1,4 @@
+import {ACTIONS} from './actions.js?v=0.11.0';
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision,CAMERA_OFFSET} from '../src/movement.js';
 import {demoArea} from '../src/areas/demo.js?v=0.7.0';
@@ -10,28 +11,29 @@ import {createInput} from '../src/input.js?v=0.8.0';
 import {createCameraController} from '../src/camera.js';
 import {crossingPortal} from '../src/portals.js?v=0.7.0';
 import {encodeSave,decodeSave} from '../src/save.js?v=0.7.0';
-import {createLabCharacter} from './character.js?v=0.10.0';
-import {directionFromWorld,advanceGait,NAMES} from './motion.js?v=0.10.0';
-import {SCENARIOS} from './scenarios.js?v=0.10.0';
+import {createLabCharacter} from './character.js?v=0.11.0';
+import {directionFromWorld,advanceGait,NAMES} from './motion.js?v=0.11.0';
+import {SCENARIOS} from './scenarios.js?v=0.11.0';
 const SAVE_KEY='kikoku-field-lab-v1';
 const renderer=new THREE.WebGLRenderer({canvas:document.querySelector('#game'),antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.shadowMap.enabled=true;renderer.outputColorSpace=THREE.SRGBColorSpace;
 const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-7,7,5,-5,.1,100),cameraControl=createCameraController(camera);
 let saved;try{saved=decodeSave(localStorage.getItem(SAVE_KEY),resolveArea)}catch{}
 let state=saved||createGameState(demoArea),area=resolveArea(state.areaId),world=createWorld(scene,area);
 const character=await createLabCharacter(scene),msg=document.querySelector('#msg');
-let direction=0,phase=0,mode='idle',modeUntil=0,messageUntil=0;
+let direction=0,phase=0,mode='idle',modeUntil=0,modeStarted=0,messageUntil=0;
 const groundAt=(x,z)=>surfaceHeightAt(area,x,z);
 function persist(){try{localStorage.setItem(SAVE_KEY,encodeSave(state))}catch{}}
 function areaLabel(){document.querySelector('#area-name').textContent=area.name;document.querySelector('#area-status').textContent='現在地：'+area.name}
 function enterArea(event){const next=applyTransition(state,event,resolveArea);if(!next)return;world.dispose();area=next;world=createWorld(scene,area);cameraControl.target.set(state.player.x,0,state.player.z);areaLabel();persist()}
-function action(){const r=interact(area,state);enterArea(r);msg.textContent=r.text;msg.style.display='block';messageUntil=performance.now()+3000;mode='talk';modeUntil=performance.now()+1200;if(r.changed)persist()}
+function action(){const r=interact(area,state);enterArea(r);msg.textContent=r.text;msg.style.display='block';messageUntil=performance.now()+3000;playAction('talk');if(r.changed)persist()}
 const input=createInput(action);
 document.querySelector('#lab').addEventListener('keydown',e=>{if(e.target.matches('input,select'))e.stopPropagation()});
 let inspectedScenario='start';
 function placeScenario(key){const point=SCENARIOS[key];if(!point)return;world.dispose();state=createGameState(demoArea);state.player={x:point.x,z:point.z};area=demoArea;world=createWorld(scene,area);cameraControl.target.set(point.x,0,point.z);phase=0;inspectedScenario=key;areaLabel();persist()}
 document.querySelector('#scenario').onchange=e=>placeScenario(e.target.value);
 document.querySelector('#direction').onchange=e=>{direction=Number(e.target.value)};
-document.querySelector('#surprise').onclick=()=>{mode='surprise';modeUntil=performance.now()+650};
+function playAction(name){mode=name;modeStarted=performance.now();modeUntil=modeStarted+ACTIONS[name].duration*1000;document.querySelector('#pose').checked=false;document.querySelector('#action-status').textContent=ACTIONS[name].label;}
+for(const name of ['surprise','wave','bow','cheer'])document.querySelector('#'+name).onclick=()=>playAction(name);
 document.querySelector('#start').onclick=()=>{placeScenario('start');document.querySelector('#scenario').value='start'};
 function resize(){renderer.setSize(innerWidth,innerHeight,false);cameraControl.resize(innerWidth,innerHeight)}addEventListener('resize',resize);resize();cameraControl.update(state.player,1);areaLabel();addEventListener('pagehide',persist);
 let previous=performance.now(),autosave=previous+3500,nextTelemetry=0;
@@ -43,9 +45,9 @@ function frame(now){
   if(distance>.00001)direction=directionFromWorld(next.x-before.x,next.z-before.z,CAMERA_OFFSET);
   const portal=crossingPortal(area,before,state.player);if(portal)enterArea({transition:{to:portal.to,spawn:portal.spawn}});
  }
- if(frozen){phase=Number(document.querySelector('#phase').value)/100*Math.PI*2;const angle=direction*Math.PI/4;velocity=worldFromScreen(Math.sin(angle),Math.cos(angle))}else phase=advanceGait(phase,distance);if(now>modeUntil)mode='idle';cameraControl.update(state.player,dt);
- const detail=character.update({...state.player,y:groundAt(state.player.x,state.player.z),dt,time:now/1000,direction,phase,moving:distance>.00001||frozen,velocity,frozen,camera,mode,source:Number(document.querySelector('#source').value),groundAt,debug:document.querySelector('#debug').checked});
- const metrics={...detail,area:area.id,direction,phase,distance,moving:distance>.00001,x:state.player.x,z:state.player.z,version:'0.10.0-lab',scenario:inspectedScenario,velocity,dt,pose:frozen};window.__kikokuLab=metrics;
+ if(frozen){phase=Number(document.querySelector('#phase').value)/100*Math.PI*2;const angle=direction*Math.PI/4;velocity=worldFromScreen(Math.sin(angle),Math.cos(angle))}else phase=advanceGait(phase,distance);if(now>modeUntil){mode='idle';document.querySelector('#action-status').textContent='';}cameraControl.update(state.player,dt);
+ const detail=character.update({...state.player,y:groundAt(state.player.x,state.player.z),dt,time:now/1000,direction,phase,moving:distance>.00001||frozen,velocity,frozen,camera,mode,actionElapsed:(now-modeStarted)/1000,source:Number(document.querySelector('#source').value),groundAt,debug:document.querySelector('#debug').checked});
+ const metrics={...detail,area:area.id,direction,phase,distance,moving:distance>.00001,x:state.player.x,z:state.player.z,version:'0.11.0-lab',scenario:inspectedScenario,velocity,dt,pose:frozen};window.__kikokuLab=metrics;
  if(now>=nextTelemetry){document.querySelector('#telemetry').textContent=`${NAMES[direction]} / ${detail.source}\n高さ ${detail.feetY.toFixed(3)} / 速度 ${(dt?distance/dt:0).toFixed(2)}${detail.visibleLegs===1?'\n横向き：奥脚は同じ素材の仮リグ':''}`;nextTelemetry=now+120;}
  if(now>messageUntil)msg.style.display='none';if(now>autosave){persist();autosave=now+3500}renderer.render(scene,camera);window.__kikokuRendered=true;requestAnimationFrame(frame);
 }

@@ -1,4 +1,4 @@
-# v0.10.0-lab — stance/swing and depth inspection
+# v0.11.0-lab — stance/swing and depth inspection
 
 Based on main 8576a9356ef88fb0badcd51709f8586524ff107e. Stable src/, index.html, original motion-demo/ and all 8 candidate PNG files remain unchanged. This is still an experimental character, not final art approval.
 
@@ -11,9 +11,15 @@ Based on main 8576a9356ef88fb0badcd51709f8586524ff107e. Stable src/, index.html,
 - Collapsible inspector: production tea-house positions (front/back of pillar, cushion, cushion edge, floor), speed, facing and frozen gait phase. D-pad input exits frozen pose mode. Telemetry updates at most ~8 Hz.
 
 ## Inspection and tests
-`npm test`: 45 logic tests. `tools/field-lab-smoke.mjs`: Chromium and WebKit mobile viewport, all eight movement directions, stopped cycle/blend, actual D-pad left, six height/occlusion scenarios, walking down from cushion, eight frozen walking poses, original-art switch, JS errors and isolated save. Screenshots are GitHub Actions artifacts. Local Chromium works with Playwright 1.51.1; the official installer succeeded via its Microsoft download fallback. Local runs can route Three.js 0.180.0 to the exact downloaded module bytes to avoid CDN variability.
+`npm test`: 48 logic tests. `tools/field-lab-smoke.mjs`: Chromium and WebKit mobile viewport, all eight movement directions, stopped cycle/blend, actual D-pad left, six height/occlusion scenarios, walking down from cushion, eight frozen walking poses, original-art switch, JS errors and isolated save. Screenshots are GitHub Actions artifacts. Local Chromium works with Playwright 1.51.1; the official installer succeeded via its Microsoft download fallback. Local runs can route Three.js 0.180.0 to the exact downloaded module bytes to avoid CDN variability.
 
 Visual review: eight headings × four cycle positions, actual Three.js tea-house. Initial continuous mesh distorted shoes at oblique headings; split topology and per-direction dividers corrected this before committing. Front/back pillar and cushion screenshots are linked from audit.html.
 
 ## Remaining limits
 Candidate anatomy/head ratio, lateral yaw, and pouch placement are not formally approved. Side hidden-leg contours are reused, not independently drawn; oblique leg overlaps can still look like flat cutouts. This is a constrained puppet deformation, not a fully anatomical bone rig with independently layered knees, skirt, hair, ribbon and sleeves. Full iPhone Safari hardware/performance verification remains outstanding. The ground must remain level/stepped: continuous sloped terrain is not provided by the current production area model.
+
+## v0.11.0 user feedback fixes
+- Corrected ground-displacement camera-depth sign. The inverse projection now preserves zero world height, preventing planted feet from passing behind the ground. Alpha-edge clearance is 0.014 world units.
+- Shoulder-local sleeve/arm motion follows gait; head proportions and source PNG bytes remain unchanged. Sleeves still use a continuous mesh, so large independent elbow articulation is not supported.
+- Surprise now has a 1.4-second arm-open/hop response, also during walking. Wave, bow and cheer are accessible outside the inspector; actions exit frozen-pose inspection and restart on each tap. Actions are elapsed-time based with smooth return.
+- Mobile browser smoke checks tap every new button, check return to idle and surprise while moving, and capture action screenshots. Physical iPhone Safari remains untested.

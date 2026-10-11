@@ -15,6 +15,8 @@ test('idle blend converges without snapping',()=>{const b=updateBlend(1,0,1/60);
 test('all inspection positions are outside production collision bounds',()=>{const obstacles=demoArea.blocks.filter(b=>b[7]).map(([x,y,z,w,h,d])=>({x,z,w:w/2,d:d/2}));for(const [key,p] of Object.entries(SCENARIOS))assert.ok(canStand(p.x,p.z,obstacles),key)});
 test('foot depth follows projected ground instead of the vertical body plane',()=>{
  const v=worldFromScreen(0,1),p=projectGround(v.x,v.z,CAMERA_OFFSET),tan=CAMERA_OFFSET.y/Math.hypot(CAMERA_OFFSET.x,CAMERA_OFFSET.z),correction=p.z-p.y*tan;
- assert.ok(p.y<0&&p.z<0);assert.ok(Math.abs(p.y*tan+correction-p.z)<1e-12);
+ assert.ok(p.y<0&&p.z>0);assert.ok(Math.abs(p.y*tan+correction-p.z)<1e-12);
  const back=projectGround(-v.x,-v.z,CAMERA_OFFSET);assert.equal(back.z,-p.z);
 });
+
+test('ground projection preserves zero world height when inverted',()=>{const o=CAMERA_OFFSET,h=Math.hypot(o.x,o.z),l=Math.hypot(h,o.y);for(const [dx,dz] of [[1,0],[0,1],[-1,2]]){const p=projectGround(dx,dz,o);assert.ok(Math.abs(p.y*h/l+p.z*o.y/l)<1e-12)}});

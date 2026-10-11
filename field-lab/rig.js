@@ -24,7 +24,7 @@ export function footCycle(phase){
 }
 export function projectGround(dx,dz,offset){
  const h=Math.hypot(offset.x,offset.z),length=Math.hypot(h,offset.y);
- return {x:(dx*offset.z-dz*offset.x)/h,y:-(dx*offset.x+dz*offset.z)/h*Math.abs(offset.y)/length,z:-(dx*offset.x+dz*offset.z)/length};
+ return {x:(dx*offset.z-dz*offset.x)/h,y:-(dx*offset.x+dz*offset.z)/h*Math.abs(offset.y)/length,z:(dx*offset.x+dz*offset.z)/length};
 }
 export function updateBlend(value,target,dt,rate=12){return value+(target-value)*(1-Math.exp(-Math.max(0,dt)*rate))}
 export function shadowTriangleValid(a,b,c){return Math.max(a,b,c)-Math.min(a,b,c)<.025}
