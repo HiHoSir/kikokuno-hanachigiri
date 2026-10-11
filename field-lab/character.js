@@ -26,11 +26,11 @@ function farLegGeometry(f,ppu,outline){
  const points=outline.map(([x,y])=>new THREE.Vector2(x,y)),triangles=THREE.ShapeUtils.triangulateShape(points,[]);
  const geo=new THREE.BufferGeometry();geo.setAttribute('position',new THREE.Float32BufferAttribute(outline.flatMap(([x,y])=>[(x-f.footX)/ppu,(f.footY-y)/ppu,0]),3));geo.setAttribute('uv',new THREE.Float32BufferAttribute(outline.flatMap(([x,y])=>[x/f.width,1-y/f.height]),2));geo.setIndex(triangles.flat());geo.setAttribute('aGroundDepth',new THREE.Float32BufferAttribute(new Float32Array(outline.length),1));geo.computeVertexNormals();return {geo,base:geo.attributes.position.array.slice()};
 }
-export async function createLabCharacter(scene){
- const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(p+'?v=0.12.1');if(!r.ok)throw Error(p);return r.json()}));
+export async function createLabCharacter(scene,basePath='./'){
+ const [candidate,legacy]=await Promise.all(['./art/manifest.json','./art/v06-manifest.json'].map(async p=>{const r=await fetch(basePath+p.replace('./','')+'?v=0.12.1');if(!r.ok)throw Error(p);return r.json()}));
  const loader=new THREE.TextureLoader();
  const sets=await Promise.all([candidate,legacy].map(async (set,j)=>({...set,frames:await Promise.all(set.frames.map(async (f,frame)=>{
-  const tex=await loader.loadAsync((j?'../motion-demo/frames/':'./art/')+f.file+'?v=0.12.1');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
+  const tex=await loader.loadAsync((j?basePath+'../motion-demo/frames/':basePath+'art/')+f.file+'?v=0.12.1');tex.colorSpace=THREE.SRGBColorSpace;tex.magFilter=THREE.LinearFilter;tex.minFilter=THREE.LinearMipmapLinearFilter;
   const {geo,limbs}=spriteGeometry(f,set.pixelsPerUnit,j?null:LEG_DIVIDERS[frame]);
   const base=geo.attributes.position.array.slice(),weights=[];
   for(let i=0;i<base.length;i+=3){
@@ -56,7 +56,7 @@ export async function createLabCharacter(scene){
  const actionFrames={};
  const actionSpecs={wave:{width:1023,height:1537,footX:531,footY:1439,ppu:775},cheer:{width:1023,height:1538,footX:530,footY:1439,ppu:775},surprise:{width:1024,height:1536,footX:528,footY:1452,ppu:790},bow:{width:1024,height:1536,footX:528,footY:1384,ppu:800,cropBottom:1060}};
  await Promise.all(Object.entries(actionSpecs).map(async ([name,f])=>{
-  const tex=await loader.loadAsync('./art/actions/'+name+'.png?v=0.12.1');tex.colorSpace=THREE.SRGBColorSpace;
+  const tex=await loader.loadAsync(basePath+'art/actions/'+name+'.png?v=0.12.1');tex.colorSpace=THREE.SRGBColorSpace;
   const {geo}=spriteGeometry(f,f.ppu,null);actionFrames[name]={...f,tex,geo,base:geo.attributes.position.array.slice()};
  }));
  const actionMaterial=material.clone();actionMaterial.onBeforeCompile=material.onBeforeCompile;actionMaterial.customProgramCacheKey=material.customProgramCacheKey;
