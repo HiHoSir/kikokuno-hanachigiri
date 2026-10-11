@@ -100,11 +100,10 @@ export function createHozukiWorld(scene,area){
      box(x+sx*(half-.4),height*.52,front+.15,.45,.65,.08,0xd7bd84);
    }
    box(x,height/2,z-d/2, w,height,wallThickness,wall,true);
-   // The lintel clears 2.55 units, exceeding the heroine's visible ~2.0-unit stature.
+   // Door opening clears over 3 world units with comfortable headroom.
    const clearHeight=3.42;
    box(x,(clearHeight+height)/2,front,(opening-.15),height-clearHeight,.24,0x745841);
-   // Roofs disappear when the heroine walks beneath them, avoiding false head penetration
-   // from a 2.5D billboard drawn at an oblique camera angle.
+   // Roof height is scaled against the actual sprite; no hide-the-roof workaround.
    const roofs=[];
    roofs.push(box(x,height+.08,z-d*.24,w+.65,.3,d*.55,roof));
    for(const sx of [-1,1])
@@ -162,7 +161,7 @@ export function createHozukiWorld(scene,area){
    box(11.3,(i+1)*.05,z,3.25,.10,.32,0xa49c82);
  }
  // Old shrine bell: quiet now. Low cliff plinth and broad open stair visuals.
- box(11.3,.59,-14.5,7.5,.16,5.9,0x8b9884);
+ box(11.3,.53,-14.5,7.5,.04,5.9,0x8b9884);
  for(let i=0;i<6;i++)box(11.3,.1+i*.075,-10.6-i*.34,3.3,.12,.34,0xa09e89);
  for(const x of [8.9,13.7])for(const z of [-16.0,-12.4])box(x,1.8,z,.23,3.55,.23,0x795440);
  box(11.3,3.59,-14.2,6.1,.3,4.7,0x4e5048);
