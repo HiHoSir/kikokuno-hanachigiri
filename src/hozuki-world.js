@@ -118,7 +118,7 @@ export function createHozukiWorld(scene,area){
  }
  house(-10,-6,5.8,4.7,0x4c4543,0xa98d66,2.8); // smithy
  house(0,-8,6.4,5.3,0x535b58,0xa98d66,3.25); // welcoming inn
- house(10,-6.7,5.5,4.4,0x63574a,0xa98d66,3.05); // open teahouse
+ house(10,-3.4,5.5,4.4,0x63574a,0xa98d66,3.05); // open teahouse
  house(-12,-13.2,4.8,4.1,0x5b584f,0xa98d66,2.65); // birthplace
  house(-3,-14,3.6,3.8,0x5c574b,0xa98d66,2.35);
  house(4,-14.1,3.6,3.9,0x536054,0xa98d66,2.35);
@@ -127,8 +127,8 @@ export function createHozukiWorld(scene,area){
  box(-11.3,1.38,-2.65,1,.14,.6,0xc96232);
  box(-8.3,.48,-2.7,1.5,.95,.18,0x674e34);
  for(let i=0;i<3;i++)cylinder(-8.7+i*.44,.77,-2.7,.075,.075,1.5,0x868c91);
- box(10,.31,-3.5,2.8,.58,1.25,0x846747);
- for(const x of [8.8,11.2])box(x,.55,-3.5,.19,1,.19,0x74563f);
+ box(10,.31,-.45,2.8,.58,1.25,0x846747);
+ for(const x of [8.8,11.2])box(x,.55,-.45,.19,1,.19,0x74563f);
  // Well is open on all sides.
  cylinder(-3,.56,1.2,1.03,1.05,1.08,0x96988a);
  cylinder(-3,1.16,1.2,.8,.8,.08,0xb8a98e);
