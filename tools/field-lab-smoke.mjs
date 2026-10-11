@@ -9,13 +9,13 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
  await page.screenshot({path:`test-results/${name}-candidate.png`});
  assert.equal(await page.evaluate(()=>__kikokuLab.version),'0.9.1-lab');
  for(const [dir,keys] of [[0,['ArrowDown']],[1,['ArrowRight','ArrowDown']],[2,['ArrowRight']],[3,['ArrowRight','ArrowUp']],[4,['ArrowUp']],[5,['ArrowLeft','ArrowUp']],[6,['ArrowLeft']],[7,['ArrowLeft','ArrowDown']]]){
-  for(const k of keys)await page.keyboard.down(k);await page.waitForTimeout(140);
+  for(const k of keys)await page.keyboard.down(k);await page.waitForFunction(dir=>window.__kikokuLab.direction===dir&&window.__kikokuLab.moving,dir,{timeout:10000});
   const m=await page.evaluate(()=>window.__kikokuLab);assert.equal(m.direction,dir);assert.ok(m.distance>0);
   for(const k of keys)await page.keyboard.up(k);
  }
- await page.waitForTimeout(100);const phase=await page.evaluate(()=>__kikokuLab.phase);await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>__kikokuLab.phase),phase);
+ await page.waitForFunction(()=>!window.__kikokuLab.moving);const phase=await page.evaluate(()=>__kikokuLab.phase);await page.waitForTimeout(200);assert.equal(await page.evaluate(()=>__kikokuLab.phase),phase);
  // Drag the actual touch pad towards screen left, checking UI and art agree.
- const pad=await page.locator('#dpad').boundingBox();await page.mouse.move(pad.x+pad.width/2,pad.y+pad.height/2);await page.mouse.down();await page.mouse.move(pad.x+10,pad.y+pad.height/2);await page.waitForTimeout(160);assert.equal(await page.evaluate(()=>__kikokuLab.direction),6);await page.mouse.up();
+ const pad=await page.locator('#dpad').boundingBox();await page.mouse.move(pad.x+pad.width/2,pad.y+pad.height/2);await page.mouse.down();await page.mouse.move(pad.x+10,pad.y+pad.height/2);await page.waitForFunction(()=>window.__kikokuLab.direction===6&&window.__kikokuLab.moving,null,{timeout:10000});assert.equal(await page.evaluate(()=>__kikokuLab.direction),6);await page.mouse.up();
  await page.selectOption('#source','1');await page.waitForTimeout(100);await page.screenshot({path:`test-results/${name}-v06.png`});
  assert.match(await page.evaluate(()=>__kikokuLab.source),/v0.6/);assert.equal(await page.evaluate(()=>localStorage.getItem('kikoku-game-state-v1')),null);assert.deepEqual(errors,[]);
  await browser.close();console.log(name+' mobile viewport smoke passed');
