@@ -207,6 +207,101 @@ export function createHozukiWorld(scene,area){
  cylinder(11.3,summit+.9,-14.2,.76,.85,1.7,0x899878);
  ball(11.3,summit+1.8,-14.2,.75,0xa8a67e,[1,.24,1]);
  obstacles.push({x:11.3,z:-14.2,w:.85,d:.85});
+
+ // Scenic dressing: rock/grass silhouettes follow the genuine walk-surface elevations.
+ // Keep the ascent corridor x=9.65..12.95 clear for touch movement.
+ function stone(x,y,z,size=1){
+   const a=ball(x,y+.22*size,z,.48*size,0x777d72,[1.18,.55,.86]);
+   a.rotation.y=(x+z)*.31;
+   ball(x-.15*size,y+.39*size,z-.1*size,.34*size,0x939887,[.9,.38,.8]);
+ }
+ function grass(x,y,z,size=.4){
+   for(let i=0;i<3;i++){
+     const blade=ball(x+(i-1)*size*.26,y+size*.28,z+((i%2)-.5)*size*.2,size*.26,i===1?0x87aa63:0x507b46,[.5,1.9,.6]);
+     blade.rotation.z=(i-1)*.25;
+   }
+ }
+ // Natural hill shoulders and a ragged summit rim rather than naked box sides.
+ for(let i=0;i<16;i++){
+   const z=hill.zFront-(i+.5)/16*rampLength;
+   const y=slopeHeight(z);
+   for(const side of [-1,1]){
+     const x=hill.cx+side*(hill.halfWidth+.44+Math.sin(i*1.7)*.16);
+     stone(x,y*.64,z,.8+((i*3)%5)*.13);
+     if(i%2===0)grass(x+side*.33,y*.77,z+.22,.6);
+   }
+ }
+ for(let i=0;i<20;i++){
+   const x=px0+.3+(i%10)*.67,z=i<10?pz0+.22:pz1-.35;
+   stone(x,summit-.21,z,.36+((i*3)%4)*.08);
+ }
+ for(const [x,z] of [[8.1,-15.5],[14.5,-15],[8,-13.2],[14.6,-16.2]]){
+   grass(x,summit,z,.65);
+ }
+ // Sacred sanctuary: torii-like gateway, weathered lanterns, timber rail and stone approach.
+ function lantern(x,z){
+   box(x,summit+.42,z,.42,.8,.42,0x817b68);
+   box(x,summit+.92,z,.66,.22,.66,0xb3a78c);
+   box(x,summit+1.26,z,.5,.5,.5,0xd7c99a);
+   box(x,summit+1.59,z,.82,.22,.82,0x665f57);
+ }
+ for(const x of [9.55,13.05])lantern(x,-12.9);
+ for(const x of [9.6,13.0])box(x,summit+1.47,-12.55,.2,2.94,.2,0x804c3b);
+ box(11.3,summit+2.78,-12.55,3.7,.26,.28,0x924e3c);
+ box(11.3,summit+2.39,-12.55,3.35,.13,.2,0x754d3c);
+ for(const side of [-1,1]){
+   const x=11.3+side*3.15;
+   for(let z=-16.7;z<-12.9;z+=1.2)
+     box(x,summit+.62,z,.13,1.2,.13,0x7d6345);
+   box(x,summit+1.07,-14.95,.12,.12,3.8,0x846b4a);
+ }
+ for(let i=0;i<5;i++)box(11.3,summit+.025,-12.72-i*.58,1.2,.055,.34,0xb7ae90);
+ // Waterfall: three falling sheets from the upstream spring into a rocky basin.
+ for(const [x,z] of [[-13.6,-8.15],[-13,-7.97],[-12.4,-7.8]]){
+   const sheet=new THREE.Mesh(new THREE.PlaneGeometry(.55,1.55),
+     mat(0x89d8d9,{transparent:true,opacity:.78,side:THREE.DoubleSide,depthWrite:false}));
+   sheet.position.set(x,1.13,z);group.add(sheet);
+   ball(x,.3,z+.52,.34,0xc6e5df,[1,.28,.55]);
+ }
+ for(let i=0;i<12;i++){
+   const x=-14+i*.35,z=-6.85+(i%3)*.19;
+   ball(x,.075,z,.18,0xc5e0d0,[1,.22,.65]);
+ }
+ // A gentle streambank rhythm, independent from the original collision boundaries.
+ for(let i=0;i<24;i++){
+   const x=-17+i*1.42;
+   if(x>-.05&&x<6.2)continue; // bridge landing stays open
+   const side=i%2?5.4:9.45;
+   stone(x,.03,side,.36+(i%4)*.08);
+   if(i%3===0)grass(x+.36,0,side+(i%2?-.32:.3),.46);
+ }
+ // Household-scale props stay beside entrances, never over the doorway.
+ function crate(x,z){box(x,.38,z,.73,.75,.7,0x826044);box(x,.77,z,.79,.07,.76,0xb39467);}
+ function logPile(x,z){
+   for(let i=0;i<4;i++){
+     const log=cylinder(x+(i%2)*.36,.2+Math.floor(i/2)*.37,z,.17,.17,.85,0x7c593b);
+     log.rotation.x=Math.PI/2;
+   }
+ }
+ for(const [x,z] of [[-12.1,-2.4],[-7.7,-2.8],[3,-4.9],[12.2,-.65],[-14,-10.7]])crate(x,z);
+ logPile(-13.5,-2.9);logPile(3,-5.8);
+ // Washing buckets and baskets near the well and vegetable garden.
+ for(const [x,z] of [[-4.7,2.2],[-1.7,2.5],[7.8,4.9],[13.2,4.85]]){
+   cylinder(x,.3,z,.36,.28,.58,0x8a6948);
+   cylinder(x,.61,z,.4,.4,.08,0x4d674f);
+ }
+ for(let i=0;i<8;i++){
+   const x=7.5+i*.9,z=5.55+(i%2)*.35;
+   grass(x,0,z,.4+(i%3)*.09);
+ }
+ // Edge woodland clusters keep the village circulation and hill ramp readable.
+ for(const [x,z,scale] of [[-17,7,1.05],[-15,15,.8],[-7,16,.95],[6,16,.85],
+   [17,13,1.1],[17,-9,.9],[-17,-11,1],[6,-17,.85]]){
+   // Decorative canopy: avoid adding trunk collision to established walk paths.
+   cylinder(x,.78*scale,z,.13*scale,.19*scale,1.55*scale,0x6e563d);
+   ball(x,1.95*scale,z,.9*scale,0x486f49,[1.12,.94,1]);
+   ball(x+.38*scale,2.02*scale,z-.26*scale,.62*scale,0x66895b);
+ }
  // Moss and wildflowers near the edges. Deliberately not overbuilt.
  for(let i=0;i<70;i++){
    const x=-17+(i*7.31)%34,z=-17+(i*13.71)%34;
