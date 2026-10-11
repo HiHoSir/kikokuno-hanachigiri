@@ -246,6 +246,30 @@ export function createHozukiWorld(scene,area){
      blade.rotation.z=(i-1)*.25;
    }
  }
+ // Faceted geological shelves, with vegetation patches, make the hill read as earth.
+ // Decorative skirts do not contribute to path collisions or foot placement.
+ function cliffStrata(x,z,y,width=.9){
+   for(let level=0;level<3;level++){
+     const rock=ball(x+(level%2)*.11,y+level*.31,z,.48+width*.2,
+       [0x716e60,0x877e67,0x777965][level],[width, .27,.8]);
+     rock.rotation.y=(x+z+level)*.17;
+   }
+ }
+ for(let i=0;i<18;i++){
+   const z=hill.zFront-(i+.4)/18*rampLength;
+   const y=slopeHeight(z);
+   for(const side of [-1,1]){
+     const x=hill.cx+side*(hill.halfWidth+.66);
+     cliffStrata(x,z,Math.max(.03,y*.39),.8+((i*7)%5)*.1);
+   }
+ }
+ // Layered grass edge covers the straight upper plateau silhouette.
+ for(let i=0;i<22;i++){
+   const x=px0+.16+(px1-px0-.32)*(i/21);
+   if(Math.abs(x-hill.cx)<hill.halfWidth+.12)continue;
+   const z=pz1+.08+.1*Math.sin(i*2.9);
+   ball(x,summit-.09,z,.34,i%3?0x698b56:0x81a165,[1.1,.3,.8]);
+ }
  // Natural hill shoulders and a ragged summit rim rather than naked box sides.
  for(let i=0;i<16;i++){
    const z=hill.zFront-(i+.5)/16*rampLength;
