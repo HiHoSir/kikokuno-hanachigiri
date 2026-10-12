@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import {createLabCharacter} from '../field-lab/character.js?v=0.32.0';
+import {createLabCharacter} from '../field-lab/character.js?v=0.33.0';
 import {STRIDE} from '../field-lab/rig.js?v=0.12.1';
 import {motionPose} from './motion-controller.js?v=0.31.0';
 
@@ -26,7 +26,7 @@ export async function createIllustratedCharacter(){
      character.update({
        x:0,y:0,z:0,dt,time:frame,direction,phase:stride,
        moving,velocity,camera,mode:mode||'idle',actionElapsed:elapsed,
-       source:0,originalReactions:true,groundAt:()=>0,debug:false
+       source:0,originalReactions:false,groundAt:()=>0,debug:false
      });
      renderer.render(scene,camera);
      const displayedHeight=worldY*scale;
