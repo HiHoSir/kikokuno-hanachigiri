@@ -1,0 +1,23 @@
+name: 3D proportion lab JavaScript syntax
+on:
+  push:
+    paths:
+      - 'hozuki-walk/3d-proportion-lab.html'
+      - '.github/workflows/3d-lab-syntax.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check extracted module parses
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          s=Path('hozuki-walk/3d-proportion-lab.html').read_text()
+          script=s.split('<script type="module">',1)[1].split('</script>',1)[0]
+          Path('/tmp/3d-proportion-lab.mjs').write_text(script)
+          PY
+          node --check /tmp/3d-proportion-lab.mjs
