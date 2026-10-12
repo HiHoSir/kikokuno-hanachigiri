@@ -6,6 +6,7 @@ on:
       - 'models/hizuki/candidate.glb'
       - 'models/hizuki/approved.json'
       - 'scripts/audit-hizuki-glb.py'
+      - 'scripts/compare-hizuki-silhouettes.py'
       - '.github/workflows/hizuki-3d-quality.yml'
 permissions:
   contents: read
@@ -45,6 +46,10 @@ jobs:
             python scripts/audit-hizuki-glb.py \
               --model models/hizuki/candidate.glb \
               --baseline models/hizuki/approved.json \
+              --out model-qa-output
+            python scripts/compare-hizuki-silhouettes.py \
+              --reference-dir field-lab/art \
+              --render-dir model-qa-output \
               --out model-qa-output
           fi
       - uses: actions/upload-artifact@v4
