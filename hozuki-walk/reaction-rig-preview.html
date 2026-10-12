@@ -1,0 +1,39 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>緋月・原画リアクション関節実験 v0.1</title><style>
+*{box-sizing:border-box}body{margin:0;background:#17242a;color:#f3e9dc;font:14px system-ui}main{max-width:730px;margin:auto;padding:12px}h1{font-size:18px}p{line-height:1.6}.stage{display:grid;grid-template-columns:1fr 1fr;gap:8px}canvas{width:100%;aspect-ratio:362/543;border:1px solid #6c8585;border-radius:7px;background:repeating-conic-gradient(#364b52 0 25%,#253840 0 50%) 50%/22px 22px}button{padding:12px 10px;min-height:46px;background:#384f58;border:1px solid #9eafaf;color:white;border-radius:8px}button.active{background:#9b704d}.bar{display:flex;gap:7px;flex-wrap:wrap}.bar button{flex:1}small{color:#bfd0d2}.fail{color:#ffd5ad}</style></head><body><main><h1>緋月・原画リアクション関節実験 v0.1</h1><p>左は正本PNGを無加工表示。右は同じ原画を、切り抜きや再生成なしで動かす試験です。散策版には未採用です。</p><div class="bar"><button data-mode="wave" class="active">手振り</button><button data-mode="bow">おじぎ</button><button data-mode="idle">原画</button></div><div class="stage"><div><small>正本 field-lab/art/0.png</small><canvas id="original" width="362" height="543"></canvas></div><div><small>試作・プログラム変形</small><canvas id="animated" width="362" height="543"></canvas></div></div><p id="status">原画読み込み中…</p><p class="fail">確認点：袖の接合部に欠損がないか、手振りとして動いて見えるか、おじぎで足元が固定されるか。正面のみの試作です。</p><a href="./?v=0.33.0" style="color:#f5c980">従来の散策ページへ</a></main><script>
+const im=new Image(),ref=document.getElementById('original'),out=document.getElementById('animated'),a=ref.getContext('2d'),b=out.getContext('2d');
+let mode='wave',t0=performance.now();
+for(const button of document.querySelectorAll('[data-mode]'))button.addEventListener('click',()=>{mode=button.dataset.mode;t0=performance.now();document.querySelectorAll('[data-mode]').forEach(x=>x.classList.toggle('active',x===button));});
+im.onload=()=>{a.drawImage(im,0,0);document.getElementById('status').textContent='原寸362×543・正本画像読み込み完了。現在は正面の比較のみ。';requestAnimationFrame(frame)};
+im.onerror=()=>document.getElementById('status').textContent='原画が読み込めませんでした';
+im.src='../field-lab/art/0.png?v=0.33.0';
+function smooth(a,b,x){const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t)}
+function frame(now){
+ const elapsed=(now-t0)/1000,pulse=Math.sin(elapsed*2.9),wave=Math.sin(elapsed*11);
+ b.clearRect(0,0,362,543);
+ if(mode==='idle'){b.drawImage(im,0,0);requestAnimationFrame(frame);return}
+ // Continuous scanline warp keeps all original pixels and has no erased source regions.
+ // Every output band is sourced from the same original sprite. Explicit feet lock at y=400.
+ for(let y=0;y<543;y+=2){
+  const h=Math.min(2,543-y),top=1-smooth(240,420,y);
+  if(mode==='bow'){
+   const bend=Math.max(0,.5+.5*pulse);
+   const lean=top*36*bend,drop=top*27*bend;
+   b.drawImage(im,0,y,362,h,lean,y+drop,362,h+1);
+  }else{
+   const upper=1-smooth(245,365,y);
+   const sleeveBand=smooth(265,305,y)*(1-smooth(390,445,y));
+   const oscillate=(.5+.5*wave);
+   // Rig-like outer sleeve pull; center torso stays in place.
+   // Draw all source strips, then shift only outer sections with continuous blending.
+   const leftWidth=110,rightX=243;
+   b.drawImage(im,0,y,362,h,0,y,362,h+1);
+   if(sleeveBand>0){
+    const lift=oscillate*26*sleeveBand;
+    b.save();b.beginPath();b.rect(rightX,y-32,119,40);b.clip();
+    b.drawImage(im,rightX,y,119,h,rightX+6*upper,y-lift,119,h+1);
+    b.restore();
+   }
+  }
+ }
+ requestAnimationFrame(frame);
+}</script></body></html>
