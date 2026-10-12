@@ -45,6 +45,11 @@ def render_views(scene, output):
             shade=int(120+60*(cent_z[i]-depth.min())/max(1e-8,float(np.ptp(depth))))
             painter.polygon(p,fill=(shade,shade-42,shade-52))
         im.save(output/f'angle_{d}.png')
+        silhouette=Image.new('L',(360,540),0)
+        draw_mask=ImageDraw.Draw(silhouette)
+        for i in np.argsort(cent_z):
+            draw_mask.polygon([tuple(map(float,xy[v])) for v in faces[i]],fill=255)
+        silhouette.save(output/f'angle_{d}_mask.png')
         scores.append({'direction':d,'triangles':int(len(faces))})
     return {'meshes':len(meshes),'triangles':int(len(faces)),'bounds':list(map(float,hi-lo)),'views':scores}
 
