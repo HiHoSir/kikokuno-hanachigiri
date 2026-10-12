@@ -43,6 +43,7 @@ jobs:
             printf '%s\\n' '{"status":"AWAITING_MODEL_UPLOAD","accepted":false,"note":"No candidate GLB in GitHub; no 3D quality claim can be made"}' > model-qa-output/report.json
             echo 'Candidate not stored in repository; technical self-test passed but sculpt review is pending.'
           else
+            echo 'Model file:' && sha256sum models/hizuki/candidate.glb
             python scripts/audit-hizuki-glb.py \
               --model models/hizuki/candidate.glb \
               --baseline models/hizuki/approved.json \
