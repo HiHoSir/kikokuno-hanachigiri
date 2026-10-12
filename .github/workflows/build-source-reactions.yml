@@ -1,0 +1,25 @@
+name: Source-derived reaction graphics candidates
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'scripts/build-source-reactions.py'
+      - '.github/workflows/build-source-reactions.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m pip install Pillow
+      - run: python scripts/build-source-reactions.py
+      - run: python scripts/verify-reaction-art.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: source-derived-reaction-candidates
+          path: field-lab/art/directional-actions/
