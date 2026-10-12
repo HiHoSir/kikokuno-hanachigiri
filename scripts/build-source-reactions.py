@@ -44,7 +44,7 @@ def deform(source,frame,direction,action):
     sx-=9*upper
     sy-=3*head
    elif action=='bow':
-    sy-=26*head
+    sy-=15*head
     sx-=(9 if direction in (1,2,3) else -9 if direction in (5,6,7) else 0)*head
    elif action=='cheer':
     sy+=12*upper
@@ -59,5 +59,9 @@ for i,frame in enumerate(META['frames']):
  src=Image.open(ART/frame['file']).convert('RGBA')
  for action in ACTIONS:
   name=f'{action}__{DIRECTIONS[i]}.png'
-  deform(src,frame,i,action).save(DEST/name,optimize=True)
+  candidate=deform(src,frame,i,action)
+  # Transparent padding prevents source-edge glow from touching the crop border.
+  padded=Image.new('RGBA',(src.width+32,src.height+32))
+  padded.alpha_composite(candidate,(16,16))
+  padded.save(DEST/name,optimize=True)
 print('Created 32 non-destructive PNG candidates; art/design must still be reviewed.')
