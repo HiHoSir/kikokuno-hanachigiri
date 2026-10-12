@@ -7,7 +7,7 @@ Candidate-only: do NOT silently promote these to game assets.
 """
 import json, math
 from pathlib import Path
-from PIL import Image
+from PIL import Image, ImageDraw, ImageChops
 
 ART=Path(__file__).resolve().parents[1]/'field-lab'/'art'
 DEST=ART/'directional-actions'
@@ -20,6 +20,46 @@ def clamp(x): return max(0.,min(1.,x))
 def smooth(a,b,x):
  t=clamp((x-a)/(b-a))
  return t*t*(3-2*t)
+
+def lift_sleeve(source,direction,action):
+ # Preserve actual garment pixels, articulate only shoulder-isolated sleeves.
+ # Draw an exact source-derived sleeve mask, then rotate that portion.
+ if action not in ('surprise','wave','cheer'): return source
+ w,h=source.size
+ from PIL import ImageDraw
+ from math import radians
+ shoulders=[
+   [(136,277,-1),(237,277,1)],
+   [(164,280,-1),(265,289,1)],
+   [(222,286,1)],
+   [(133,285,-1),(231,281,1)],
+   [(131,255,-1),(239,255,1)],
+   [(132,259,-1),(229,260,1)],
+   [(141,259,-1)],
+   [(103,260,-1),(205,260,1)]
+ ]
+ result=source.copy()
+ for n,(ax,ay,side) in enumerate(shoulders[direction]):
+  if action=='wave' and ((direction in (3,4,5) and side>0) or (direction not in (3,4,5) and side<0)):continue
+  region=Image.new('L',(w,h))
+  d=ImageDraw.Draw(region)
+  if side<0:
+   poly=[(ax-9,ay-8),(ax-80,ay+16),(ax-138,ay+111),(ax-57,ay+169),(ax+5,ay+52)]
+  else:
+   poly=[(ax+9,ay-8),(ax+80,ay+16),(ax+138,ay+111),(ax+57,ay+169),(ax-5,ay+52)]
+  d.polygon(poly,fill=255)
+  # Keep the torso/face/hair opaque; pull only the sleeve's color/alpha.
+  extracted=Image.new('RGBA',source.size)
+  extracted.paste(source,(0,0),region)
+  # Remove sleeve pixels before rotation. Existing torso is left intact.
+  cleared=Image.new('RGBA',source.size)
+  cleared.paste((0,0,0,0),(0,0,w,h))
+  result.paste(cleared,(0,0),ImageChops.multiply(region,source.getchannel('A')))
+  degrees=(-31 if side<0 else 31) if action=='wave' else (-26 if side<0 else 26) if action=='cheer' else (-18 if side<0 else 18)
+  # PIL positive angles rotate counterclockwise; rotate around source shoulder.
+  turned=extracted.rotate(degrees,Image.Resampling.BICUBIC,center=(ax,ay),expand=False)
+  result.alpha_composite(turned)
+ return result
 
 def deform(source,frame,direction,action):
  # Inverse mapping: preserve ALL original hues, outlines, proportions and feet.
@@ -40,8 +80,7 @@ def deform(source,frame,direction,action):
     sy+=8*upper
     sx-=(x-fx)*.016*head
    elif action=='wave':
-    # Gentle leaning: source pixels retained, no invented synthetic hand.
-    sx-=9*upper
+    sx-=2*upper
     sy-=3*head
    elif action=='bow':
     sy-=15*head
@@ -53,7 +92,7 @@ def deform(source,frame,direction,action):
    ix,iy=round(sx),round(sy)
    if 0<=ix<w and 0<=iy<h:
     dst[x,y]=src[ix,iy]
- return out
+ return lift_sleeve(out,direction,action)
 
 for i,frame in enumerate(META['frames']):
  src=Image.open(ART/frame['file']).convert('RGBA')
