@@ -171,9 +171,29 @@ export async function createLabCharacter(scene,basePath='./'){
      px+=(dx*Math.cos(angle)-dy*Math.sin(angle)-dx)*mask;
      py+=(dx*Math.sin(angle)+dy*Math.cos(angle)-dy)*mask;
     }
-    if(mode==='bow'&&direction===0&&!action8[mode]?.[direction]){
-     const hinge=.405,angle=.62*pose.strength,h=Math.max(0,py-hinge);
-     py-=h*(1-Math.cos(angle));pz+=h*Math.sin(angle);
+    // For reviewed direction-specific paintings, artwork defines the pose;
+    // movement only adds the same small arm motion / waist hinge as the front.
+    if(action8[mode]?.[direction]&&mode==='wave'&&Array.isArray(af.waveAnchor)){
+     const [ax,ay]=af.waveAnchor,rad=af.waveRadius||125;
+     const proximity=Math.max(0,1-Math.hypot(sx-ax,sy-ay)/rad);
+     const weight=proximity*proximity*(3-2*proximity);
+     const angle=Math.sin(actionElapsed*12)*.28*pose.strength*(af.waveSign||1);
+     const dx=(sx-ax)/af.ppu,dy=(ay-sy)/af.ppu;
+     px+=(dx*Math.cos(angle)-dy*Math.sin(angle)-dx)*weight;
+     py+=(dx*Math.sin(angle)+dy*Math.cos(angle)-dy)*weight;
+    }
+    if(mode==='bow'){
+     if(direction===0&&!action8[mode]?.[direction]){
+      const hinge=.405,angle=.62*pose.strength,h=Math.max(0,py-hinge);
+      py-=h*(1-Math.cos(angle));pz+=h*Math.sin(angle);
+     }else if(action8[mode]?.[direction]){
+      // Bow artwork must already communicate the posture. Feet are anchored
+      // and only pixels above the documented waist pivot receive extra bend.
+      const hinge=Number.isFinite(af.waistY)?af.waistY:.40;
+      const amount=.24*pose.strength,head=Math.max(0,py-hinge);
+      py-=head*(1-Math.cos(amount));
+      pz+=head*Math.sin(amount);
+     }
     }
     vertices[i]=px;vertices[i+1]=py;vertices[i+2]=pz;
    }
