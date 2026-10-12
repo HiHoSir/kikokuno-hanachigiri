@@ -1,13 +1,13 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>緋月・8方向リアクション比較 v0.1</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>緋月・8方向リアクション比較 v0.2</title><style>
 *{box-sizing:border-box}body{margin:0;background:#18262b;color:#fff1df;font:14px system-ui,sans-serif}main{max-width:740px;margin:auto;padding:12px}h1{font-size:18px;margin:7px 0}p{line-height:1.55;color:#c8dcdb}.buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:10px 0}button{min-height:43px;color:inherit;background:#324851;border:1px solid #879a9e;border-radius:8px}button.active{background:#a57248;border-color:#efc18d}.pair{display:grid;grid-template-columns:1fr 1fr;gap:6px}.panel{min-width:0}canvas{width:100%;aspect-ratio:3/4;background:repeating-conic-gradient(#30434b 0 25%,#243740 0 50%) 50%/20px 20px;border:1px solid #899;border-radius:7px}small{color:#c4d8d7}#status{background:#273b42;padding:8px;border-radius:6px;margin-top:9px}a{color:#f5cd94}
-</style></head><body><main><h1>緋月・8方向リアクション検証 v0.1</h1><p>左：同じ向きの待機原画。右：現在のリアクション実装。正面の従来専用ポーズを維持し、他の方向が同じ動作として読めるかを比較します。ゲーム本編には変更を加えません。</p>
+</style></head><body><main><h1>緋月・8方向リアクション検証 v0.2</h1><p>左：同じ向きの待機原画。右：現在のリアクション実装。正面は従来の専用画像＋モーションを維持。各方向の専用画像が登録された場合だけその画像に切り替わります。未登録方向の動きは未完成です。ゲーム本編には変更を加えません。</p>
 <div class="buttons" id="actions"><button data-act="wave" class="active">手振り</button><button data-act="bow">おじぎ</button><button data-act="surprise">驚き</button><button data-act="cheer">喜ぶ</button></div>
 <div class="buttons" id="dirs"><button data-dir="0" class="active">正面</button><button data-dir="1">右斜前</button><button data-dir="2">右</button><button data-dir="3">右斜後</button><button data-dir="4">背面</button><button data-dir="5">左斜後</button><button data-dir="6">左</button><button data-dir="7">左斜前</button></div>
 <div class="pair"><div class="panel"><small>既存原画：待機</small><canvas width="300" height="400" id="idle"></canvas></div><div class="panel"><small>現在の動作</small><canvas width="300" height="400" id="action"></canvas></div></div>
 <div id="status">原画読み込み中…</div><p>検査：手が本当に上がるか／腰から前傾するか／顔と衣装が崩れないか／足元が滑らないか。動いていても何の動作か分からなければ不合格です。</p><a href="./?v=0.33.0">鬼灯の里に戻る</a></main>
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
 <script type="module">
-import {createIllustratedCharacter} from './character-adapter.js?v=0.33.0';
+import {createIllustratedCharacter} from './character-adapter-experimental.js?v=0.34.0';
 const base=document.getElementById('idle'),react=document.getElementById('action');
 const b=base.getContext('2d'),a=react.getContext('2d');
 let dir=0,mode='wave',start=performance.now(),last=start,character,failed=false;
