@@ -1,0 +1,46 @@
+name: 3D lab browser rendering check
+on:
+  push:
+    paths:
+      - 'hozuki-walk/3d-proportion-lab.html'
+      - '.github/workflows/3d-lab-browser-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install chromium
+      - name: Verify canvas shows 3D or reports failure
+        run: |
+          python3 -m http.server 8765 >/tmp/local-server.log 2>&1 &
+          node --input-type=module <<'JS'
+          import {chromium} from 'playwright';
+          const browser=await chromium.launch({headless:true,args:['--use-gl=angle','--use-angle=swiftshader','--enable-webgl']});
+          const page=await browser.newPage({viewport:{width:430,height:850},deviceScaleFactor:1});
+          const errors=[];
+          page.on('pageerror',e=>errors.push(String(e)));
+          await page.goto('http://127.0.0.1:8765/hozuki-walk/3d-proportion-lab.html?v=0.4',{waitUntil:'domcontentloaded'});
+          await page.waitForTimeout(12000);
+          const state=await page.evaluate(()=>({
+            ready:window.__model3DReady,
+            fallback:getComputedStyle(document.querySelector('#fallback-model')).display,
+            webgl:getComputedStyle(document.querySelector('#model')).display,
+            status:document.querySelector('#status').textContent
+          }));
+          console.log('3D lab state',JSON.stringify(state), 'errors',JSON.stringify(errors));
+          await page.screenshot({path:'/tmp/3d-lab.png',fullPage:true});
+          if(!state.ready)throw new Error('3D renderer did not initialize: '+state.status+' '+errors.join(' | '));
+          await browser.close();
+          JS
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: 3d-lab-browser-screenshot
+          path: /tmp/3d-lab.png
