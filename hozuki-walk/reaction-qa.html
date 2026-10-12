@@ -1,25 +1,75 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>緋月・リアクション原画比較 QA v0.2</title><style>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>緋月・リアクション原画比較 QA v0.3</title><style>
 *{box-sizing:border-box}body{margin:0;background:#1a2229;color:#f3e8dd;font:14px system-ui,sans-serif;padding:16px}header{position:sticky;top:0;background:#1a2229e9;z-index:2;padding:10px 0;border-bottom:1px solid #788}h1{font-size:18px;margin:0 0 8px}.muted{color:#b8c9cb}.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}button,select{color:inherit;background:#304655;border:1px solid #789;border-radius:7px;padding:8px}button:focus{outline:3px solid #efba6c}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:14px;margin-top:16px}.card{background:#22343c;border:1px solid #50636a;border-radius:10px;padding:10px}h2{font-size:14px;margin:0 0 8px}.pair{display:flex;gap:5px}.panel{flex:1;min-width:0}.checker{background-color:#65727b;background-image:linear-gradient(45deg,#889299 25%,transparent 25%,transparent 75%,#889299 75%),linear-gradient(45deg,#889299 25%,transparent 25%,transparent 75%,#889299 75%);background-position:0 0,10px 10px;background-size:20px 20px;height:255px;display:flex;justify-content:center;align-items:center;overflow:hidden}.checker img{object-fit:contain;height:220px;max-width:100%;image-rendering:auto}.checker img.big{height:440px}.status{font-weight:bold;min-height:24px}.fail{color:#ffb0a8}.pass{color:#a5efc7}.details{font-size:12px;margin-top:4px}.scene{border:1px solid #718;min-height:20px}
-</style></head><body><header><h1>緋月：既存キャラ原画と方向別リアクションの比較検査</h1><div class="muted">原画を絶対基準にする。画像の自動合格はデザイン承認を意味しません。</div><div class="bar"><label>動作 <select id="act"><option value="surprise">驚き</option><option value="wave">手振り</option><option value="bow">おじぎ</option><option value="cheer">喜ぶ</option></select></label><label>倍率 <select id="zoom"><option value="1">1倍</option><option value="2">2倍</option><option value="4">4倍</option></select></label><button id="rerun">再検査</button><span id="summary"></span><label>候補PNGをローカル比較 <input id="candidate" type="file" accept="image/png" multiple></label></div></header><main class="grid" id="cards"></main><script>
+</style></head><body><header><h1>緋月：既存キャラ原画と方向別リアクションの比較検査</h1><div class="muted">原画を絶対基準にする。画像の自動合格はデザイン承認を意味しません。</div><div class="bar"><label>動作 <select id="act"><option value="surprise">驚き</option><option value="wave">手振り</option><option value="bow">おじぎ</option><option value="cheer">喜ぶ</option></select></label><label>倍率 <select id="zoom"><option value="1">1倍</option><option value="2">2倍</option><option value="4">4倍</option></select></label><button id="rerun">再検査</button><span id="summary"></span><label>32コマシートを比較 <input id="atlas" type="file" accept="image/png"></label><label>候補PNGをローカル比較 <input id="candidate" type="file" accept="image/png" multiple></label></div></header><main class="grid" id="cards"></main><script>
 const dirs=['front','front_right','right','back_right','back','back_left','left','front_left'];const labels=['正面','右斜前','右','右斜後','背面','左斜後','左','左斜前'];const root='../field-lab/art/';
 const $=id=>document.getElementById(id);let localFiles=new Map();$('candidate').addEventListener('change',e=>{localFiles=new Map([...e.target.files].map(f=>[f.name,URL.createObjectURL(f)]));render()});
-function load(url){return new Promise(resolve=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>resolve(null);i.src=url+(url.includes('?')?'&':'?')+'qa=0.2'})}
-async function render(){
- const name=$('act').value,z=+$('zoom').value;
- $('cards').innerHTML='';$('summary').textContent='原画と候補を確認中…';
- let meta;try{meta=await(await fetch(root+'manifest.json?qa=0.1')).json()}catch{$('summary').textContent='原画のmanifestが読めません';return}
- let failures=0;let loaded=0;
- for(let d=0;d<8;d++){
-  const ref=meta.frames[d];const [base,pose]=await Promise.all([load(root+ref.file),load(localFiles.get(name+'__'+dirs[d]+'.png')||root+'directional-actions/'+name+'__'+dirs[d]+'.png')]);
-  const card=document.createElement('section');card.className='card';
-  const status=pose?'候補あり：原画と一致するか目視審査が必要':'不合格：方向別の専用画像が未登録';
-  if(pose)loaded++;else failures++;
-  card.innerHTML='<h2>'+labels[d]+'</h2><div class="pair"><div class="panel"><strong>既存原画</strong><div class="checker"><img class="base"></div></div><div class="panel"><strong>候補画像</strong><div class="checker"><img class="pose"></div></div></div><div class="status '+(pose?'':'fail')+'">'+status+'</div><div class="details">原寸 '+ref.width+'×'+ref.height+' / 足元アンカー '+ref.footX+','+ref.footY+'</div>';
-  const set=(className,img)=>{const el=card.querySelector(className);if(img){el.src=img.src;el.style.height=(220*z)+'px';el.parentElement.style.height=(255*z)+'px'}else el.style.display='none'};
-  set('.base',base);set('.pose',pose);
-  $('cards').append(card)
+let atlas=null,atlasUrl=null,runId=0;
+$('atlas').addEventListener('change',async e=>{
+ if(atlasUrl)URL.revokeObjectURL(atlasUrl);
+ atlas=e.target.files[0]||null;
+ atlasUrl=atlas?URL.createObjectURL(atlas):null;
+ render();
+});
+function load(url){return new Promise(resolve=>{
+ const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>resolve(null);
+ i.src=url.startsWith('blob:')||url.startsWith('data:')?url:url+(url.includes('?')?'&':'?')+'qa=0.3';
+})}
+function cellImage(img,row,col){
+ const c=document.createElement('canvas');const w=img.naturalWidth/8,h=img.naturalHeight/4;
+ c.width=Math.floor(w);c.height=Math.floor(h);
+ c.getContext('2d').drawImage(img,col*w,row*h,w,h,0,0,c.width,c.height);
+ return c;
+}
+function bounding(img){
+ const c=document.createElement('canvas');c.width=img.width||img.naturalWidth;c.height=img.height||img.naturalHeight;
+ const cx=c.getContext('2d',{willReadFrequently:true});cx.drawImage(img,0,0,c.width,c.height);
+ const data=cx.getImageData(0,0,c.width,c.height).data;
+ let xmin=c.width,ymin=c.height,xmax=-1,ymax=-1,border=0;
+ for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){
+  const alpha=data[(y*c.width+x)*4+3];
+  if(alpha<24)continue;
+  xmin=Math.min(xmin,x);ymin=Math.min(ymin,y);xmax=Math.max(xmax,x);ymax=Math.max(ymax,y);
+  if(x<3||y<3||x>=c.width-3||y>=c.height-3)border++;
  }
- $('summary').textContent='候補登録：'+loaded+'/8方向 ／ 欠落：'+failures+' ／ デザイン承認：未完了';
+ return xmax<0?null:{xmin,ymin,xmax,ymax,width:xmax-xmin+1,height:ymax-ymin+1,border};
+}
+function cropToBlob(img,row,col){const c=cellImage(img,row,col);return c.toDataURL('image/png')}
+async function render(){
+ const run=++runId,name=$('act').value,z=+$('zoom').value;
+ $('cards').innerHTML='';$('summary').textContent='原画と候補を確認中…';
+ let meta;try{meta=await(await fetch(root+'manifest.json?qa=0.3')).json()}catch{$('summary').textContent='原画のmanifestが読めません';return}
+ const art=atlasUrl?await load(atlasUrl):null;
+ if(run!==runId)return;
+ let failures=0,loaded=0,geometryIssues=0;
+ const row=['surprise','wave','bow','cheer'].indexOf(name);
+ for(let d=0;d<8;d++){
+  if(run!==runId)return;
+  const ref=meta.frames[d],local=localFiles.get(name+'__'+dirs[d]+'.png');
+  const candidate=art?cropToBlob(art,row,d):local||root+'directional-actions/'+name+'__'+dirs[d]+'.png';
+  const [base,pose]=await Promise.all([load(root+ref.file),load(candidate)]);
+  const card=document.createElement('section');card.className='card';
+  const bb=base?bounding(base):null,pb=pose?bounding(pose):null;
+  let notes=[];
+  if(!base)notes.push('既存の原画が読み込めない');
+  if(!pose||!pb){notes.push('専用画像が存在しない');failures++}
+  else{
+   loaded++;
+   if(pb.border>0){notes.push('セル端に色付き画素：隣接画像混入・欠損の疑い');geometryIssues++}
+   if(bb){
+    const rel=(pb.height/bb.height);
+    if(Math.abs(rel-1)>.04){notes.push('原画と輪郭の縦サイズ不一致：'+Math.round(rel*100)+'%（±4%超）');geometryIssues++}
+   }
+   if((pose.width||pose.naturalWidth)<ref.width || (pose.height||pose.naturalHeight)<ref.height){
+     notes.push('画像解像度が既存原画より小さい');geometryIssues++;
+   }
+  }
+  const status=notes.length?'要修正：'+notes.join('／'):'機械的寸法項目クリア・デザイン一致は未審査';
+  card.innerHTML='<h2>'+labels[d]+'</h2><div class="pair"><div class="panel"><strong>既存原画</strong><div class="checker"><img class="base"></div></div><div class="panel"><strong>候補画像</strong><div class="checker"><img class="pose"></div></div></div><div class="status '+(notes.length?'fail':'')+'">'+status+'</div><div class="details">原寸 '+ref.width+'×'+ref.height+' / 足元アンカー '+ref.footX+','+ref.footY+'</div>';
+  const set=(className,img)=>{const el=card.querySelector(className);if(img){el.src=img.src;el.style.height=(220*z)+'px';el.parentElement.style.height=(255*z)+'px'}else el.style.display='none'};
+  set('.base',base);set('.pose',pose);$('cards').append(card)
+ }
+ if(run!==runId)return;
+ $('summary').textContent='登録 '+loaded+'/8 ／ 欠落 '+failures+' ／ 寸法・切出し問題 '+geometryIssues+' ／ デザイン承認は別途必須';
 }
 $('act').onchange=render;$('zoom').onchange=render;$('rerun').onclick=render;render();
 </script></body></html>
