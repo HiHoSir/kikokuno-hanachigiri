@@ -1,0 +1,28 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>緋月 原画頭身校正 v0.1</title><style>
+*{box-sizing:border-box}body{margin:0;background:#19272c;color:#f5ecdf;font:14px system-ui}main{max-width:950px;margin:auto;padding:13px}h1{font-size:19px}p{line-height:1.5;color:#bed0d1}.controls{display:flex;flex-wrap:wrap;gap:10px;padding:10px;background:#293d44;border-radius:8px}.controls label{display:flex;gap:6px;align-items:center}input{max-width:120px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;margin-top:12px}.item{background:#263841;border:1px solid #57717c;border-radius:9px;padding:8px}.item canvas{width:100%;height:auto;background:repeating-conic-gradient(#344750 0 25%,#25353d 0 50%) 50%/20px 20px}.stats{font:12px ui-monospace,monospace;white-space:pre-wrap;color:#e0cda8}a{color:#f9ce8c}</style></head><body><main><h1>緋月・頭身の基準照合 v0.1</h1><p>3Dモデルを制作する前に確認するための、ゲーム採用原画8方向の原寸比較です。赤線＝頭頂候補、黄色＝肩（既存rigの肩座標）、青＝腰・股関節の目安、緑＝足元アンカー。頭頂・腰は暫定値なので原画を見ながら調整します。画像の伸縮・描き直しはありません。</p><div class="controls"><label>頭頂から肩までの補正 <input id="head" type="range" min="-55" max="55" value="0"></label><label>腰の補正 <input id="waist" type="range" min="-40" max="40" value="0"></label><label><input id="guide" type="checkbox" checked> ガイド線</label><button id="reset">補正リセット</button></div><div id="status">原画読み込み中…</div><div class="grid" id="grid"></div><p>この段階は頭身の校正です。正面専用リアクションの外見・向きの自動再生成は行いません。<a href="./8way-reaction-lab.html">8方向リアクションの比較ページ</a></p></main><script>
+const names=['正面','右斜前','右','右斜後','背面','左斜後','左','左斜前'];
+const shoulder=[282,285,291,291,260,263,263,264],waist=[410,417,411,418,384,384,383,386];
+// Head top is derived from manifest bbox; shoulder and waist are from existing rig.
+const root='../field-lab/art/';
+let manifest,images=[];
+function load(src){return new Promise(ok=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>ok(null);im.src=src})}
+function draw(){
+if(!manifest)return;const wrap=document.getElementById('grid');wrap.textContent='';let loaded=0;
+for(let i=0;i<8;i++){
+ const f=manifest.frames[i],im=images[i],head=f.bbox[1]+Number(document.getElementById('head').value),hip=waist[i]+Number(document.getElementById('waist').value);
+ const box=document.createElement('section');box.className='item';const title=document.createElement('h3');title.textContent=names[i]+' / '+f.file;box.append(title);
+ const c=document.createElement('canvas');c.width=f.width;c.height=f.height;box.append(c);let g=c.getContext('2d');if(im){g.drawImage(im,0,0);loaded++}
+ if(document.getElementById('guide').checked){
+  const lines=[[head,'#ef5555'],[shoulder[i],'#ffd35b'],[hip,'#53a9ff'],[f.footY,'#65dc83']];
+  for(const [y,color] of lines){g.strokeStyle=color;g.lineWidth=2;g.beginPath();g.moveTo(0,y+.5);g.lineTo(f.width,y+.5);g.stroke()}
+  g.fillStyle='#65dc83';g.fillRect(f.footX-4,f.footY-4,8,8)
+ }
+ const stats=document.createElement('div');stats.className='stats';const height=f.footY-head,headspan=shoulder[i]-head;
+ stats.textContent='画布 '+f.width+'×'+f.height+'\n足元 '+f.footX+','+f.footY+'\n頭頂候補 y='+head+' / 肩 y='+shoulder[i]+'\n腰の目安 y='+hip+'\n頭頂→足元 '+height+'px\n頭頂→肩/全高 '+(headspan/height*100).toFixed(1)+'%';
+ box.append(stats);wrap.append(box)
+ }
+ document.getElementById('status').textContent='原画ロード '+loaded+'/8枚。頭部比率は肩までの測定値（頭部単体比ではありません）。';
+}
+async function init(){try{const r=await fetch(root+'manifest.json?v=0.1');if(!r.ok)throw Error(r.status);manifest=await r.json();images=await Promise.all(manifest.frames.map(f=>load(root+f.file+'?v=0.1')));draw()}catch(e){document.getElementById('status').textContent='読込失敗：'+e}}
+['head','waist','guide'].forEach(id=>document.getElementById(id).oninput=draw);document.getElementById('reset').onclick=()=>{document.getElementById('head').value=0;document.getElementById('waist').value=0;draw()};init();
+</script></body></html>
