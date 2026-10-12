@@ -1,0 +1,39 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>緋月 3D造形審査</title><style>
+*{box-sizing:border-box}body{margin:0;background:#101923;color:#eff3f7;font:14px -apple-system,BlinkMacSystemFont,system-ui,sans-serif}
+header{padding:14px 16px;background:#192839;border-bottom:1px solid #46576a}h1{font-size:19px;margin:0 0 6px}.note{opacity:.78;line-height:1.6}.wrap{display:grid;grid-template-columns:minmax(280px,1fr) minmax(200px,360px);gap:14px;max-width:1100px;margin:14px auto;padding:0 12px}
+section{background:#213144;border:1px solid #45586b;border-radius:12px;overflow:hidden}#stage{height:65vh;min-height:350px;position:relative}#stage canvas{display:block;width:100%;height:100%}#status{padding:12px;line-height:1.6;background:#53352e}#actions{display:flex;flex-wrap:wrap;gap:7px;padding:10px}button{color:white;background:#3b5169;border:1px solid #71849b;border-radius:7px;padding:8px 12px;font-size:14px}button:focus{outline:2px solid #cba13e}
+aside{padding:12px}.refs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.refs figure{margin:0;background:#152330;border-radius:8px;text-align:center;padding:7px}.refs img{width:100%;max-height:195px;object-fit:contain;image-rendering:auto}.refs figcaption{margin-top:2px;font-size:12px;color:#c7d2df}#version{color:#efcf80}p{line-height:1.65}@media(max-width:750px){.wrap{grid-template-columns:1fr}#stage{height:52vh;min-height:310px}.refs{grid-template-columns:repeat(4,minmax(0,1fr))}.refs img{max-height:120px}}
+</style></head><body>
+<header><h1>緋月 3D造形レビュー <small id="version">候補・未承認</small></h1>
+<div class="note">モデルは自動読み込みです。ファイル選択は不要。ドラッグ／スワイプで回転、ピンチで拡大縮小。GLBの技術検査に合格しても造形品質は別途目視判定します。</div></header>
+<div class="wrap"><section><div id="status" role="status">3Dモデルの登録状況を確認中…</div><div id="stage"></div>
+<div id="actions"><button data-view="front">正面</button><button data-view="right">右側</button><button data-view="back">背面</button><button data-view="left">左側</button><button data-pose="idle">待機</button><button data-pose="wave">手振り</button><button data-pose="bow">おじぎ</button><button data-pose="surprise">驚き</button><button data-pose="cheer">喜ぶ</button></div>
+<p style="padding:0 14px">原画と比べる点：頭の幅・高さ、前髪の流れ、角の位置、目と頬、袖の輪郭、帯と裾、横・後ろ姿。<strong>現段階のv0.7は原画一致が未承認</strong>です。</p></section>
+<section><aside><strong>原画（正本・8方向）</strong><p>同一キャラクターの向き別の公式基準絵です。3Dモデルの回転角に対応して見比べてください。</p>
+<div class="refs" id="references"></div></aside></section></div>
+<script type="module">
+import * as THREE from 'https://esm.sh/three@0.180.0';
+import {GLTFLoader} from 'https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
+import {OrbitControls} from 'https://esm.sh/three@0.180.0/examples/jsm/controls/OrbitControls.js';
+const status=document.querySelector('#status'),stage=document.querySelector('#stage');
+const dirs=['正面','右斜め前','右側','右斜め後','背面','左斜め後','左側','左斜め前'];
+const refs=document.querySelector('#references');
+dirs.forEach((s,i)=>{const fig=document.createElement('figure'),im=document.createElement('img'),cap=document.createElement('figcaption');im.src='../field-lab/art/'+i+'.png';im.alt=s;im.loading='lazy';cap.textContent=s;fig.append(im,cap);refs.append(fig)});
+window.addEventListener('error',e=>status.textContent='描画エラー: '+e.message);
+const scene=new THREE.Scene();scene.background=new THREE.Color('#243344');
+const camera=new THREE.PerspectiveCamera(38,1,.01,1000),renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'default',alpha:false});
+renderer.setPixelRatio(Math.min(2,window.devicePixelRatio||1));stage.append(renderer.domElement);
+const orbit=new OrbitControls(camera,renderer.domElement);orbit.enableDamping=true;orbit.minPolarAngle=0;orbit.maxPolarAngle=Math.PI;
+scene.add(new THREE.HemisphereLight(0xffffff,0x43596a,2.5));const light=new THREE.DirectionalLight(0xffffff,2.2);light.position.set(-4,7,6);scene.add(light);
+let mixer,clips={},figure,boxSize=1,center=new THREE.Vector3(),clock=new THREE.Clock();
+function resize(){const w=stage.clientWidth,h=stage.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
+function setDirection(angle){camera.position.set(center.x+Math.sin(angle)*boxSize*1.9,center.y+boxSize*.25,center.z+Math.cos(angle)*boxSize*1.9);orbit.target.copy(center);camera.lookAt(center);orbit.update()}
+document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>setDirection({front:0,right:Math.PI/2,back:Math.PI,left:-Math.PI/2}[b.dataset.view]));
+document.querySelectorAll('[data-pose]').forEach(b=>b.onclick=()=>{if(!mixer)return;mixer.stopAllAction();const name=b.dataset.pose;if(name==='idle'){mixer.setTime(0);return}const c=clips[name];if(c){mixer.clipAction(c).reset().play();status.textContent='アニメーション '+name+' 再生中（造形は未承認）'}else status.textContent='モデルに '+name+' のモーションがありません'});
+function animate(){requestAnimationFrame(animate);const dt=clock.getDelta();mixer?.update(dt);orbit.update();renderer.render(scene,camera)}resize();animate();new ResizeObserver(resize).observe(stage);
+const modelPath='../models/hizuki/candidate.glb';
+try{const resp=await fetch(modelPath+'?cache='+Date.now(),{cache:'no-store'});if(!resp.ok)throw new Error('GLBが未登録: HTTP '+resp.status);
+const bytes=await resp.arrayBuffer();if(bytes.byteLength<20)throw new Error('GLBのサイズが不正です');
+new GLTFLoader().parse(bytes,'',g=>{figure=g.scene;scene.add(figure);mixer=new THREE.AnimationMixer(figure);clips=Object.fromEntries(g.animations.map(a=>[a.name,a]));const b=new THREE.Box3().setFromObject(figure);b.getCenter(center);const sz=b.getSize(new THREE.Vector3());boxSize=Math.max(sz.x,sz.y,sz.z);setDirection(0);status.textContent='GLB読み込み成功：'+(bytes.byteLength/1048576).toFixed(2)+' MiB / スキン・ポーズ・顔・衣装は目視で確認してください'},e=>status.textContent='GLBパース失敗：'+e.message);
+}catch(e){status.textContent=e.message+'。モデルの登録完了後に、このページから自動読み込みします。'}
+</script></body></html>
