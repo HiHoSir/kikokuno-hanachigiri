@@ -1,0 +1,21 @@
+{
+  "version": "0.34.0",
+  "status": "awaiting-art-review",
+  "directions": [
+    "front",
+    "front_right",
+    "right",
+    "back_right",
+    "back",
+    "back_left",
+    "left",
+    "front_left"
+  ],
+  "actions": {
+    "wave": {},
+    "bow": {},
+    "surprise": {},
+    "cheer": {}
+  },
+  "note": "Only individually approved dedicated reaction PNGs may be registered. Empty slots are not considered completed."
+}
