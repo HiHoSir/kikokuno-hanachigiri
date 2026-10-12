@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import {createLabCharacter} from '../field-lab/character.js?v=0.30.0';
 import {STRIDE} from '../field-lab/rig.js?v=0.12.1';
+import {motionPose} from './motion-controller.js?v=0.31.0';
 
 // Reuse the identical mesh-deformation renderer that runs in the main game.
 // This transparent renderer is composited onto the illustration in screen space.
@@ -34,7 +35,14 @@ export async function createIllustratedCharacter(){
      const fullDrawWidth=fullDrawHeight*(300/400);
      // Subject feet are placed at the image coordinates, never resized by camera mode.
      const heightAboveFeet=(1.6667+1)*fullDrawHeight/fullHeight;
-     ctx.drawImage(canvas,p.x-fullDrawWidth/2,p.y-heightAboveFeet,fullDrawWidth,fullDrawHeight);
+     const pose=motionPose({mode:mode||'idle',elapsed,clock:frame,phase:stride,moving});
+     // Original artwork is still rendered at exactly the same scale and foot anchor.
+     // Motion-demo drives translation/lean only; the 8-way original rig handles limbs.
+     ctx.save();
+     ctx.translate(p.x+pose.x*displayedHeight,p.y+pose.y*displayedHeight);
+     ctx.rotate(pose.angle);
+     ctx.drawImage(canvas,-fullDrawWidth/2,-heightAboveFeet,fullDrawWidth,fullDrawHeight);
+     ctx.restore();
    },
    dispose(){renderer.dispose()}
  };
