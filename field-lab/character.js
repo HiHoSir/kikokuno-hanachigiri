@@ -59,6 +59,29 @@ export async function createLabCharacter(scene,basePath='./'){
   const tex=await loader.loadAsync(basePath+'art/actions/'+name+'.png?v=0.12.1');tex.colorSpace=THREE.SRGBColorSpace;
   const {geo}=spriteGeometry(f,f.ppu,null);actionFrames[name]={...f,tex,geo,base:geo.attributes.position.array.slice()};
  }));
+ // Optional authored 8-way reaction assets. A missing direction is NOT synthesized.
+ // Existing front artwork remains the reference until individual views are approved.
+ const reactionDirections=['front','front_right','right','back_right','back','back_left','left','front_left'];
+ const action8={};
+ let action8Manifest=null;
+ try {
+  const response=await fetch(basePath+'art/actions8/manifest.json?v=0.34.0');
+  if(response.ok)action8Manifest=await response.json();
+ }catch(error){console.warn('Optional directional action manifest unavailable',error)}
+ if(action8Manifest){
+  await Promise.all(Object.entries(action8Manifest.actions||{}).flatMap(([name,entries])=>
+   Object.entries(entries).map(async ([heading,spec])=>{
+    const d=reactionDirections.indexOf(heading);
+    if(d<0||!actionSpecs[name]||!spec||!spec.file)return;
+    try{
+     const tex=await loader.loadAsync(basePath+'art/actions8/'+spec.file+'?v=0.34.0');
+     tex.colorSpace=THREE.SRGBColorSpace;
+     const frame={...spec,ppu:spec.ppu||sets[0].pixelsPerUnit};
+     const {geo}=spriteGeometry(frame,frame.ppu,null);
+     (action8[name]??=[])[d]={...frame,tex,geo,base:geo.attributes.position.array.slice()};
+    }catch(error){console.warn('Rejected missing reaction asset',name,heading,error)}
+   })));
+ }
  const actionMaterial=material.clone();actionMaterial.onBeforeCompile=material.onBeforeCompile;actionMaterial.customProgramCacheKey=material.customProgramCacheKey;
  const actionMesh=new THREE.Mesh(actionFrames.wave.geo,actionMaterial);actionMesh.visible=false;actionMesh.renderOrder=2;scene.add(actionMesh);
  // Preserve the original planted legs; the bow upper pose ends at the skirt hem.
@@ -133,22 +156,22 @@ export async function createLabCharacter(scene,basePath='./'){
    f.far.geo.attributes.position.needsUpdate=true;f.far.geo.attributes.aGroundDepth.needsUpdate=true;f.far.geo.computeBoundingSphere();farLeg.position.copy(hero.position);farLeg.quaternion.copy(hero.quaternion);
   }
   // Dedicated action paintings face front; use the directional rig for any other heading.
-  const af=!originalReactions&&source===0&&direction===0&&pose.strength>0.08?actionFrames[mode]:null;
-  actionMesh.visible=!!af;bowLegs.visible=!!af&&mode==='bow';hero.visible=!af;
+  const af=!originalReactions&&source===0&&pose.strength>0.08?(action8[mode]?.[direction]||(direction===0?actionFrames[mode]:null)):null;
+  actionMesh.visible=!!af;bowLegs.visible=!!af&&mode==='bow'&&direction===0;hero.visible=!af;
   if(af){
    farLeg.visible=false;actionMesh.geometry=af.geo;actionMaterial.map=af.tex;
    const vertices=af.geo.attributes.position.array;
    for(let i=0;i<vertices.length;i+=3){
     let px=af.base[i],py=af.base[i+1],pz=0;
     const sx=px*af.ppu+af.footX,sy=af.footY-py*af.ppu;
-    if(mode==='wave'){
+    if(mode==='wave'&&direction===0&&!action8[mode]?.[direction]){
      const mask=waveWeight(sx,sy);
      const angle=Math.sin(actionElapsed*12)*.32*pose.strength;
      const dx=(sx-825)/af.ppu,dy=(700-sy)/af.ppu;
      px+=(dx*Math.cos(angle)-dy*Math.sin(angle)-dx)*mask;
      py+=(dx*Math.sin(angle)+dy*Math.cos(angle)-dy)*mask;
     }
-    if(mode==='bow'){
+    if(mode==='bow'&&direction===0&&!action8[mode]?.[direction]){
      const hinge=.405,angle=.62*pose.strength,h=Math.max(0,py-hinge);
      py-=h*(1-Math.cos(angle));pz+=h*Math.sin(angle);
     }
@@ -163,6 +186,6 @@ export async function createLabCharacter(scene,basePath='./'){
   // Never bridge a discontinuous step with a floating diagonal shadow triangle.
   const indices=[];for(let i=0;i<shadowIndices.length;i+=3){const [a,b,c]=shadowIndices.slice(i,i+3);if(shadowTriangleValid(sa[a*3+1],sa[b*3+1],sa[c*3+1]))indices.push(a,b,c)}
   shadow.geometry.setIndex(indices);shadow.geometry.attributes.position.needsUpdate=true;shadow.geometry.computeBoundingSphere();shadow.position.set(x,y,z);foot.position.set(x,y+.014,z);foot.visible=debug;
-  return {actionArt:af?mode:null,expression:af?({wave:'smile',cheer:'joy',surprise:'wide-eyes',bow:'eyes-down'}[mode]):'neutral',action:mode,actionStrength:pose.strength,actionElapsed,jump:pose.jump,frame:index,source:source?'v0.6 / 4方向':'候補 / 8方向',feetY:y,anchor:[f.footX,f.footY],rigBlend:blend,visibleLegs:source?null:LEG_LANDMARKS[index].length,stance:cycle.map(c=>c.stance),footLift:cycle.map(c=>c.lift*blend),shadowTriangles:indices.length/3,depthMode:'upright',reusedFarLeg:!!f.far};
+  return {actionArt:af?(action8[mode]?.[direction]?mode+':authored8':mode+':front'):null,expression:af?({wave:'smile',cheer:'joy',surprise:'wide-eyes',bow:'eyes-down'}[mode]):'neutral',action:mode,actionStrength:pose.strength,actionElapsed,jump:pose.jump,frame:index,source:source?'v0.6 / 4方向':'候補 / 8方向',feetY:y,anchor:[f.footX,f.footY],rigBlend:blend,visibleLegs:source?null:LEG_LANDMARKS[index].length,stance:cycle.map(c=>c.stance),footLift:cycle.map(c=>c.lift*blend),shadowTriangles:indices.length/3,depthMode:'upright',reusedFarLeg:!!f.far};
  }};
 }
