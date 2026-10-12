@@ -1,0 +1,36 @@
+name: Hizuki 3D model acceptance (candidate only)
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'models/hizuki/candidate.glb'
+      - 'models/hizuki/approved.json'
+      - 'scripts/audit-hizuki-glb.py'
+      - '.github/workflows/hizuki-3d-quality.yml'
+permissions:
+  contents: read
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install mesh audit dependencies
+        run: pip install 'trimesh==4.8.3' 'numpy>=1.26,<3' 'pillow>=10,<12'
+      - name: Inspect candidate and render eight views
+        run: |
+          python scripts/audit-hizuki-glb.py \
+            --model models/hizuki/candidate.glb \
+            --baseline models/hizuki/approved.json \
+            --out model-qa-output
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-3d-qa
+          path: model-qa-output/
+          if-no-files-found: warn
+      - name: Explain art approval is manual
+        if: success()
+        run: echo 'Technical QA passed. No automatic release. Compare angle_0..7 with field-lab/art/0..7.png before approving.'
