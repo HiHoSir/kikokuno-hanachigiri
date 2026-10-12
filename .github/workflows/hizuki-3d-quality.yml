@@ -19,18 +19,40 @@ jobs:
           python-version: '3.11'
       - name: Install mesh audit dependencies
         run: pip install 'trimesh==4.8.3' 'numpy>=1.26,<3' 'pillow>=10,<12'
+      - name: Verify auditor catches a structurally invalid figure
+        run: |
+          python - <<'PY'
+          import trimesh
+          trimesh.creation.box().export('/tmp/hizuki-invalid.glb')
+          PY
+          if python scripts/audit-hizuki-glb.py --model /tmp/hizuki-invalid.glb --out /tmp/hizuki-negative-test; then
+            echo 'ERROR: unrigged placeholder was incorrectly accepted'; exit 1
+          fi
+          python - <<'PY'
+          import json
+          r=json.load(open('/tmp/hizuki-negative-test/report.json'))
+          assert r['status']=='TECHNICAL_FAILURE', r
+          assert not r['checks']['skinned_model'] and not r['checks']['pose_animations']
+          print('Auditor negative test PASS')
+          PY
       - name: Inspect candidate and render eight views
         run: |
-          python scripts/audit-hizuki-glb.py \
-            --model models/hizuki/candidate.glb \
-            --baseline models/hizuki/approved.json \
-            --out model-qa-output
+          if [ ! -f models/hizuki/candidate.glb ]; then
+            mkdir -p model-qa-output
+            printf '%s\\n' '{"status":"AWAITING_MODEL_UPLOAD","accepted":false,"note":"No candidate GLB in GitHub; no 3D quality claim can be made"}' > model-qa-output/report.json
+            echo 'Candidate not stored in repository; technical self-test passed but sculpt review is pending.'
+          else
+            python scripts/audit-hizuki-glb.py \
+              --model models/hizuki/candidate.glb \
+              --baseline models/hizuki/approved.json \
+              --out model-qa-output
+          fi
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: hizuki-3d-qa
           path: model-qa-output/
           if-no-files-found: warn
-      - name: Explain art approval is manual
+      - name: Explain review gate
         if: success()
-        run: echo 'Technical QA passed. No automatic release. Compare angle_0..7 with field-lab/art/0..7.png before approving.'
+        run: echo 'Workflow PASS means AUDITOR passed. See model-qa-output/report.json for candidate status. No automatic release.'
