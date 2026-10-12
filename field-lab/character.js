@@ -72,7 +72,7 @@ export async function createLabCharacter(scene,basePath='./'){
  const shadow=new THREE.Mesh(new THREE.PlaneGeometry(.76,.56,20,20),new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(canvas),transparent:true,depthWrite:false,polygonOffset:true,polygonOffsetFactor:-1}));shadow.geometry.rotateX(-Math.PI/2);const shadowBase=shadow.geometry.attributes.position.array.slice(),shadowIndices=shadow.geometry.index.array.slice();scene.add(shadow);
  const foot=new THREE.Mesh(new THREE.RingGeometry(.065,.085,24),new THREE.MeshBasicMaterial({color:0xffe780,side:THREE.DoubleSide,depthWrite:false}));foot.rotation.x=-Math.PI/2;scene.add(foot);
  let blend=0,inertia=0,previousDirection=0;const groundDirection={x:0,y:0,z:0};
- return {update({x,z,y,dt,time,direction,phase,moving,camera,mode='idle',actionElapsed=0,source=0,groundAt,debug=false,velocity={x:0,z:0},frozen=false}){
+ return {update({x,z,y,dt,time,direction,phase,moving,camera,mode='idle',actionElapsed=0,source=0,groundAt,debug=false,velocity={x:0,z:0},frozen=false,originalReactions=false}){
   const set=sets[source],index=source?legacyFrame(direction,phase,moving):direction,f=set.frames[index];hero.geometry=f.geo;material.map=f.tex;
   if(previousDirection!==direction){blend=Math.min(blend,.35);previousDirection=direction}
   blend=frozen?1:updateBlend(blend,moving?1:0,dt,16);
@@ -101,10 +101,10 @@ export async function createLabCharacter(scene,basePath='./'){
      const mask=smoothstep(-5,24,outward)*smoothstep(ay-8,ay+40,sy)*(1-smoothstep(ay+92,ay+113,sy));
      // Direction-aware reactions operate on the actual sleeve pixels.
      // No synthetic appendages, stretched sprites or direction flipping.
-     const reaction=source===0&&direction!==0&&pose.strength>0;
+     const reaction=source===0&&(originalReactions||direction!==0)&&pose.strength>0;
      const waveSide=direction>=3&&direction<=5?-1:1;
      let gesture=(side<0?pose.left:pose.right);
-     if(reaction&&mode==='wave')gesture=(side===waveSide?(1.06+.28*Math.sin(actionElapsed*12))*pose.strength:0)*side;
+     if(reaction&&mode==='wave')gesture=(side===waveSide?(1.02+.42*Math.sin(actionElapsed*11))*pose.strength:0)*side;
      if(reaction&&mode==='surprise')gesture=side*.88*pose.strength;
      if(reaction&&mode==='cheer')gesture=side*(.96+.12*Math.sin(actionElapsed*11))*pose.strength;
      if(reaction&&mode==='bow')gesture=side*.21*pose.strength;
@@ -115,8 +115,8 @@ export async function createLabCharacter(scene,basePath='./'){
     }
    }
    // Preserve planted feet while the shoulders and upper body bend.
-   const upperMask=smoothstep(.58,1.22,py);
-   const directionalBow=source===0&&direction!==0&&mode==='bow';
+   const upperMask=smoothstep(.52,1.24,py);
+   const directionalBow=source===0&&(originalReactions||direction!==0)&&mode==='bow';
    const bowAmount=directionalBow?Math.max(pose.bow,.20*pose.strength):pose.bow;
    a[i+1]-=bowAmount*upperMask;
    if(directionalBow){
@@ -133,7 +133,7 @@ export async function createLabCharacter(scene,basePath='./'){
    f.far.geo.attributes.position.needsUpdate=true;f.far.geo.attributes.aGroundDepth.needsUpdate=true;f.far.geo.computeBoundingSphere();farLeg.position.copy(hero.position);farLeg.quaternion.copy(hero.quaternion);
   }
   // Dedicated action paintings face front; use the directional rig for any other heading.
-  const af=source===0&&direction===0&&pose.strength>0.08?actionFrames[mode]:null;
+  const af=!originalReactions&&source===0&&direction===0&&pose.strength>0.08?actionFrames[mode]:null;
   actionMesh.visible=!!af;bowLegs.visible=!!af&&mode==='bow';hero.visible=!af;
   if(af){
    farLeg.visible=false;actionMesh.geometry=af.geo;actionMaterial.map=af.tex;
