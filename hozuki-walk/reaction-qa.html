@@ -44,7 +44,7 @@ async function render(){
  const row=['surprise','wave','bow','cheer'].indexOf(name);
  for(let d=0;d<8;d++){
   if(run!==runId)return;
-  const ref=meta.frames[$('source').value==='legacy'?[0,4,4,8,8,12,12,16][d]:d],local=localFiles.get(name+'__'+dirs[d]+'.png');
+  const ref=meta.frames[$('source').value==='legacy'?[0,4,4,8,8,8,12,12][d]:d],local=localFiles.get(name+'__'+dirs[d]+'.png');
   const candidate=art?cropToBlob(art,row,d):local||root+'directional-actions/'+name+'__'+dirs[d]+'.png';
   const [base,pose]=await Promise.all([load(($('source').value==='legacy'?'../motion-demo/frames/':root)+ref.file),load(candidate)]);
   const card=document.createElement('section');card.className='card';
