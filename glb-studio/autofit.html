@@ -182,48 +182,66 @@ let alignmentBackup=null;
 function restoreAlignment(){if(!root||!alignmentBackup)return;root.position.copy(alignmentBackup.position);root.quaternion.copy(alignmentBackup.quaternion);root.scale.copy(alignmentBackup.scale);for(const [bone,t] of alignmentBackup.bones){bone.position.copy(t.p);bone.quaternion.copy(t.q);bone.scale.copy(t.s);}root.updateMatrixWorld(true);setSelected(root);status('自動合わせ前の姿勢へ戻しました。');}
 function applyAutoFit(){
  if(!root||!refURL){status('モデルと比較画像を用意してください。');return;}
- const req=['hips','head','leftFoot','rightFoot'];const missing=req.filter(k=>!jointPoints[k]?.placed);
- if(missing.length){status('必要な関節点を配置してください: '+missing.join(', '));return;}
- const mapped=req.map(k=>boneByName(boneMap[k]));if(mapped.some(b=>!b)||new Set(mapped).size!==mapped.length){status('ボーン対応が重複または未設定です。');return;}
+ const required=['hips','head','leftFoot','rightFoot'];const missing=required.filter(k=>!jointPoints[k]?.placed);
+ if(missing.length){status('関節点を配置してください: '+missing.join(', '));return;}
+ const mapped=required.map(k=>boneByName(boneMap[k]));if(mapped.some(b=>!b)||new Set(mapped).size!==mapped.length){status('ボーンの対応が不正です。腰・頭・足首を確認してください。');return;}
  if(playing){playing=false;mixer?.stopAllAction();$('animBtn').textContent='アニメ再生';}
  if(!alignmentBackup)alignmentBackup={position:root.position.clone(),quaternion:root.quaternion.clone(),scale:root.scale.clone(),bones:bones.map(b=>[b,{p:b.position.clone(),q:b.quaternion.clone(),s:b.scale.clone()}])};
- else {root.position.copy(alignmentBackup.position);root.quaternion.copy(alignmentBackup.quaternion);root.scale.copy(alignmentBackup.scale);for(const [b,t] of alignmentBackup.bones){b.position.copy(t.p);b.quaternion.copy(t.q);b.scale.copy(t.s);}}
+ else {root.position.copy(alignmentBackup.position);root.quaternion.copy(alignmentBackup.quaternion);root.scale.copy(alignmentBackup.scale);for(const [bone,t] of alignmentBackup.bones){bone.position.copy(t.p);bone.quaternion.copy(t.q);bone.scale.copy(t.s);}}
  root.updateMatrixWorld(true);
- const hip=mapped[0];const depth=hip.getWorldPosition(new THREE.Vector3()).project(camera).z;const target=jointPoints.hips;
- const wanted=new THREE.Vector3(target.x*2-1,1-target.y*2,depth).unproject(camera);const delta=wanted.sub(hip.getWorldPosition(new THREE.Vector3()));
- if(!Number.isFinite(delta.length())||delta.length()>bounds().diameter*2){status('画像とモデルの差が大きいため調整を中止しました。');return;}
+ const distance2=(key,bone)=>{const p=worldToScreen(bone),g=jointPoints[key];return (p.x-g.x)**2+(p.y-g.y)**2;};
+ const evalScore=()=>{root.updateMatrixWorld(true);let sum=0;for(const role of required){const bone=boneByName(boneMap[role]);sum+=Math.min(1,distance2(role,bone));}return sum;};
+ // Try orientation candidates without altering bone lengths, picking the best visible silhouette.
+ // Yaw uses the model's world-up axis. Camera-facing roll is limited to 30 degrees.
+ const baseRoot=alignmentBackup.quaternion.clone(),yawAxis=new THREE.Vector3(0,1,0);
+ const cameraAxis=camera.getWorldDirection(new THREE.Vector3()).normalize();
+ let best={score:Infinity,q:baseRoot.clone()};
+ for(let yaw=-150;yaw<=150;yaw+=15){for(let roll=-30;roll<=30;roll+=15){
+  root.quaternion.copy(new THREE.Quaternion().setFromAxisAngle(cameraAxis,THREE.MathUtils.degToRad(roll)).multiply(new THREE.Quaternion().setFromAxisAngle(yawAxis,THREE.MathUtils.degToRad(yaw))).multiply(baseRoot));
+  const score=evalScore();if(score<best.score)best={score,q:root.quaternion.clone()};
+ }}
+ root.quaternion.copy(best.q);root.updateMatrixWorld(true);
+ // Align pelvis translation in the camera plane, preserving 3D scale and depth.
+ const hip=mapped[0],depth=hip.getWorldPosition(new THREE.Vector3()).project(camera).z,target=jointPoints.hips;
+ const wanted=new THREE.Vector3(target.x*2-1,1-target.y*2,depth).unproject(camera);
+ const delta=wanted.sub(hip.getWorldPosition(new THREE.Vector3()));
+ if(!Number.isFinite(delta.length())||delta.length()>bounds().diameter*2){root.quaternion.copy(baseRoot);status('位置差が大きいため変更を中止しました。');return;}
  root.position.add(delta);root.updateMatrixWorld(true);
- let adjusted=0;
+ // Independent bounded screen-space IK with candidate scoring; no spine or pelvis manipulation.
+ let improved=0;
  if(isExtendedRig()){
-   // Conservative screen-space CCD, using only shoulder/elbow and hip/knee joints.
-   // No translation, scaling, spine or pelvis rotations. Each joint is limited to 25 degrees from the starting pose.
-   const axisWorld=new THREE.Vector3();camera.getWorldDirection(axisWorld).normalize();
-   for(const role of ['leftHand','rightHand','leftFoot','rightFoot']){
-     if(!jointPoints[role]?.placed)continue;
-     const chain=EXTENDED_CHAINS[role].map(boneByName);
-     if(chain.some(b=>!b))continue;
-     const tip=chain[2],goal=jointPoints[role];
-     for(let pass=0;pass<6;pass++){
-       for(const joint of [chain[1],chain[0]]){
-         root.updateMatrixWorld(true);
-         const pivot=worldToScreen(joint),end=worldToScreen(tip);
-         const ax=end.x-pivot.x,ay=end.y-pivot.y,bx=goal.x-pivot.x,by=goal.y-pivot.y;
-         if(Math.hypot(ax,ay)<.001||Math.hypot(bx,by)<.001)continue;
-         const ang=Math.atan2(ax*by-ay*bx,ax*bx+ay*by);
-         const step=THREE.MathUtils.clamp(ang,-THREE.MathUtils.degToRad(4),THREE.MathUtils.degToRad(4));
-         const parentQ=joint.parent.getWorldQuaternion(new THREE.Quaternion());
-         const axis=axisWorld.clone().applyQuaternion(parentQ.invert()).normalize();
-         const initial=alignmentBackup.bones.find(x=>x[0]===joint)?.[1].q;
-         if(!initial)continue;
-         const proposed=joint.quaternion.clone().premultiply(new THREE.Quaternion().setFromAxisAngle(axis,step));
-         if(initial.angleTo(proposed)>THREE.MathUtils.degToRad(25))continue;
-         joint.quaternion.copy(proposed);adjusted++;
-       }
+  const right=new THREE.Vector3(1,0,0).applyQuaternion(camera.quaternion).normalize();
+  const axes=[cameraAxis,right];
+  const originalQ=new Map(alignmentBackup.bones.map(([bone,t])=>[bone,t.q]));
+  for(const role of ['leftHand','rightHand','leftFoot','rightFoot']){
+   if(!jointPoints[role]?.placed)continue;
+   const chain=EXTENDED_CHAINS[role].map(name=>boneByName(name));if(chain.some(b=>!b))continue;
+   const tip=chain[2];
+   for(let pass=0;pass<12;pass++){
+    for(const [j,joint] of [chain[1],chain[0]].entries()){
+     const startQ=originalQ.get(joint);if(!startQ)continue;
+     root.updateMatrixWorld(true);
+     let winner={score:distance2(role,tip),q:joint.quaternion.clone()};
+     const parentWorld=joint.parent.getWorldQuaternion(new THREE.Quaternion()).invert();
+     for(const axisW of axes){
+      const localAxis=axisW.clone().applyQuaternion(parentWorld).normalize();
+      for(const deg of [-5,5]){
+       const trial=new THREE.Quaternion().setFromAxisAngle(localAxis,THREE.MathUtils.degToRad(deg)).multiply(joint.quaternion.clone());
+       // Elbows/knees up to 105°, shoulders/hips up to 75° from loaded pose.
+       const limit=THREE.MathUtils.degToRad(j===0?105:75);
+       if(startQ.angleTo(trial)>limit)continue;
+       const prev=joint.quaternion.clone();joint.quaternion.copy(trial);root.updateMatrixWorld(true);
+       const score=distance2(role,tip);if(score<winner.score-1e-7)winner={score,q:trial.clone()};
+       joint.quaternion.copy(prev);
+      }
      }
+     if(!joint.quaternion.equals(winner.q)){joint.quaternion.copy(winner.q);improved++;}
+    }
    }
+  }
  }
  root.updateMatrixWorld(true);setSelected(root);$('undoFitBtn').disabled=false;
- status(adjusted?'対応骨格で手足を控えめに調整しました。ズレは手動調整してください。':'安全な位置合わせのみ行いました。対応骨格・関節点を確認してください。');
+ status('回転＋位置合わせを実行しました。手足の調整 '+improved+'回。結果を確認し、必要に応じて「自動合わせ前に戻す」を使用してください。');
 }
 
 $('file').onchange=e=>{loadModel(e.target.files?.[0]); e.target.value='';}; $('openBtn').onclick=()=>$('file').click();
