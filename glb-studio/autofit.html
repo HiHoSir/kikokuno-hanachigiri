@@ -44,6 +44,19 @@ header{flex-wrap:wrap;height:auto;min-height:58px}header>.btnrow{min-width:0}hea
 .scene>.reference-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
 .scene>.overlay2d{z-index:3}
 @media(max-width:860px){.scene{height:clamp(460px,67dvh,750px);min-height:460px}.scene>.tools{min-height:48px}.scene>canvas{min-height:0}}
+
+/* v8: independent editing viewport (no toolbar or status overlays). */
+.scene{display:flex!important;flex-direction:column!important;min-height:440px;overflow:hidden}
+.scene>.tools,.scene>.selection-label,.scene>.status{position:relative!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;flex-shrink:0}
+.scene>.tools{order:0;min-height:48px;max-height:56px;overflow-x:auto;overflow-y:hidden;white-space:nowrap}
+.scene>.selection-label{order:1;margin:2px 8px 4px}
+.scene>.status{order:3;margin:0;min-height:34px;max-height:64px}
+.view-port{order:2;position:relative;flex:1 1 auto;min-height:240px;overflow:hidden;isolation:isolate}
+.view-port>canvas{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;z-index:1}
+.view-port>.reference-bg{position:absolute!important;inset:0;z-index:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
+.view-port>.overlay2d{position:absolute!important;inset:0;z-index:3}
+.view-port>.drop{position:absolute;inset:12px;z-index:2}
+@media(max-width:860px){.scene{height:clamp(490px,67dvh,750px)!important}.view-port{min-height:240px}}
 </style>
 </head>
 <body>
@@ -52,17 +65,11 @@ header{flex-wrap:wrap;height:auto;min-height:58px}header>.btnrow{min-width:0}hea
   <div class="btnrow"><button type="button" onclick="location.href='./'">通常編集へ</button><button id="openBtn">GLBを開く</button><button id="loadRefBtn">比較画像</button><button id="exportBtn" disabled>GLB保存</button></div>
 </header>
 <div class="layout">
-<main class="scene" id="stage">
-  <img id="referenceBg" class="reference-bg" alt="比較画像">
-  <div id="overlay2d" class="overlay2d"><svg id="guideLines"></svg></div>
-  <div class="tools">
+<main class="scene" id="stage"><div class="tools">
     <button id="homeBtn">全体表示</button><button id="gridBtn" class="active">グリッド</button><button id="wireBtn">ワイヤー</button><button id="animBtn" disabled>アニメ再生</button>
     <button id="editPick" class="active">選択</button><button id="editMove">移動</button><button id="editRotate">回転</button>
     <button id="startJointEdit">関節点編集</button><button id="autoFitBtn" disabled>自動で合わせる</button>
-  </div>
-  <div id="selectionLabel" class="selection-label">モデルと比較画像を読み込んでください</div>
-  <div class="status" id="status">未読み込み</div>
-</main>
+  </div><div id="selectionLabel" class="selection-label">モデルと比較画像を読み込んでください</div><div id="viewPort" class="view-port"><img id="referenceBg" class="reference-bg" alt="比較画像"><div id="overlay2d" class="overlay2d"><svg id="guideLines"></svg></div></div><div class="status" id="status">未読み込み</div></main>
 <aside class="panel">
   <div class="section">
     <h2>原画合わせ</h2>
@@ -133,7 +140,7 @@ const originalTransforms=new Map();
 
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(40,1,.01,10000); camera.position.set(3,2.2,4);
-const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.55; stage.prepend(renderer.domElement);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.55; $('viewPort').prepend(renderer.domElement);
 const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.dampingFactor=.08;
 const transform=new TransformControls(camera,renderer.domElement); transform.setMode('rotate'); transform.setSpace('local'); transform.size=0.85; transform.addEventListener('dragging-changed',e=>controls.enabled=!e.value); scene.add(transform.getHelper());
 scene.add(new THREE.HemisphereLight(0xffffff,0x7180a2,3)); const light=new THREE.DirectionalLight(0xffffff,3); light.position.set(3,7,6); scene.add(light); const light2=new THREE.DirectionalLight(0xb3d8ff,1.8); light2.position.set(-5,2,-4); scene.add(light2);
@@ -142,7 +149,7 @@ const clock=new THREE.Clock();
 
 const status=t=>$('status').textContent=t;
 const label=t=>$('selectionLabel').textContent=t;
-function resize(){const w=stage.clientWidth,h=stage.clientHeight; camera.aspect=w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h);} new ResizeObserver(resize).observe(stage); resize();
+function resize(){const w=$('viewPort').clientWidth,h=$('viewPort').clientHeight; camera.aspect=w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h);} new ResizeObserver(resize).observe($('viewPort')); resize();
 function bounds(){const box=new THREE.Box3().setFromObject(root); const center=box.getCenter(new THREE.Vector3()), size=box.getSize(new THREE.Vector3()); return {center,size,diameter:Math.max(size.length(),.01),box};}
 function frame(){if(!root)return; const {center,diameter,box}=bounds(); controls.target.copy(center); const dist=diameter/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov)/2))*1.45; camera.position.copy(center).add(new THREE.Vector3(dist*.7,dist*.45,dist*.85)); camera.near=Math.max(diameter/1000,.001); camera.far=Math.max(diameter*100,100); camera.updateProjectionMatrix(); controls.minDistance=Math.max(diameter*.03,.002); controls.maxDistance=Math.max(diameter*50,30); grid.position.y=box.min.y; grid.scale.setScalar(Math.max(diameter/10,.1)); axes.position.copy(center); axes.scale.setScalar(diameter/3); controls.update();}
 function snapshot(){originalTransforms.clear(); root?.traverse(o=>originalTransforms.set(o,{p:o.position.clone(), r:o.rotation.clone(), s:o.scale.clone(), q:o.quaternion.clone()}));}
@@ -155,8 +162,8 @@ function loadModel(file){ if(!file)return; sourceName=file.name.replace(/\.(glb|
 
 function chooseReference(file){ if(!file)return; if(refURL) URL.revokeObjectURL(refURL); refURL=URL.createObjectURL(file); $('referenceBg').src=refURL; $('referenceBg').style.display='block'; $('showReference').disabled=false; $('showOverlay').disabled=false; for(const id of ['refOpacity','refX','refY','refScale','resetReference','jointSet','placeAtCenter','clearJoint','resetJoints']) $(id).disabled=false; $('showReference').checked=true; $('showOverlay').checked=true; resetJointPoints(); updateReferenceView(); status('比較画像を読み込みました。関節点を置いてください。'); maybeEnableAutoFit(); }
 function updateReferenceView(){ $('referenceBg').style.display= $('showReference').checked && refURL ? 'block' : 'none'; $('referenceBg').style.opacity=(Number($('refOpacity').value)/100).toString(); $('referenceBg').style.transform=`translate(${Number($('refX').value)||0}%,${Number($('refY').value)||0}%) scale(${(Number($('refScale').value)||100)/100})`; $('refOpacityVal').textContent=$('refOpacity').value+'%'; $('refXVal').textContent=$('refX').value+'%'; $('refYVal').textContent=$('refY').value+'%'; $('refScaleVal').textContent=$('refScale').value+'%'; drawJointOverlay(); }
-function stagePointToCss(norm){ const r=stage.getBoundingClientRect(); return {x:norm.x*r.width, y:norm.y*r.height}; }
-function cssPointToNorm(x,y){ const r=stage.getBoundingClientRect(); return {x:THREE.MathUtils.clamp(x/r.width,0,1), y:THREE.MathUtils.clamp(y/r.height,0,1)}; }
+function stagePointToCss(norm){ const r=$('viewPort').getBoundingClientRect(); return {x:norm.x*r.width, y:norm.y*r.height}; }
+function cssPointToNorm(x,y){ const r=$('viewPort').getBoundingClientRect(); return {x:THREE.MathUtils.clamp(x/r.width,0,1), y:THREE.MathUtils.clamp(y/r.height,0,1)}; }
 function resetJointPoints(){ jointPoints={}; JOINTS.forEach((j,i)=>jointPoints[j.id]={x:.5 + (i%2?0.06:-0.06)*(i>2), y:[.6,.45,.25,.44,.44,.9,.9][i], placed:false}); $('jointSet').replaceChildren(...JOINTS.map(j=>new Option(j.label,j.id))); $('jointSet').value='hips'; updateJointStatus(); drawJointOverlay(); }
 function updateJointStatus(){ const placed=JOINTS.filter(j=>jointPoints[j.id]?.placed).length; $('jointStatus').innerHTML=`配置済み: <span class="${placed>=5?'ok':'warn'}">${placed}/${JOINTS.length}</span>。最低でも 腰 / 胸 / 頭 / 左右足 の5点があると安定します。`; }
 function drawJointOverlay(){ const ov=$('overlay2d'); ov.classList.toggle('show',$('showOverlay').checked && !!refURL && jointEdit); ov.innerHTML='<svg id="guideLines"></svg>'; if(!($('showOverlay').checked && refURL)) return; const svg=ov.querySelector('svg'); for(const [a,b] of LINES){ const pa=jointPoints[a], pb=jointPoints[b]; if(!pa||!pb||!pa.placed||!pb.placed) continue; const p1=stagePointToCss(pa), p2=stagePointToCss(pb); const line=document.createElementNS('http://www.w3.org/2000/svg','line'); line.setAttribute('x1',p1.x); line.setAttribute('y1',p1.y); line.setAttribute('x2',p2.x); line.setAttribute('y2',p2.y); line.setAttribute('stroke','#8fd0ff'); line.setAttribute('stroke-width','2'); line.setAttribute('stroke-dasharray','4 4'); svg.appendChild(line); }
@@ -233,7 +240,7 @@ renderer.domElement.addEventListener('pointerup',e=>{ if(!pointerDown||!root)ret
   const hit=ray.intersectObjects(meshes,true).find(h=>meshes.includes(h.object)); if(hit) setSelected(hit.object); else setSelected(root);
 });
 $('overlay2d').addEventListener('pointerdown',e=>{ if(!jointEdit||!refURL) return; const target=e.target.closest('.joint'); if(target) $('jointSet').value=target.dataset.joint; });
-$('overlay2d').addEventListener('pointerup',e=>{ if(!jointEdit||!refURL) return; const r=stage.getBoundingClientRect(); const p=cssPointToNorm(e.clientX-r.left,e.clientY-r.top); const k=$('jointSet').value; jointPoints[k]={x:p.x,y:p.y,placed:true}; updateJointStatus(); drawJointOverlay(); maybeEnableAutoFit(); status(JOINTS.find(j=>j.id===k).label+' を配置しました。'); });
+$('overlay2d').addEventListener('pointerup',e=>{ if(!jointEdit||!refURL) return; const r=$('viewPort').getBoundingClientRect(); const p=cssPointToNorm(e.clientX-r.left,e.clientY-r.top); const k=$('jointSet').value; jointPoints[k]={x:p.x,y:p.y,placed:true}; updateJointStatus(); drawJointOverlay(); maybeEnableAutoFit(); status(JOINTS.find(j=>j.id===k).label+' を配置しました。'); });
 stage.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy'});
 stage.addEventListener('drop',e=>{e.preventDefault(); const files=[...e.dataTransfer.files]; const model=files.find(f=>/\.(glb|gltf)$/i.test(f.name)); const img=files.find(f=>/\.(png|jpg|jpeg|webp)$/i.test(f.name)); if(model) loadModel(model); if(img) chooseReference(img);});
 function loop(){ requestAnimationFrame(loop); const delta=clock.getDelta(); if(playing&&mixer) mixer.update(delta); controls.update(); renderer.render(scene,camera);} loop();
