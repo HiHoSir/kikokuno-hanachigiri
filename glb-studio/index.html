@@ -16,6 +16,16 @@ header{flex-wrap:wrap;height:auto;min-height:58px}header>.btnrow{min-width:0}hea
 .scene>.selection-label{position:relative;top:auto;left:auto;right:auto;width:max-content;max-width:calc(100% - 20px);margin:5px 10px;z-index:4;pointer-events:none}
 .scene>.status{max-height:64px;overflow:hidden;z-index:4;pointer-events:none}
 @media(max-width:860px){header>.btnrow{width:100%;display:flex;flex-wrap:wrap}header>.btnrow button{flex:1 1 auto}.scene{height:clamp(400px,60dvh,680px);min-height:400px}.scene>.tools{gap:5px;padding:8px}.scene>.tools button{font-size:12px;padding:8px 10px}.scene>.selection-label{font-size:11px}}
+
+/* v7: keep controls completely outside the comparison/model viewport. */
+.scene{display:flex;flex-direction:column;isolation:isolate;overflow:hidden}
+.scene>.tools{order:0;position:relative!important;flex:0 0 auto;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;max-width:100%;width:100%;margin:0;min-height:52px;overflow-x:auto;overflow-y:hidden;z-index:8;background:#182334;padding:8px;box-sizing:border-box}
+.scene>.selection-label{order:1;position:relative!important;top:auto!important;left:auto!important;right:auto!important;bottom:auto!important;flex:0 0 auto;max-width:calc(100% - 20px);margin:4px 10px;pointer-events:none;z-index:8}
+.scene>.status{order:3;position:relative!important;left:auto!important;right:auto!important;top:auto!important;bottom:auto!important;flex:0 0 auto;margin:0;max-height:none;min-height:32px;z-index:8}
+.scene>canvas{position:relative!important;inset:auto!important;order:2;flex:1 1 auto;min-height:0;width:100%!important;height:auto!important;z-index:1}
+.scene>.reference-bg{position:absolute;inset:0;z-index:0;pointer-events:none}
+.scene>.overlay2d{z-index:3}
+@media(max-width:860px){.scene{height:clamp(460px,67dvh,750px);min-height:460px}.scene>.tools{min-height:48px}.scene>canvas{min-height:0}}
 </style>
 </head>
 <body>
