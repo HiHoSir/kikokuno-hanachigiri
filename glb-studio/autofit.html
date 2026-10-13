@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GLB Studio Prototype</title>
+<style>
+:root{color-scheme:dark;--bg:#11141c;--panel:#1c2230;--line:#364052;--txt:#eef1f8;--muted:#a8b0c2;--accent:#83caff;--ok:#8fe0a3;--warn:#ffcc7a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:14px/1.45 system-ui,-apple-system,sans-serif}button,input,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);background:#303a4c;color:var(--txt);border-radius:8px;padding:10px}button.active{background:#175779;border-color:#72bce7}button:disabled{opacity:.45;cursor:not-allowed}button:hover:not(:disabled){border-color:#8ac8ef}
+header{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 14px;background:#1a2130;border-bottom:1px solid var(--line)}
+header strong{font-size:17px}.sub{font-size:11px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;height:calc(100dvh - 58px)}
+.scene{position:relative;min-width:0;overflow:hidden;background:radial-gradient(ellipse at center,#263247,#121823 75%)}
+.scene canvas{display:block;touch-action:none;position:relative;z-index:1}
+.reference-bg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none;z-index:0;display:none;opacity:.55;transform-origin:center center}
+.overlay2d{position:absolute;inset:0;z-index:2;pointer-events:none}
+.overlay2d.show{pointer-events:auto}
+.overlay2d .joint{position:absolute;width:18px;height:18px;margin:-9px 0 0 -9px;border:2px solid #fff;border-radius:999px;background:#1f7fcb;box-shadow:0 0 0 2px rgba(0,0,0,.28)}
+.overlay2d .joint.active{background:#33c26b}
+.overlay2d .joint.locked{background:#b56eff}
+.overlay2d .label{position:absolute;transform:translate(10px,-8px);font-size:11px;background:#182334ee;padding:2px 6px;border-radius:6px;white-space:nowrap}
+.overlay2d svg{position:absolute;inset:0;width:100%;height:100%}
+.tools{position:absolute;top:12px;left:12px;display:flex;flex-wrap:wrap;gap:6px;max-width:calc(100% - 24px);z-index:4}.tools button{padding:7px 10px;background:#192230dc;backdrop-filter:blur(8px)}
+.status{position:absolute;bottom:12px;left:12px;right:12px;background:#182334d9;border:1px solid #354960;border-radius:9px;padding:7px 10px;font-size:12px;color:#cee2f5;z-index:4}.selection-label{position:absolute;top:58px;left:12px;background:#182334e8;padding:5px 9px;border-radius:8px;z-index:4;font-size:12px;max-width:calc(100% - 24px)}
+.panel{background:var(--panel);border-left:1px solid var(--line);overflow-y:auto;padding:14px}.section{padding:0 0 16px;margin-bottom:16px;border-bottom:1px solid var(--line)}h2{font-size:14px;margin:0 0 12px}.field{margin:9px 0}.field label{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#c4d0e2;margin-bottom:5px}.field input[type=range],.field input[type=text]{width:100%}.field input[type=color]{width:100%;height:38px;padding:2px;background:#2a3445;border:1px solid var(--line);border-radius:6px}.field select,.field input[type=number],.field input[type=text]{width:100%;padding:8px;border-radius:6px;background:#111a29;color:white;border:1px solid var(--line)}.btnrow{display:flex;gap:6px;flex-wrap:wrap}.btnrow button{flex:1}.hint{color:var(--muted);font-size:12px}.wide{width:100%;margin-top:8px}.file{display:none}.switchline{display:flex;align-items:center;gap:7px;color:#c7d5e7;font-size:12px}.switchline input{accent-color:#66bce9}.warn{color:var(--warn)}.ok{color:var(--ok)} output{color:#fff}
+@media(max-width:860px){.layout{grid-template-columns:1fr;display:flex;flex-direction:column;height:auto}.scene{height:56dvh;min-height:340px}.panel{border-left:0;border-top:1px solid var(--line)}}
+</style>
+</head>
+<body>
+<header>
+  <div><strong>GLB Studio</strong> <span class="sub">原画比較・半自動合わせ対応版</span></div>
+  <div class="btnrow"><button id="openBtn">GLBを開く</button><button id="loadRefBtn">比較画像</button><button id="exportBtn" disabled>GLB保存</button></div>
+</header>
+<div class="layout">
+<main class="scene" id="stage">
+  <img id="referenceBg" class="reference-bg" alt="比較画像">
+  <div id="overlay2d" class="overlay2d"><svg id="guideLines"></svg></div>
+  <div class="tools">
+    <button id="homeBtn">全体表示</button><button id="gridBtn" class="active">グリッド</button><button id="wireBtn">ワイヤー</button><button id="animBtn" disabled>アニメ再生</button>
+    <button id="editPick" class="active">選択</button><button id="editMove">移動</button><button id="editRotate">回転</button>
+    <button id="startJointEdit">関節点編集</button><button id="autoFitBtn" disabled>自動で合わせる</button>
+  </div>
+  <div id="selectionLabel" class="selection-label">モデルと比較画像を読み込んでください</div>
+  <div class="status" id="status">未読み込み</div>
+</main>
+<aside class="panel">
+  <div class="section">
+    <h2>原画合わせ</h2>
+    <div class="hint">比較画像に対して、<strong>腰・胸・頭・左右手首・左右足首</strong>の関節点を置きます。自動推定ではなく手置きですが、ここからボーンへ自動反映します。</div>
+    <div class="switchline" style="margin-top:8px"><input id="showReference" type="checkbox" checked disabled><label for="showReference">比較画像を表示</label></div>
+    <div class="switchline" style="margin-top:8px"><input id="showOverlay" type="checkbox" checked disabled><label for="showOverlay">関節点ガイドを表示</label></div>
+    <div class="field"><label for="refOpacity">画像透明度 <output id="refOpacityVal">55%</output></label><input id="refOpacity" type="range" min="0" max="100" value="55" disabled></div>
+    <div class="field"><label for="jointSet">編集中の関節</label><select id="jointSet" disabled></select></div>
+    <div class="btnrow"><button id="placeAtCenter" disabled>中央に置く</button><button id="clearJoint" disabled>この点を消す</button></div>
+    <button id="resetJoints" class="wide" disabled>関節点をすべてリセット</button>
+    <p id="jointStatus" class="hint">比較画像を読み込むと関節点を編集できます。</p>
+  </div>
+  <div class="section">
+    <h2>ボーン対応</h2>
+    <div class="hint">モデル内のボーン名は完全一致しなくても、名前から自動推定します。必要なら手動で選べます。</div>
+    <div id="boneMap"></div>
+    <button id="guessBones" class="wide" disabled>ボーン名を推定し直す</button>
+  </div>
+  <div class="section">
+    <h2>比較画像の位置合わせ</h2>
+    <div class="field"><label for="refX">画像位置 X <output id="refXVal">0%</output></label><input id="refX" type="range" min="-60" max="60" value="0" disabled></div>
+    <div class="field"><label for="refY">画像位置 Y <output id="refYVal">0%</output></label><input id="refY" type="range" min="-60" max="60" value="0" disabled></div>
+    <div class="field"><label for="refScale">画像倍率 <output id="refScaleVal">100%</output></label><input id="refScale" type="range" min="20" max="300" value="100" disabled></div>
+    <button id="resetReference" class="wide" disabled>画像位置をリセット</button>
+  </div>
+  <div class="section">
+    <h2>位置・回転</h2>
+    <div class="hint">自動合わせ後の微調整用です。</div>
+    <div class="field"><label>位置 X / Y / Z</label><div class="btnrow"><input id="px" type="number" step="0.1" value="0" disabled><input id="py" type="number" step="0.1" value="0" disabled><input id="pz" type="number" step="0.1" value="0" disabled></div></div>
+    <div class="field"><label>回転 X / Y / Z（度）</label><div class="btnrow"><input id="rx" type="number" step="5" value="0" disabled><input id="ry" type="number" step="5" value="0" disabled><input id="rz" type="number" step="5" value="0" disabled></div></div>
+  </div>
+</aside>
+</div>
+<input id="file" class="file" type="file" accept=".glb,.gltf,model/gltf-binary,model/gltf+json">
+<input id="refFile" class="file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+import {GLTFExporter} from 'three/addons/exporters/GLTFExporter.js';
+import {TransformControls} from 'three/addons/controls/TransformControls.js';
+
+const $=id=>document.getElementById(id);
+const stage=$('stage');
+const JOINTS=[
+  {id:'hips',label:'腰'},
+  {id:'chest',label:'胸'},
+  {id:'head',label:'頭'},
+  {id:'leftHand',label:'左手首'},
+  {id:'rightHand',label:'右手首'},
+  {id:'leftFoot',label:'左足首'},
+  {id:'rightFoot',label:'右足首'}
+];
+const LINES=[['hips','chest'],['chest','head'],['chest','leftHand'],['chest','rightHand'],['hips','leftFoot'],['hips','rightFoot']];
+const BONE_HINTS={
+  hips:['hips','pelvis','center','root','j_bip_c_waist','waist'],
+  chest:['chest','spine2','upperchest','spine1','spine_03','spine_02','torso'],
+  head:['head','neck','spine4'],
+  leftHand:['lefthand','hand_l','l_hand','leftwrist','wrist_l'],
+  rightHand:['righthand','hand_r','r_hand','rightwrist','wrist_r'],
+  leftFoot:['leftfoot','foot_l','l_foot','leftankle','ankle_l'],
+  rightFoot:['rightfoot','foot_r','r_foot','rightankle','ankle_r']
+};
+let root=null,meshes=[],bones=[],selected=null,boneHelper=null,mixer=null,animations=[],playing=false,sourceName='model';
+let refURL=null, editMode='pick', jointEdit=false, boneMap={}, jointPoints={};
+const originalTransforms=new Map();
+
+const scene=new THREE.Scene();
+const camera=new THREE.PerspectiveCamera(40,1,.01,10000); camera.position.set(3,2.2,4);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=1.55; stage.prepend(renderer.domElement);
+const controls=new OrbitControls(camera,renderer.domElement); controls.enableDamping=true; controls.dampingFactor=.08;
+const transform=new TransformControls(camera,renderer.domElement); transform.setMode('rotate'); transform.setSpace('local'); transform.size=0.85; transform.addEventListener('dragging-changed',e=>controls.enabled=!e.value); scene.add(transform.getHelper());
+scene.add(new THREE.HemisphereLight(0xffffff,0x7180a2,3)); const light=new THREE.DirectionalLight(0xffffff,3); light.position.set(3,7,6); scene.add(light); const light2=new THREE.DirectionalLight(0xb3d8ff,1.8); light2.position.set(-5,2,-4); scene.add(light2);
+const grid=new THREE.GridHelper(20,20,0x73849a,0x344157); scene.add(grid); const axes=new THREE.AxesHelper(2); axes.visible=false; scene.add(axes);
+const clock=new THREE.Clock();
+
+const status=t=>$('status').textContent=t;
+const label=t=>$('selectionLabel').textContent=t;
+function resize(){const w=stage.clientWidth,h=stage.clientHeight; camera.aspect=w/h; camera.updateProjectionMatrix(); renderer.setSize(w,h);} new ResizeObserver(resize).observe(stage); resize();
+function bounds(){const box=new THREE.Box3().setFromObject(root); const center=box.getCenter(new THREE.Vector3()), size=box.getSize(new THREE.Vector3()); return {center,size,diameter:Math.max(size.length(),.01),box};}
+function frame(){if(!root)return; const {center,diameter,box}=bounds(); controls.target.copy(center); const dist=diameter/(2*Math.tan(THREE.MathUtils.degToRad(camera.fov)/2))*1.45; camera.position.copy(center).add(new THREE.Vector3(dist*.7,dist*.45,dist*.85)); camera.near=Math.max(diameter/1000,.001); camera.far=Math.max(diameter*100,100); camera.updateProjectionMatrix(); controls.minDistance=Math.max(diameter*.03,.002); controls.maxDistance=Math.max(diameter*50,30); grid.position.y=box.min.y; grid.scale.setScalar(Math.max(diameter/10,.1)); axes.position.copy(center); axes.scale.setScalar(diameter/3); controls.update();}
+function snapshot(){originalTransforms.clear(); root?.traverse(o=>originalTransforms.set(o,{p:o.position.clone(), r:o.rotation.clone(), s:o.scale.clone(), q:o.quaternion.clone()}));}
+function disposeRoot(){if(!root)return; scene.remove(root); if(boneHelper){scene.remove(boneHelper); boneHelper.geometry.dispose(); boneHelper=null;} transform.detach(); root.traverse(o=>{if(o.isMesh){o.geometry?.dispose(); for(const m of (Array.isArray(o.material)?o.material:[o.material])) m?.dispose?.();}}); root=null; meshes=[]; bones=[]; selected=null; updateBoneMapUI();}
+function toRad(v){return THREE.MathUtils.degToRad(Number(v)||0)}
+function toDeg(v){return THREE.MathUtils.radToDeg(v)}
+function syncTransformFields(){ if(!selected) return; $('px').value=selected.position.x.toFixed(3); $('py').value=selected.position.y.toFixed(3); $('pz').value=selected.position.z.toFixed(3); $('rx').value=toDeg(selected.rotation.x).toFixed(1); $('ry').value=toDeg(selected.rotation.y).toFixed(1); $('rz').value=toDeg(selected.rotation.z).toFixed(1); }
+function setSelected(obj){ selected=obj; syncTransformFields(); if(editMode==='pick' || !selected) transform.detach(); else { transform.attach(selected); transform.setMode(editMode==='move'?'translate':'rotate'); transform.setSpace('local'); } if(!obj) label('未選択'); else if(obj.isBone) label('選択中のボーン: '+(obj.name||'Bone')); else if(obj.isMesh) label('選択中の部位: '+(obj.name||'Mesh')); else label('モデル全体'); }
+function loadModel(file){ if(!file)return; sourceName=file.name.replace(/\.(glb|gltf)$/i,''); status('GLBを読み込み中…'); const url=URL.createObjectURL(file); new GLTFLoader().load(url,gltf=>{ URL.revokeObjectURL(url); disposeRoot(); root=gltf.scene; scene.add(root); root.traverse(o=>{ if(o.isMesh){meshes.push(o); o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone(); } if(o.isBone) bones.push(o); }); snapshot(); boneHelper=bones.length?new THREE.SkeletonHelper(root):null; if(boneHelper){ boneHelper.visible=true; boneHelper.material.depthTest=false; boneHelper.renderOrder=999; scene.add(boneHelper);} animations=gltf.animations||[]; mixer=animations.length?new THREE.AnimationMixer(root):null; $('animBtn').disabled=!animations.length; $('exportBtn').disabled=false; guessBoneMap(); updateBoneMapUI(); setSelected(root); frame(); status(`読み込み完了: ${file.name}`); maybeEnableAutoFit(); },undefined,e=>{ URL.revokeObjectURL(url); console.error(e); status('GLB読み込み失敗: '+e.message); }); }
+
+function chooseReference(file){ if(!file)return; if(refURL) URL.revokeObjectURL(refURL); refURL=URL.createObjectURL(file); $('referenceBg').src=refURL; $('referenceBg').style.display='block'; $('showReference').disabled=false; $('showOverlay').disabled=false; for(const id of ['refOpacity','refX','refY','refScale','resetReference','jointSet','placeAtCenter','clearJoint','resetJoints']) $(id).disabled=false; $('showReference').checked=true; $('showOverlay').checked=true; resetJointPoints(); updateReferenceView(); status('比較画像を読み込みました。関節点を置いてください。'); maybeEnableAutoFit(); }
+function updateReferenceView(){ $('referenceBg').style.display= $('showReference').checked && refURL ? 'block' : 'none'; $('referenceBg').style.opacity=(Number($('refOpacity').value)/100).toString(); $('referenceBg').style.transform=`translate(${Number($('refX').value)||0}%,${Number($('refY').value)||0}%) scale(${(Number($('refScale').value)||100)/100})`; $('refOpacityVal').textContent=$('refOpacity').value+'%'; $('refXVal').textContent=$('refX').value+'%'; $('refYVal').textContent=$('refY').value+'%'; $('refScaleVal').textContent=$('refScale').value+'%'; drawJointOverlay(); }
+function stagePointToCss(norm){ const r=stage.getBoundingClientRect(); return {x:norm.x*r.width, y:norm.y*r.height}; }
+function cssPointToNorm(x,y){ const r=stage.getBoundingClientRect(); return {x:THREE.MathUtils.clamp(x/r.width,0,1), y:THREE.MathUtils.clamp(y/r.height,0,1)}; }
+function resetJointPoints(){ jointPoints={}; JOINTS.forEach((j,i)=>jointPoints[j.id]={x:.5 + (i%2?0.06:-0.06)*(i>2), y:[.6,.45,.25,.44,.44,.9,.9][i], placed:false}); $('jointSet').replaceChildren(...JOINTS.map(j=>new Option(j.label,j.id))); $('jointSet').value='hips'; updateJointStatus(); drawJointOverlay(); }
+function updateJointStatus(){ const placed=JOINTS.filter(j=>jointPoints[j.id]?.placed).length; $('jointStatus').innerHTML=`配置済み: <span class="${placed>=5?'ok':'warn'}">${placed}/${JOINTS.length}</span>。最低でも 腰 / 胸 / 頭 / 左右足 の5点があると安定します。`; }
+function drawJointOverlay(){ const ov=$('overlay2d'); ov.classList.toggle('show',$('showOverlay').checked && !!refURL && jointEdit); ov.innerHTML='<svg id="guideLines"></svg>'; if(!($('showOverlay').checked && refURL)) return; const svg=ov.querySelector('svg'); for(const [a,b] of LINES){ const pa=jointPoints[a], pb=jointPoints[b]; if(!pa||!pb||!pa.placed||!pb.placed) continue; const p1=stagePointToCss(pa), p2=stagePointToCss(pb); const line=document.createElementNS('http://www.w3.org/2000/svg','line'); line.setAttribute('x1',p1.x); line.setAttribute('y1',p1.y); line.setAttribute('x2',p2.x); line.setAttribute('y2',p2.y); line.setAttribute('stroke','#8fd0ff'); line.setAttribute('stroke-width','2'); line.setAttribute('stroke-dasharray','4 4'); svg.appendChild(line); }
+  for(const j of JOINTS){ const p=jointPoints[j.id]; const c=stagePointToCss(p); const node=document.createElement('div'); node.className='joint'+(($('jointSet').value===j.id)?' active':'')+(p.placed?' locked':''); node.style.left=c.x+'px'; node.style.top=c.y+'px'; node.dataset.joint=j.id; const lab=document.createElement('div'); lab.className='label'; lab.textContent=j.label; node.appendChild(lab); ov.appendChild(node); }
+}
+function maybeEnableAutoFit(){ const enoughRef = !!refURL; const enoughModel = !!root && bones.length>0; $('autoFitBtn').disabled = !(enoughRef && enoughModel); $('guessBones').disabled=!enoughModel; }
+function guessBoneForRole(role){ if(!bones.length) return ''; const lower=bones.map(b=>({name:(b.name||'').toLowerCase(), bone:b})); const hints=BONE_HINTS[role]||[]; for(const h of hints){ const found=lower.find(x=>x.name.includes(h)); if(found) return found.bone.name; } return bones[0]?.name||''; }
+function guessBoneMap(){ boneMap={}; for(const j of JOINTS) boneMap[j.id]=guessBoneForRole(j.id); }
+function updateBoneMapUI(){ const wrap=$('boneMap'); wrap.innerHTML=''; if(!bones.length){ wrap.innerHTML='<p class="hint">ボーン付きGLBを読み込むと対応付けできます。</p>'; return; } for(const j of JOINTS){ const field=document.createElement('div'); field.className='field'; const label=document.createElement('label'); label.textContent=j.label; const sel=document.createElement('select'); sel.dataset.role=j.id; sel.appendChild(new Option('未設定','')); for(const b of bones) sel.appendChild(new Option(b.name||'(無名ボーン)', b.name||'')); sel.value=boneMap[j.id]||''; sel.onchange=e=>boneMap[j.id]=e.target.value; field.appendChild(label); field.appendChild(sel); wrap.appendChild(field); } }
+function boneByName(name){ return bones.find(b=>(b.name||'')===name) || null; }
+function worldToScreen(obj){ const v=obj.getWorldPosition(new THREE.Vector3()).project(camera); return {x:(v.x+1)/2, y:(-v.y+1)/2}; }
+function angle2D(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
+function applyAutoFit(){ if(!root||!refURL){status('モデルと比較画像を用意してください。'); return;} const req=['hips','chest','head','leftFoot','rightFoot']; const missing=req.filter(k=>!jointPoints[k]?.placed); if(missing.length){ status('関節点が不足しています: '+missing.map(id=>JOINTS.find(j=>j.id===id)?.label).join(' / ')); return; }
+  // stop animation
+  if(playing){ playing=false; mixer?.stopAllAction(); $('animBtn').textContent='アニメ再生'; }
+  // reset mapped bones to original pose
+  for(const role of Object.keys(boneMap)){ const bone=boneByName(boneMap[role]); const t=bone && originalTransforms.get(bone); if(bone && t){ bone.position.copy(t.p); bone.rotation.copy(t.r); bone.scale.copy(t.s); bone.quaternion.copy(t.q); } }
+  const hips=boneByName(boneMap.hips), chest=boneByName(boneMap.chest), head=boneByName(boneMap.head), lf=boneByName(boneMap.leftFoot), rf=boneByName(boneMap.rightFoot), lh=boneByName(boneMap.leftHand), rh=boneByName(boneMap.rightHand);
+  if(!(hips&&chest&&head&&lf&&rf)){ status('必須ボーンの対応付けが不足しています。'); return; }
+  root.updateMatrixWorld(true);
+  // 1) global root placement: fit hips center and overall body height on screen
+  const footMidImg={x:(jointPoints.leftFoot.x+jointPoints.rightFoot.x)/2, y:(jointPoints.leftFoot.y+jointPoints.rightFoot.y)/2};
+  const bodyHImg=Math.max(0.05, footMidImg.y-jointPoints.head.y);
+  const hipsScreen=worldToScreen(hips); const footMidModel={x:(worldToScreen(lf).x+worldToScreen(rf).x)/2, y:(worldToScreen(lf).y+worldToScreen(rf).y)/2}; const bodyHModel=Math.max(0.0001, footMidModel.y-worldToScreen(head).y);
+  const {diameter}=bounds();
+  const scaleFactor=THREE.MathUtils.clamp(bodyHImg/bodyHModel,0.35,2.8);
+  root.scale.multiplyScalar(scaleFactor);
+  root.updateMatrixWorld(true);
+  const afterHips=worldToScreen(hips); const dx=(jointPoints.hips.x-afterHips.x), dy=(jointPoints.hips.y-afterHips.y);
+  // convert screen delta to world delta near hips depth
+  const depth=hips.getWorldPosition(new THREE.Vector3()).project(camera).z; const p1=new THREE.Vector3(jointPoints.hips.x*2-1,-jointPoints.hips.y*2+1,depth).unproject(camera); const p2=new THREE.Vector3((jointPoints.hips.x-dx)*2-1,-(jointPoints.hips.y-dy)*2+1,depth).unproject(camera); const worldDelta=p1.sub(p2);
+  root.position.add(worldDelta);
+  root.updateMatrixWorld(true);
+  // 2) 2D planar rotations for chest/head/limbs using local Z axis heuristic
+  const pairRotate=(parentBone, childBone, jointA, jointB)=>{
+    if(!(parentBone&&childBone&&jointPoints[jointA]?.placed&&jointPoints[jointB]?.placed)) return;
+    root.updateMatrixWorld(true);
+    const a=worldToScreen(parentBone), b=worldToScreen(childBone); const cur=angle2D(a,b), tgt=angle2D(jointPoints[jointA],jointPoints[jointB]);
+    const delta=THREE.MathUtils.clamp(tgt-cur,-Math.PI*.9,Math.PI*.9);
+    parentBone.rotation.z += delta;
+  };
+  pairRotate(hips,chest,'hips','chest');
+  pairRotate(chest,head,'chest','head');
+  if(lh) pairRotate(chest,lh,'chest','leftHand');
+  if(rh) pairRotate(chest,rh,'chest','rightHand');
+  pairRotate(hips,lf,'hips','leftFoot');
+  pairRotate(hips,rf,'hips','rightFoot');
+  root.updateMatrixWorld(true);
+  setSelected(hips);
+  status('半自動合わせを適用しました。必要なら各ボーンを微調整してください。');
+};
+
+$('file').onchange=e=>{loadModel(e.target.files?.[0]); e.target.value='';}; $('openBtn').onclick=()=>$('file').click();
+$('refFile').onchange=e=>{chooseReference(e.target.files?.[0]); e.target.value='';}; $('loadRefBtn').onclick=()=>$('refFile').click();
+$('homeBtn').onclick=frame; $('gridBtn').onclick=()=>{grid.visible=!grid.visible; $('gridBtn').classList.toggle('active',grid.visible)};
+$('animBtn').onclick=()=>{ if(!mixer||!animations.length)return; playing=!playing; if(playing){mixer.stopAllAction(); for(const clip of animations)mixer.clipAction(clip).play();} else mixer.stopAllAction(); $('animBtn').textContent=playing?'アニメ停止':'アニメ再生'; };
+for(const [id,mode] of [['editPick','pick'],['editMove','move'],['editRotate','rotate']]) $(id).onclick=()=>{ editMode=mode; ['editPick','editMove','editRotate'].forEach(k=>$(k).classList.toggle('active',k===id)); setSelected(selected||root); };
+$('startJointEdit').onclick=()=>{ jointEdit=!jointEdit; $('startJointEdit').classList.toggle('active',jointEdit); status(jointEdit?'比較画像上をタップして関節点を置けます。':'関節点編集を終了しました。'); drawJointOverlay(); };
+$('showReference').onchange=updateReferenceView; $('showOverlay').onchange=drawJointOverlay;
+for(const id of ['refOpacity','refX','refY','refScale']) $(id).oninput=updateReferenceView;
+$('resetReference').onclick=()=>{ $('refOpacity').value=55; $('refX').value=0; $('refY').value=0; $('refScale').value=100; updateReferenceView(); };
+$('placeAtCenter').onclick=()=>{ const k=$('jointSet').value; jointPoints[k]={x:.5,y:.5,placed:true}; updateJointStatus(); drawJointOverlay(); maybeEnableAutoFit(); };
+$('clearJoint').onclick=()=>{ const k=$('jointSet').value; if(jointPoints[k]) jointPoints[k].placed=false; updateJointStatus(); drawJointOverlay(); };
+$('resetJoints').onclick=()=>{ resetJointPoints(); };
+$('guessBones').onclick=()=>{ guessBoneMap(); updateBoneMapUI(); status('ボーン名を推定し直しました。'); maybeEnableAutoFit(); };
+$('autoFitBtn').onclick=applyAutoFit;
+['px','py','pz','rx','ry','rz'].forEach(id=>$(id).onchange=()=>{ if(!selected)return; selected.position.set(Number($('px').value)||0,Number($('py').value)||0,Number($('pz').value)||0); selected.rotation.set(toRad($('rx').value),toRad($('ry').value),toRad($('rz').value)); });
+$('exportBtn').onclick=()=>{ if(!root)return; status('GLBを書き出し中…'); const exporter=new GLTFExporter(); exporter.parse(root,result=>{ const blob=new Blob([result],{type:'model/gltf-binary'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=sourceName+'-autofit.glb'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); status('GLBを書き出しました。'); },err=>{ console.error(err); status('書き出し失敗: '+err.message); },{binary:true,animations:animations,onlyVisible:false}); };
+
+let pointerDown=null;
+renderer.domElement.addEventListener('pointerdown',e=>{ pointerDown={x:e.clientX,y:e.clientY}; });
+renderer.domElement.addEventListener('pointerup',e=>{ if(!pointerDown||!root)return; const d=Math.hypot(e.clientX-pointerDown.x,e.clientY-pointerDown.y); pointerDown=null; if(d>7||jointEdit) return; const rect=renderer.domElement.getBoundingClientRect(); const ndc=new THREE.Vector2((e.clientX-rect.left)/rect.width*2-1,-(e.clientY-rect.top)/rect.height*2+1); const ray=new THREE.Raycaster(); ray.setFromCamera(ndc,camera);
+  if(bones.length){ const nearest=bones.map((b,i)=>({i, p:b.getWorldPosition(new THREE.Vector3()).project(camera)})).map(({i,p})=>({i, d:Math.hypot((p.x-ndc.x)*rect.width/2,(p.y-ndc.y)*rect.height/2)})).sort((a,b)=>a.d-b.d)[0]; if(nearest && nearest.d<28){ setSelected(bones[nearest.i]); return; } }
+  const hit=ray.intersectObjects(meshes,true).find(h=>meshes.includes(h.object)); if(hit) setSelected(hit.object); else setSelected(root);
+});
+$('overlay2d').addEventListener('pointerdown',e=>{ if(!jointEdit||!refURL) return; const target=e.target.closest('.joint'); if(target) $('jointSet').value=target.dataset.joint; });
+$('overlay2d').addEventListener('pointerup',e=>{ if(!jointEdit||!refURL) return; const r=stage.getBoundingClientRect(); const p=cssPointToNorm(e.clientX-r.left,e.clientY-r.top); const k=$('jointSet').value; jointPoints[k]={x:p.x,y:p.y,placed:true}; updateJointStatus(); drawJointOverlay(); maybeEnableAutoFit(); status(JOINTS.find(j=>j.id===k).label+' を配置しました。'); });
+stage.addEventListener('dragover',e=>{e.preventDefault();e.dataTransfer.dropEffect='copy'});
+stage.addEventListener('drop',e=>{e.preventDefault(); const files=[...e.dataTransfer.files]; const model=files.find(f=>/\.(glb|gltf)$/i.test(f.name)); const img=files.find(f=>/\.(png|jpg|jpeg|webp)$/i.test(f.name)); if(model) loadModel(model); if(img) chooseReference(img);});
+function loop(){ requestAnimationFrame(loop); const delta=clock.getDelta(); if(playing&&mixer) mixer.update(delta); controls.update(); renderer.render(scene,camera);} loop();
+resetJointPoints(); label('モデルと比較画像を読み込んでください'); status('GLB Studio: 関節点を画像に置いて半自動合わせできます。');
+</script>
+</body>
+</html>
