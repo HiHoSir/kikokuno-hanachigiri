@@ -82,7 +82,7 @@ header{flex-wrap:wrap;height:auto;min-height:58px}header>.btnrow{min-width:0}hea
     <button id="resetJoints" class="wide" disabled>関節点をすべてリセット</button>
     <p id="jointStatus" class="hint">比較画像を読み込むと関節点を編集できます。</p>
   </div>
-  <div class="section">
+  <button id="undoFitBtn" class="wide" disabled>自動合わせ前に戻す</button>\n  <div class="section">
     <h2>ボーン対応</h2>
     <div class="hint">モデル内のボーン名は完全一致しなくても、名前から自動推定します。必要なら手動で選べます。</div>
     <div id="boneMap"></div>
@@ -158,7 +158,7 @@ function toRad(v){return THREE.MathUtils.degToRad(Number(v)||0)}
 function toDeg(v){return THREE.MathUtils.radToDeg(v)}
 function syncTransformFields(){ if(!selected) return; $('px').value=selected.position.x.toFixed(3); $('py').value=selected.position.y.toFixed(3); $('pz').value=selected.position.z.toFixed(3); $('rx').value=toDeg(selected.rotation.x).toFixed(1); $('ry').value=toDeg(selected.rotation.y).toFixed(1); $('rz').value=toDeg(selected.rotation.z).toFixed(1); }
 function setSelected(obj){ selected=obj; syncTransformFields(); if(editMode==='pick' || !selected) transform.detach(); else { transform.attach(selected); transform.setMode(editMode==='move'?'translate':'rotate'); transform.setSpace('local'); } if(!obj) label('未選択'); else if(obj.isBone) label('選択中のボーン: '+(obj.name||'Bone')); else if(obj.isMesh) label('選択中の部位: '+(obj.name||'Mesh')); else label('モデル全体'); }
-function loadModel(file){ if(!file)return; sourceName=file.name.replace(/\.(glb|gltf)$/i,''); status('GLBを読み込み中…'); const url=URL.createObjectURL(file); new GLTFLoader().load(url,gltf=>{ URL.revokeObjectURL(url); disposeRoot(); root=gltf.scene; scene.add(root); root.traverse(o=>{ if(o.isMesh){meshes.push(o); o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone(); } if(o.isBone) bones.push(o); }); snapshot(); boneHelper=bones.length?new THREE.SkeletonHelper(root):null; if(boneHelper){ boneHelper.visible=true; boneHelper.material.depthTest=false; boneHelper.renderOrder=999; scene.add(boneHelper);} animations=gltf.animations||[]; mixer=animations.length?new THREE.AnimationMixer(root):null; $('animBtn').disabled=!animations.length; $('exportBtn').disabled=false; guessBoneMap(); updateBoneMapUI(); setSelected(root); frame(); status(`読み込み完了: ${file.name}`); maybeEnableAutoFit(); },undefined,e=>{ URL.revokeObjectURL(url); console.error(e); status('GLB読み込み失敗: '+e.message); }); }
+function loadModel(file){ if(!file)return; sourceName=file.name.replace(/\.(glb|gltf)$/i,''); status('GLBを読み込み中…'); const url=URL.createObjectURL(file); new GLTFLoader().load(url,gltf=>{ URL.revokeObjectURL(url); disposeRoot(); alignmentBackup=null;$('undoFitBtn').disabled=true; root=gltf.scene; scene.add(root); root.traverse(o=>{ if(o.isMesh){meshes.push(o); o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone(); } if(o.isBone) bones.push(o); }); snapshot(); boneHelper=bones.length?new THREE.SkeletonHelper(root):null; if(boneHelper){ boneHelper.visible=true; boneHelper.material.depthTest=false; boneHelper.renderOrder=999; scene.add(boneHelper);} animations=gltf.animations||[]; mixer=animations.length?new THREE.AnimationMixer(root):null; $('animBtn').disabled=!animations.length; $('exportBtn').disabled=false; guessBoneMap(); updateBoneMapUI(); setSelected(root); frame(); status(`読み込み完了: ${file.name}`); maybeEnableAutoFit(); },undefined,e=>{ URL.revokeObjectURL(url); console.error(e); status('GLB読み込み失敗: '+e.message); }); }
 
 function chooseReference(file){ if(!file)return; if(refURL) URL.revokeObjectURL(refURL); refURL=URL.createObjectURL(file); $('referenceBg').src=refURL; $('referenceBg').style.display='block'; $('showReference').disabled=false; $('showOverlay').disabled=false; for(const id of ['refOpacity','refX','refY','refScale','resetReference','jointSet','placeAtCenter','clearJoint','resetJoints']) $(id).disabled=false; $('showReference').checked=true; $('showOverlay').checked=true; resetJointPoints(); updateReferenceView(); status('比較画像を読み込みました。関節点を置いてください。'); maybeEnableAutoFit(); }
 function updateReferenceView(){ $('referenceBg').style.display= $('showReference').checked && refURL ? 'block' : 'none'; $('referenceBg').style.opacity=(Number($('refOpacity').value)/100).toString(); $('referenceBg').style.transform=`translate(${Number($('refX').value)||0}%,${Number($('refY').value)||0}%) scale(${(Number($('refScale').value)||100)/100})`; $('refOpacityVal').textContent=$('refOpacity').value+'%'; $('refXVal').textContent=$('refX').value+'%'; $('refYVal').textContent=$('refY').value+'%'; $('refScaleVal').textContent=$('refScale').value+'%'; drawJointOverlay(); }
@@ -176,45 +176,32 @@ function updateBoneMapUI(){ const wrap=$('boneMap'); wrap.innerHTML=''; if(!bone
 function boneByName(name){ return bones.find(b=>(b.name||'')===name) || null; }
 function worldToScreen(obj){ const v=obj.getWorldPosition(new THREE.Vector3()).project(camera); return {x:(v.x+1)/2, y:(-v.y+1)/2}; }
 function angle2D(a,b){ return Math.atan2(b.y-a.y, b.x-a.x); }
-function applyAutoFit(){ if(!root||!refURL){status('モデルと比較画像を用意してください。'); return;} const req=['hips','chest','head','leftFoot','rightFoot']; const missing=req.filter(k=>!jointPoints[k]?.placed); if(missing.length){ status('関節点が不足しています: '+missing.map(id=>JOINTS.find(j=>j.id===id)?.label).join(' / ')); return; }
-  // stop animation
-  if(playing){ playing=false; mixer?.stopAllAction(); $('animBtn').textContent='アニメ再生'; }
-  // reset mapped bones to original pose
-  for(const role of Object.keys(boneMap)){ const bone=boneByName(boneMap[role]); const t=bone && originalTransforms.get(bone); if(bone && t){ bone.position.copy(t.p); bone.rotation.copy(t.r); bone.scale.copy(t.s); bone.quaternion.copy(t.q); } }
-  const hips=boneByName(boneMap.hips), chest=boneByName(boneMap.chest), head=boneByName(boneMap.head), lf=boneByName(boneMap.leftFoot), rf=boneByName(boneMap.rightFoot), lh=boneByName(boneMap.leftHand), rh=boneByName(boneMap.rightHand);
-  if(!(hips&&chest&&head&&lf&&rf)){ status('必須ボーンの対応付けが不足しています。'); return; }
-  root.updateMatrixWorld(true);
-  // 1) global root placement: fit hips center and overall body height on screen
-  const footMidImg={x:(jointPoints.leftFoot.x+jointPoints.rightFoot.x)/2, y:(jointPoints.leftFoot.y+jointPoints.rightFoot.y)/2};
-  const bodyHImg=Math.max(0.05, footMidImg.y-jointPoints.head.y);
-  const hipsScreen=worldToScreen(hips); const footMidModel={x:(worldToScreen(lf).x+worldToScreen(rf).x)/2, y:(worldToScreen(lf).y+worldToScreen(rf).y)/2}; const bodyHModel=Math.max(0.0001, footMidModel.y-worldToScreen(head).y);
-  const {diameter}=bounds();
-  const scaleFactor=THREE.MathUtils.clamp(bodyHImg/bodyHModel,0.35,2.8);
-  root.scale.multiplyScalar(scaleFactor);
-  root.updateMatrixWorld(true);
-  const afterHips=worldToScreen(hips); const dx=(jointPoints.hips.x-afterHips.x), dy=(jointPoints.hips.y-afterHips.y);
-  // convert screen delta to world delta near hips depth
-  const depth=hips.getWorldPosition(new THREE.Vector3()).project(camera).z; const p1=new THREE.Vector3(jointPoints.hips.x*2-1,-jointPoints.hips.y*2+1,depth).unproject(camera); const p2=new THREE.Vector3((jointPoints.hips.x-dx)*2-1,-(jointPoints.hips.y-dy)*2+1,depth).unproject(camera); const worldDelta=p1.sub(p2);
-  root.position.add(worldDelta);
-  root.updateMatrixWorld(true);
-  // 2) 2D planar rotations for chest/head/limbs using local Z axis heuristic
-  const pairRotate=(parentBone, childBone, jointA, jointB)=>{
-    if(!(parentBone&&childBone&&jointPoints[jointA]?.placed&&jointPoints[jointB]?.placed)) return;
-    root.updateMatrixWorld(true);
-    const a=worldToScreen(parentBone), b=worldToScreen(childBone); const cur=angle2D(a,b), tgt=angle2D(jointPoints[jointA],jointPoints[jointB]);
-    const delta=THREE.MathUtils.clamp(tgt-cur,-Math.PI*.9,Math.PI*.9);
-    parentBone.rotation.z += delta;
-  };
-  pairRotate(hips,chest,'hips','chest');
-  pairRotate(chest,head,'chest','head');
-  if(lh) pairRotate(chest,lh,'chest','leftHand');
-  if(rh) pairRotate(chest,rh,'chest','rightHand');
-  pairRotate(hips,lf,'hips','leftFoot');
-  pairRotate(hips,rf,'hips','rightFoot');
-  root.updateMatrixWorld(true);
-  setSelected(hips);
-  status('半自動合わせを適用しました。必要なら各ボーンを微調整してください。');
-};
+// Safe alignment: do not deform the rig on ambiguous 2D correspondence.
+// This replaces the old root/chest rotations which could twist every limb.
+let alignmentBackup=null;
+function restoreAlignment(){if(!root||!alignmentBackup)return;root.position.copy(alignmentBackup.position);root.quaternion.copy(alignmentBackup.quaternion);root.scale.copy(alignmentBackup.scale);for(const [bone,t] of alignmentBackup.bones){bone.position.copy(t.p);bone.quaternion.copy(t.q);bone.scale.copy(t.s);}root.updateMatrixWorld(true);setSelected(root);status('自動合わせ前の姿勢へ戻しました。');}
+function applyAutoFit(){
+ if(!root||!refURL){status('モデルと比較画像を用意してください。');return;}
+ const required=['hips','head','leftFoot','rightFoot'];
+ const missing=required.filter(k=>!jointPoints[k]?.placed);
+ if(missing.length){status('関節点が不足しています: '+missing.map(k=>JOINTS.find(j=>j.id===k)?.label).join(' / '));return;}
+ const mapped=required.map(k=>boneByName(boneMap[k]));
+ if(mapped.some(b=>!b)||new Set(mapped).size!==mapped.length){status('ボーン対応が不正です。腰・頭・左右足首に異なるボーンを選んでください。');return;}
+ if(playing){playing=false;mixer?.stopAllAction();$('animBtn').textContent='アニメ再生';}
+ if(!alignmentBackup){alignmentBackup={position:root.position.clone(),quaternion:root.quaternion.clone(),scale:root.scale.clone(),bones:bones.map(b=>[b,{p:b.position.clone(),q:b.quaternion.clone(),s:b.scale.clone()}])};}
+ else restoreAlignment();
+ root.updateMatrixWorld(true);
+ // Screen-space translation only. Pose and scale remain untouched.
+ const hip=worldToScreen(mapped[0]), target=jointPoints.hips;
+ const dz=mapped[0].getWorldPosition(new THREE.Vector3()).project(camera).z;
+ const targetWorld=new THREE.Vector3(target.x*2-1,1-target.y*2,dz).unproject(camera);
+ const currentWorld=mapped[0].getWorldPosition(new THREE.Vector3());
+ const delta=targetWorld.sub(currentWorld);
+ const length=delta.length();const size=bounds().diameter;
+ if(!Number.isFinite(length)||length>size*2){status('画像とモデルの視点差が大きいため、自動変更を中止しました。');return;}
+ root.position.add(delta);root.updateMatrixWorld(true);setSelected(root);$('undoFitBtn').disabled=false;
+ status('安全な位置合わせのみ適用しました。骨格を崩す回転・伸縮は行いません。姿勢は手動で調整してください。');
+}
 
 $('file').onchange=e=>{loadModel(e.target.files?.[0]); e.target.value='';}; $('openBtn').onclick=()=>$('file').click();
 $('refFile').onchange=e=>{chooseReference(e.target.files?.[0]); e.target.value='';}; $('loadRefBtn').onclick=()=>$('refFile').click();
@@ -229,7 +216,7 @@ $('placeAtCenter').onclick=()=>{ const k=$('jointSet').value; jointPoints[k]={x:
 $('clearJoint').onclick=()=>{ const k=$('jointSet').value; if(jointPoints[k]) jointPoints[k].placed=false; updateJointStatus(); drawJointOverlay(); };
 $('resetJoints').onclick=()=>{ resetJointPoints(); };
 $('guessBones').onclick=()=>{ guessBoneMap(); updateBoneMapUI(); status('ボーン名を推定し直しました。'); maybeEnableAutoFit(); };
-$('autoFitBtn').onclick=applyAutoFit;
+$('autoFitBtn').onclick=applyAutoFit;$('undoFitBtn').onclick=restoreAlignment;
 ['px','py','pz','rx','ry','rz'].forEach(id=>$(id).onchange=()=>{ if(!selected)return; selected.position.set(Number($('px').value)||0,Number($('py').value)||0,Number($('pz').value)||0); selected.rotation.set(toRad($('rx').value),toRad($('ry').value),toRad($('rz').value)); });
 $('exportBtn').onclick=()=>{ if(!root)return; status('GLBを書き出し中…'); const exporter=new GLTFExporter(); exporter.parse(root,result=>{ const blob=new Blob([result],{type:'model/gltf-binary'}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=sourceName+'-autofit.glb'; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); status('GLBを書き出しました。'); },err=>{ console.error(err); status('書き出し失敗: '+err.message); },{binary:true,animations:animations,onlyVisible:false}); };
 
