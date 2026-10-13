@@ -126,14 +126,14 @@ const JOINTS=[
 ];
 const LINES=[['hips','chest'],['chest','head'],['chest','leftHand'],['chest','rightHand'],['hips','leftFoot'],['hips','rightFoot']];
 const BONE_HINTS={
-  hips:['hips','pelvis','center','root','j_bip_c_waist','waist'],
-  chest:['chest','spine2','upperchest','spine1','spine_03','spine_02','torso'],
-  head:['head','neck','spine4'],
-  leftHand:['lefthand','hand_l','l_hand','leftwrist','wrist_l'],
-  rightHand:['righthand','hand_r','r_hand','rightwrist','wrist_r'],
-  leftFoot:['leftfoot','foot_l','l_foot','leftankle','ankle_l'],
-  rightFoot:['rightfoot','foot_r','r_foot','rightankle','ankle_r']
+ hips:['pelvis','hips','waist'],chest:['chest','upperchest','spine2'],head:['head'],
+ leftHand:['l_wrist','lefthand','hand_l','leftwrist','wrist_l'],rightHand:['r_wrist','righthand','hand_r','rightwrist','wrist_r'],
+ leftFoot:['l_ankle','leftfoot','foot_l','leftankle','ankle_l'],rightFoot:['r_ankle','rightfoot','foot_r','rightankle','ankle_r']
 };
+const EXTENDED_RIG={hips:'pelvis',chest:'chest',head:'head',leftHand:'L_wrist',rightHand:'R_wrist',leftFoot:'L_ankle',rightFoot:'R_ankle'};
+const EXTENDED_CHAINS={leftHand:['L_shoulder','L_elbow','L_wrist'],rightHand:['R_shoulder','R_elbow','R_wrist'],leftFoot:['L_hip','L_knee','L_ankle'],rightFoot:['R_hip','R_knee','R_ankle']};
+function isExtendedRig(){return Object.values(EXTENDED_RIG).every(name=>bones.some(b=>b.name===name))&&Object.values(EXTENDED_CHAINS).flat().every(name=>bones.some(b=>b.name===name));}
+
 let root=null,meshes=[],bones=[],selected=null,boneHelper=null,mixer=null,animations=[],playing=false,sourceName='model';
 let refURL=null, editMode='pick', jointEdit=false, boneMap={}, jointPoints={};
 const originalTransforms=new Map();
@@ -158,7 +158,7 @@ function toRad(v){return THREE.MathUtils.degToRad(Number(v)||0)}
 function toDeg(v){return THREE.MathUtils.radToDeg(v)}
 function syncTransformFields(){ if(!selected) return; $('px').value=selected.position.x.toFixed(3); $('py').value=selected.position.y.toFixed(3); $('pz').value=selected.position.z.toFixed(3); $('rx').value=toDeg(selected.rotation.x).toFixed(1); $('ry').value=toDeg(selected.rotation.y).toFixed(1); $('rz').value=toDeg(selected.rotation.z).toFixed(1); }
 function setSelected(obj){ selected=obj; syncTransformFields(); if(editMode==='pick' || !selected) transform.detach(); else { transform.attach(selected); transform.setMode(editMode==='move'?'translate':'rotate'); transform.setSpace('local'); } if(!obj) label('未選択'); else if(obj.isBone) label('選択中のボーン: '+(obj.name||'Bone')); else if(obj.isMesh) label('選択中の部位: '+(obj.name||'Mesh')); else label('モデル全体'); }
-function loadModel(file){ if(!file)return; sourceName=file.name.replace(/\.(glb|gltf)$/i,''); status('GLBを読み込み中…'); const url=URL.createObjectURL(file); new GLTFLoader().load(url,gltf=>{ URL.revokeObjectURL(url); disposeRoot(); alignmentBackup=null;$('undoFitBtn').disabled=true; root=gltf.scene; scene.add(root); root.traverse(o=>{ if(o.isMesh){meshes.push(o); o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone(); } if(o.isBone) bones.push(o); }); snapshot(); boneHelper=bones.length?new THREE.SkeletonHelper(root):null; if(boneHelper){ boneHelper.visible=true; boneHelper.material.depthTest=false; boneHelper.renderOrder=999; scene.add(boneHelper);} animations=gltf.animations||[]; mixer=animations.length?new THREE.AnimationMixer(root):null; $('animBtn').disabled=!animations.length; $('exportBtn').disabled=false; guessBoneMap(); updateBoneMapUI(); setSelected(root); frame(); status(`読み込み完了: ${file.name}`); maybeEnableAutoFit(); },undefined,e=>{ URL.revokeObjectURL(url); console.error(e); status('GLB読み込み失敗: '+e.message); }); }
+function loadModel(file){ if(!file)return; sourceName=file.name.replace(/\.(glb|gltf)$/i,''); status('GLBを読み込み中…'); const url=URL.createObjectURL(file); new GLTFLoader().load(url,gltf=>{ URL.revokeObjectURL(url); disposeRoot(); alignmentBackup=null;$('undoFitBtn').disabled=true; root=gltf.scene; scene.add(root); root.traverse(o=>{ if(o.isMesh){meshes.push(o); o.material=Array.isArray(o.material)?o.material.map(m=>m.clone()):o.material.clone(); } if(o.isBone) bones.push(o); }); snapshot(); boneHelper=bones.length?new THREE.SkeletonHelper(root):null; if(boneHelper){ boneHelper.visible=true; boneHelper.material.depthTest=false; boneHelper.renderOrder=999; scene.add(boneHelper);} animations=gltf.animations||[]; mixer=animations.length?new THREE.AnimationMixer(root):null; $('animBtn').disabled=!animations.length; $('exportBtn').disabled=false; guessBoneMap(); updateBoneMapUI(); setSelected(root); frame(); status(`読み込み完了: ${file.name}`+(isExtendedRig()?'（拡張骨格22ボーンを認識）':'')); maybeEnableAutoFit(); },undefined,e=>{ URL.revokeObjectURL(url); console.error(e); status('GLB読み込み失敗: '+e.message); }); }
 
 function chooseReference(file){ if(!file)return; if(refURL) URL.revokeObjectURL(refURL); refURL=URL.createObjectURL(file); $('referenceBg').src=refURL; $('referenceBg').style.display='block'; $('showReference').disabled=false; $('showOverlay').disabled=false; for(const id of ['refOpacity','refX','refY','refScale','resetReference','jointSet','placeAtCenter','clearJoint','resetJoints']) $(id).disabled=false; $('showReference').checked=true; $('showOverlay').checked=true; resetJointPoints(); updateReferenceView(); status('比較画像を読み込みました。関節点を置いてください。'); maybeEnableAutoFit(); }
 function updateReferenceView(){ $('referenceBg').style.display= $('showReference').checked && refURL ? 'block' : 'none'; $('referenceBg').style.opacity=(Number($('refOpacity').value)/100).toString(); $('referenceBg').style.transform=`translate(${Number($('refX').value)||0}%,${Number($('refY').value)||0}%) scale(${(Number($('refScale').value)||100)/100})`; $('refOpacityVal').textContent=$('refOpacity').value+'%'; $('refXVal').textContent=$('refX').value+'%'; $('refYVal').textContent=$('refY').value+'%'; $('refScaleVal').textContent=$('refScale').value+'%'; drawJointOverlay(); }
@@ -171,7 +171,7 @@ function drawJointOverlay(){ const ov=$('overlay2d'); ov.classList.toggle('show'
 }
 function maybeEnableAutoFit(){ const enoughRef = !!refURL; const enoughModel = !!root && bones.length>0; $('autoFitBtn').disabled = !(enoughRef && enoughModel); $('guessBones').disabled=!enoughModel; }
 function guessBoneForRole(role){ if(!bones.length) return ''; const lower=bones.map(b=>({name:(b.name||'').toLowerCase(), bone:b})); const hints=BONE_HINTS[role]||[]; for(const h of hints){ const found=lower.find(x=>x.name.includes(h)); if(found) return found.bone.name; } return bones[0]?.name||''; }
-function guessBoneMap(){ boneMap={}; for(const j of JOINTS) boneMap[j.id]=guessBoneForRole(j.id); }
+function guessBoneMap(){ boneMap={}; for(const j of JOINTS) boneMap[j.id]=isExtendedRig()?EXTENDED_RIG[j.id]:guessBoneForRole(j.id); }
 function updateBoneMapUI(){ const wrap=$('boneMap'); wrap.innerHTML=''; if(!bones.length){ wrap.innerHTML='<p class="hint">ボーン付きGLBを読み込むと対応付けできます。</p>'; return; } for(const j of JOINTS){ const field=document.createElement('div'); field.className='field'; const label=document.createElement('label'); label.textContent=j.label; const sel=document.createElement('select'); sel.dataset.role=j.id; sel.appendChild(new Option('未設定','')); for(const b of bones) sel.appendChild(new Option(b.name||'(無名ボーン)', b.name||'')); sel.value=boneMap[j.id]||''; sel.onchange=e=>boneMap[j.id]=e.target.value; field.appendChild(label); field.appendChild(sel); wrap.appendChild(field); } }
 function boneByName(name){ return bones.find(b=>(b.name||'')===name) || null; }
 function worldToScreen(obj){ const v=obj.getWorldPosition(new THREE.Vector3()).project(camera); return {x:(v.x+1)/2, y:(-v.y+1)/2}; }
@@ -182,25 +182,48 @@ let alignmentBackup=null;
 function restoreAlignment(){if(!root||!alignmentBackup)return;root.position.copy(alignmentBackup.position);root.quaternion.copy(alignmentBackup.quaternion);root.scale.copy(alignmentBackup.scale);for(const [bone,t] of alignmentBackup.bones){bone.position.copy(t.p);bone.quaternion.copy(t.q);bone.scale.copy(t.s);}root.updateMatrixWorld(true);setSelected(root);status('自動合わせ前の姿勢へ戻しました。');}
 function applyAutoFit(){
  if(!root||!refURL){status('モデルと比較画像を用意してください。');return;}
- const required=['hips','head','leftFoot','rightFoot'];
- const missing=required.filter(k=>!jointPoints[k]?.placed);
- if(missing.length){status('関節点が不足しています: '+missing.map(k=>JOINTS.find(j=>j.id===k)?.label).join(' / '));return;}
- const mapped=required.map(k=>boneByName(boneMap[k]));
- if(mapped.some(b=>!b)||new Set(mapped).size!==mapped.length){status('ボーン対応が不正です。腰・頭・左右足首に異なるボーンを選んでください。');return;}
+ const req=['hips','head','leftFoot','rightFoot'];const missing=req.filter(k=>!jointPoints[k]?.placed);
+ if(missing.length){status('必要な関節点を配置してください: '+missing.join(', '));return;}
+ const mapped=req.map(k=>boneByName(boneMap[k]));if(mapped.some(b=>!b)||new Set(mapped).size!==mapped.length){status('ボーン対応が重複または未設定です。');return;}
  if(playing){playing=false;mixer?.stopAllAction();$('animBtn').textContent='アニメ再生';}
- if(!alignmentBackup){alignmentBackup={position:root.position.clone(),quaternion:root.quaternion.clone(),scale:root.scale.clone(),bones:bones.map(b=>[b,{p:b.position.clone(),q:b.quaternion.clone(),s:b.scale.clone()}])};}
- else restoreAlignment();
+ if(!alignmentBackup)alignmentBackup={position:root.position.clone(),quaternion:root.quaternion.clone(),scale:root.scale.clone(),bones:bones.map(b=>[b,{p:b.position.clone(),q:b.quaternion.clone(),s:b.scale.clone()}])};
+ else {root.position.copy(alignmentBackup.position);root.quaternion.copy(alignmentBackup.quaternion);root.scale.copy(alignmentBackup.scale);for(const [b,t] of alignmentBackup.bones){b.position.copy(t.p);b.quaternion.copy(t.q);b.scale.copy(t.s);}}
  root.updateMatrixWorld(true);
- // Screen-space translation only. Pose and scale remain untouched.
- const hip=worldToScreen(mapped[0]), target=jointPoints.hips;
- const dz=mapped[0].getWorldPosition(new THREE.Vector3()).project(camera).z;
- const targetWorld=new THREE.Vector3(target.x*2-1,1-target.y*2,dz).unproject(camera);
- const currentWorld=mapped[0].getWorldPosition(new THREE.Vector3());
- const delta=targetWorld.sub(currentWorld);
- const length=delta.length();const size=bounds().diameter;
- if(!Number.isFinite(length)||length>size*2){status('画像とモデルの視点差が大きいため、自動変更を中止しました。');return;}
- root.position.add(delta);root.updateMatrixWorld(true);setSelected(root);$('undoFitBtn').disabled=false;
- status('安全な位置合わせのみ適用しました。骨格を崩す回転・伸縮は行いません。姿勢は手動で調整してください。');
+ const hip=mapped[0];const depth=hip.getWorldPosition(new THREE.Vector3()).project(camera).z;const target=jointPoints.hips;
+ const wanted=new THREE.Vector3(target.x*2-1,1-target.y*2,depth).unproject(camera);const delta=wanted.sub(hip.getWorldPosition(new THREE.Vector3()));
+ if(!Number.isFinite(delta.length())||delta.length()>bounds().diameter*2){status('画像とモデルの差が大きいため調整を中止しました。');return;}
+ root.position.add(delta);root.updateMatrixWorld(true);
+ let adjusted=0;
+ if(isExtendedRig()){
+   // Conservative screen-space CCD, using only shoulder/elbow and hip/knee joints.
+   // No translation, scaling, spine or pelvis rotations. Each joint is limited to 25 degrees from the starting pose.
+   const axisWorld=new THREE.Vector3();camera.getWorldDirection(axisWorld).normalize();
+   for(const role of ['leftHand','rightHand','leftFoot','rightFoot']){
+     if(!jointPoints[role]?.placed)continue;
+     const chain=EXTENDED_CHAINS[role].map(boneByName);
+     if(chain.some(b=>!b))continue;
+     const tip=chain[2],goal=jointPoints[role];
+     for(let pass=0;pass<6;pass++){
+       for(const joint of [chain[1],chain[0]]){
+         root.updateMatrixWorld(true);
+         const pivot=worldToScreen(joint),end=worldToScreen(tip);
+         const ax=end.x-pivot.x,ay=end.y-pivot.y,bx=goal.x-pivot.x,by=goal.y-pivot.y;
+         if(Math.hypot(ax,ay)<.001||Math.hypot(bx,by)<.001)continue;
+         const ang=Math.atan2(ax*by-ay*bx,ax*bx+ay*by);
+         const step=THREE.MathUtils.clamp(ang,-THREE.MathUtils.degToRad(4),THREE.MathUtils.degToRad(4));
+         const parentQ=joint.parent.getWorldQuaternion(new THREE.Quaternion());
+         const axis=axisWorld.clone().applyQuaternion(parentQ.invert()).normalize();
+         const initial=alignmentBackup.bones.find(x=>x[0]===joint)?.[1].q;
+         if(!initial)continue;
+         const proposed=joint.quaternion.clone().premultiply(new THREE.Quaternion().setFromAxisAngle(axis,step));
+         if(initial.angleTo(proposed)>THREE.MathUtils.degToRad(25))continue;
+         joint.quaternion.copy(proposed);adjusted++;
+       }
+     }
+   }
+ }
+ root.updateMatrixWorld(true);setSelected(root);$('undoFitBtn').disabled=false;
+ status(adjusted?'対応骨格で手足を控えめに調整しました。ズレは手動調整してください。':'安全な位置合わせのみ行いました。対応骨格・関節点を確認してください。');
 }
 
 $('file').onchange=e=>{loadModel(e.target.files?.[0]); e.target.value='';}; $('openBtn').onclick=()=>$('file').click();
