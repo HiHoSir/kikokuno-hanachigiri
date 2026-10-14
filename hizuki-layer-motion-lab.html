@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>緋月｜分割モーション実験</title>
+<style>
+:root{color-scheme:dark}body{margin:0;background:#13151d;color:#f4f1ec;font-family:-apple-system,BlinkMacSystemFont,sans-serif}header{padding:15px 16px;background:#20232e}h1{font-size:19px;margin:0}p{margin:7px 0;font-size:12px;color:#c8c9d5}.wrap{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;padding:12px}.stage{width:min(94vw,490px);position:relative;background:repeating-conic-gradient(#323643 0% 25%,#292c36 0% 50%) 50%/24px 24px;border:1px solid #666;border-radius:10px;overflow:hidden}.stage canvas{width:100%;display:block}.controls{flex:1 1 270px;max-width:500px}.panel{padding:12px;background:#20232e;border-radius:10px;margin-bottom:12px}button,select,input{font-size:16px}button,select{padding:10px;border:1px solid #777;border-radius:8px;background:#343a4a;color:white;margin:3px}button[aria-pressed=true]{background:#316358}.line{display:flex;gap:8px;align-items:center;flex-wrap:wrap}label{display:block;margin:10px 0}input[type=range]{width:100%}small{color:#d0c9ad}.warn{color:#f4d69d}.output{color:#a2dda9}.status{white-space:pre-wrap;font-size:12px}
+</style></head><body><header><h1>緋月｜頭・胴体固定＋四肢別レイヤー実験</h1><p>正式原画: assets/characters/hizuki/8directions/02_front_right.png ／ゲーム本編には未適用</p></header>
+<div class="wrap"><div class="stage"><canvas id="preview" width="1024" height="1536" aria-label="合成された緋月の歩行試作"></canvas></div>
+<div class="controls"><div class="panel"><strong>歩行フェーズ</strong><div class="line"><button id="right" aria-pressed="true">右脚が前</button><button id="left" aria-pressed="false">左脚が前</button><button id="play">▶ 交互に再生</button></div>
+<label>振り幅 <output id="rangeValue">18</output>°<input id="amplitude" type="range" min="0" max="38" value="18"></label>
+<label>パーツ<select id="part"><option value="farLeg">奥脚</option><option value="nearLeg">手前脚</option><option value="farArm">奥腕</option><option value="nearArm">手前腕</option><option value="torso">胴体</option><option value="head">頭</option></select></label>
+<label><input id="guides" type="checkbox" checked> 切り出しマスクと関節を表示（確認用）</label><small>線で囲まれた範囲を原画から独立して描画します。青い点は関節、黄色の点はドラッグ可能な切り出し頂点です。</small></div>
+<div class="panel"><strong>素材検査</strong><p class="warn">試作段階。原画から既存の手足を切り分けて回転させる方法です。新しい手足の描き起こしではなく、装飾や接合部の破綻を確認するための実験です。</p><div class="line"><button id="save">PNGを書き出す</button><button id="reset">マスク初期化</button></div><p id="status" class="status">画像読込中…</p></div>
+<div class="panel"><strong>次工程</strong><p>関節と切り出し境界をこの画面で確認 → 原画と一致したまま不足部分（曲げた肘・膝など）だけ新規作画 → 前後関係を固定して8方向へ展開。</p></div></div></div>
+<script>
+'use strict';
+const canvas=document.getElementById('preview'),ctx=canvas.getContext('2d'),img=new Image();
+img.crossOrigin='anonymous';img.src='assets/characters/hizuki/8directions/02_front_right.png';
+const status=document.getElementById('status'),partInput=document.getElementById('part');
+const defaults={
+ farLeg:{pivot:[.55,.71],poly:[[.49,.68],[.68,.66],[.77,.81],[.79,.98],[.51,1],[.46,.79]]},
+ nearLeg:{pivot:[.40,.71],poly:[[.29,.67],[.52,.67],[.54,.85],[.59,1],[.25,1],[.27,.82]]},
+ farArm:{pivot:[.68,.40],poly:[[.60,.35],[.83,.36],[.96,.64],[.90,.79],[.72,.66],[.59,.48]]},
+ nearArm:{pivot:[.31,.40],poly:[[.20,.35],[.44,.36],[.44,.49],[.32,.67],[.12,.82],[.06,.67]]},
+ torso:{pivot:[.5,.5],poly:[[.32,.32],[.70,.32],[.77,.44],[.71,.65],[.72,.76],[.26,.76],[.24,.60],[.23,.43]]},
+ head:{pivot:[.5,.20],poly:[[.20,0],[.80,0],[.83,.34],[.73,.42],[.27,.42],[.17,.33]]}
+};
+let parts=structuredClone(defaults), bbox={x:0,y:0,w:1024,h:1536},phase=1,amplitude=18,playing=false,last=0,drag=null;
+const order=['farLeg','farArm','torso','nearLeg','nearArm','head'];
+function absolute(p){return [bbox.x+p[0]*bbox.w,bbox.y+p[1]*bbox.h]}
+function polygon(c,pts){c.beginPath();pts.forEach((p,i)=>{let [x,y]=absolute(p);i?c.lineTo(x,y):c.moveTo(x,y)});c.closePath()}
+function angle(key){if(key==='head'||key==='torso')return 0;let s=(key==='nearLeg'||key==='farArm')?1:-1;return phase*s*amplitude*Math.PI/180}
+function draw(){ctx.clearRect(0,0,1024,1536);if(!img.complete||!img.naturalWidth)return;
+ for(const key of order){let p=parts[key],[x,y]=absolute(p.pivot);ctx.save();ctx.translate(x,y);ctx.rotate(angle(key));ctx.translate(-x,-y);polygon(ctx,p.poly);ctx.clip();ctx.drawImage(img,0,0,1024,1536);ctx.restore()}
+ if(document.getElementById('guides').checked){const key=partInput.value,p=parts[key],[x,y]=absolute(p.pivot);ctx.save();ctx.translate(x,y);ctx.rotate(angle(key));ctx.translate(-x,-y);polygon(ctx,p.poly);ctx.strokeStyle='#56e2ff';ctx.lineWidth=3;ctx.stroke();for(const v of p.poly){const [vx,vy]=absolute(v);ctx.beginPath();ctx.arc(vx,vy,7,0,Math.PI*2);ctx.fillStyle='#ffde69';ctx.fill()}ctx.beginPath();ctx.arc(x,y,10,0,Math.PI*2);ctx.fillStyle='#45aaf2';ctx.fill();ctx.restore();}
+}
+function setPhase(next){phase=next;document.getElementById('right').setAttribute('aria-pressed',String(next===1));document.getElementById('left').setAttribute('aria-pressed',String(next===-1));draw()}
+document.getElementById('right').onclick=()=>{playing=false;document.getElementById('play').textContent='▶ 交互に再生';setPhase(1)};
+document.getElementById('left').onclick=()=>{playing=false;document.getElementById('play').textContent='▶ 交互に再生';setPhase(-1)};
+document.getElementById('play').onclick=()=>{playing=!playing;document.getElementById('play').textContent=playing?'■ 停止':'▶ 交互に再生';last=0;if(playing)requestAnimationFrame(tick)};
+function tick(t){if(!playing)return;if(t-last>360){phase*=-1;setPhase(phase);last=t}requestAnimationFrame(tick)}
+document.getElementById('amplitude').oninput=e=>{amplitude=Number(e.target.value);document.getElementById('rangeValue').textContent=amplitude;draw()};
+partInput.onchange=draw;document.getElementById('guides').onchange=draw;
+document.getElementById('reset').onclick=()=>{parts=structuredClone(defaults);draw();status.textContent='切り出しマスクを初期化しました'};
+function pointer(e){let rect=canvas.getBoundingClientRect();return [(e.clientX-rect.left)/rect.width*1024,(e.clientY-rect.top)/rect.height*1536]}
+canvas.addEventListener('pointerdown',e=>{if(!document.getElementById('guides').checked)return;let key=partInput.value,p=parts[key],[x,y]=absolute(p.pivot),pt=pointer(e);let a=-angle(key),dx=pt[0]-x,dy=pt[1]-y;let rx=x+dx*Math.cos(a)-dy*Math.sin(a),ry=y+dx*Math.sin(a)+dy*Math.cos(a);let idx=p.poly.findIndex(v=>{let [vx,vy]=absolute(v);return Math.hypot(vx-rx,vy-ry)<23});if(idx<0)return;drag={key,idx};canvas.setPointerCapture(e.pointerId)});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;let p=parts[drag.key],[x,y]=absolute(p.pivot),pt=pointer(e),a=-angle(drag.key),dx=pt[0]-x,dy=pt[1]-y;let rx=x+dx*Math.cos(a)-dy*Math.sin(a),ry=y+dx*Math.sin(a)+dy*Math.cos(a);p.poly[drag.idx]=[(rx-bbox.x)/bbox.w,(ry-bbox.y)/bbox.h];draw()});
+canvas.addEventListener('pointerup',()=>drag=null);canvas.addEventListener('pointercancel',()=>drag=null);
+document.getElementById('save').onclick=()=>{const g=document.getElementById('guides');let prev=g.checked;g.checked=false;draw();canvas.toBlob(blob=>{if(!blob){status.textContent='書き出し失敗';return}let url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='hizuki-front-right-layered-'+(phase===1?'right':'left')+'-leg.png';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)},'image/png');g.checked=prev;draw()};
+img.onload=()=>{const oc=document.createElement('canvas');oc.width=1024;oc.height=1536;let c=oc.getContext('2d',{willReadFrequently:true});c.drawImage(img,0,0,1024,1536);let d=c.getImageData(0,0,1024,1536).data,minx=1024,miny=1536,maxx=0,maxy=0;for(let y=0;y<1536;y+=3)for(let x=0;x<1024;x+=3){if(d[(y*1024+x)*4+3]>=200){minx=Math.min(minx,x);miny=Math.min(miny,y);maxx=Math.max(maxx,x);maxy=Math.max(maxy,y)}}if(maxx>minx){bbox={x:minx,y:miny,w:maxx-minx,h:maxy-miny};status.textContent='正式画像読込完了。濃い不透明ピクセルの外接範囲: '+bbox.w+'×'+bbox.h+' / マスク頂点はドラッグで修正可能。'}else status.textContent='原画の透明度を検出できません。全画面を使用します。';draw()};
+img.onerror=()=>status.textContent='画像を読み込めません。GitHub Pagesの公開後に再確認してください。';
+</script></body></html>
