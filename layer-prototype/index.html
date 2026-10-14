@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.2.0</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.2.1</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182923;color:white;font:13px system-ui,sans-serif}canvas{width:100vw;height:100dvh;display:block;touch-action:none}button{border:1px solid #d9d9c2a0;background:#183732eb;color:#fff;border-radius:10px;padding:7px 9px;font-weight:700;min-height:36px;touch-action:none}button.active{background:#687e47}#top{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:7px;right:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;z-index:3;pointer-events:none}#top button{pointer-events:auto}#status{font-size:11px;background:#1a332ee8;border-radius:7px;padding:6px;max-width:100%;pointer-events:none}#pad{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);width:140px;height:140px;border:1px solid #d0dfbd9a;background:#18382ca8;border-radius:24px;touch-action:none;z-index:3;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);place-items:center;color:#efefd3;font-size:22px;user-select:none}#pad:after{content:'●';grid-area:2/2;color:#9ba989}#pad i{font-style:normal;pointer-events:none}#help{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 15px);background:#1a342ddc;border-radius:8px;padding:8px;font-size:11px;max-width:44vw;line-height:1.65}#help strong{color:#f7dea7}
 </style></head><body>
@@ -65,8 +65,8 @@ for(const id of ['follow','overview','layers','hit'])document.getElementById(id)
 addEventListener('keydown',e=>{keys.add(e.key);if(e.key.startsWith('Arrow'))e.preventDefault()});addEventListener('keyup',e=>keys.delete(e.key));
 function drawHero(now,dt,moving,dx,dy){
  const bridge=window.__hozukiHero;
- if(bridge){bridge.draw(ctx,{x:player.x,y:player.y},1,85,player.dir,moving,dx,dy,now,dt,'idle',0)}
- else{oval(player.x,player.y-27,13,30,'#f1d7bf');oval(player.x,player.y-55,17,18,'#383045');fill(player.x-11,player.y-46,22,28,'#9e5364');}
+ if(bridge){bridge.draw(ctx,{x:player.x,y:player.y},1,78*(.89+.18*Math.max(0,Math.min(1,player.y/680))),player.dir,moving,dx,dy,now,dt,'idle',0)}
+ else{ /* Never render a substitute for the established protagonist. */ }
 }
 // Use the actual illustrated 2.5D scene from hozuki-walk, never a top-down replacement.
 fetch('../hozuki-walk/index.html?v=0.33.0').then(r=>{if(!r.ok)throw Error('scene '+r.status);return r.text()}).then(html=>{
@@ -94,11 +94,11 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  // Sort tall objects by their physical base, never their image bounding box.
  const render=[...depthObjects.map(o=>({depth:o.depth,draw:()=>objectPaint(o)})),{depth:player.y,draw:()=>drawHero(now,dt,moving,dx*135*dt,dy*135*dt)}];
  render.sort((a,b)=>a.depth-b.depth).forEach(o=>o.draw());guide();ctx.restore();
- status.textContent='v0.2.0 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 代替表示');
+ status.textContent='v0.2.1 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 代替表示');
  requestAnimationFrame(tick)
 }requestAnimationFrame(tick);
 })();
 </script><script type="module">
 import {createIllustratedCharacter} from '../hozuki-walk/character-adapter.js?v=0.33.0';
-try{window.__hozukiHero=await createIllustratedCharacter()}catch(err){console.error('Character adapter unavailable',err)}
+try{window.__hozukiHero=await createIllustratedCharacter()}catch(err){console.error('Existing character could not load',err);document.getElementById('help').textContent='既存の主人公素材の読み込みに失敗しました。代替キャラクターは表示しません。';}
 </script></body></html>
