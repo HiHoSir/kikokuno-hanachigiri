@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.2.1</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.2.2</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182923;color:white;font:13px system-ui,sans-serif}canvas{width:100vw;height:100dvh;display:block;touch-action:none}button{border:1px solid #d9d9c2a0;background:#183732eb;color:#fff;border-radius:10px;padding:7px 9px;font-weight:700;min-height:36px;touch-action:none}button.active{background:#687e47}#top{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:7px;right:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;z-index:3;pointer-events:none}#top button{pointer-events:auto}#status{font-size:11px;background:#1a332ee8;border-radius:7px;padding:6px;max-width:100%;pointer-events:none}#pad{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);width:140px;height:140px;border:1px solid #d0dfbd9a;background:#18382ca8;border-radius:24px;touch-action:none;z-index:3;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);place-items:center;color:#efefd3;font-size:22px;user-select:none}#pad:after{content:'●';grid-area:2/2;color:#9ba989}#pad i{font-style:normal;pointer-events:none}#help{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 15px);background:#1a342ddc;border-radius:8px;padding:8px;font-size:11px;max-width:44vw;line-height:1.65}#help strong{color:#f7dea7}
-</style></head><body>
+</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script></head><body>
 <canvas id="view"></canvas><div id="top"><button id="follow" class="active">追従</button><button id="overview">全体</button><button id="layers" class="active">レイヤー表示</button><button id="hit">判定表示</button><span id="status">主人公を読み込み中</span></div>
 <div id="pad"><i style="grid-area:1/2">▲</i><i style="grid-area:2/1">◀</i><i style="grid-area:2/3">▶</i><i style="grid-area:3/2">▼</i></div>
 <div id="help"><strong>既存2.5D背景＋単色判定モデル</strong><div>建物・木・柱は仮配置。判定の動作検証用です</div><div>木・柱・屋根の前後を移動</div><div>画面タップ移動 / 十字パッド</div></div>
@@ -94,7 +94,7 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  // Sort tall objects by their physical base, never their image bounding box.
  const render=[...depthObjects.map(o=>({depth:o.depth,draw:()=>objectPaint(o)})),{depth:player.y,draw:()=>drawHero(now,dt,moving,dx*135*dt,dy*135*dt)}];
  render.sort((a,b)=>a.depth-b.depth).forEach(o=>o.draw());guide();ctx.restore();
- status.textContent='v0.2.1 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 代替表示');
+ status.textContent='v0.2.2 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 代替表示');
  requestAnimationFrame(tick)
 }requestAnimationFrame(tick);
 })();
