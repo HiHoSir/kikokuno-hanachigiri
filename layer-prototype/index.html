@@ -43,6 +43,7 @@ function distanceSegment(x,y,ax,ay,bx,by){
  const vx=bx-ax,vy=by-ay,t=Math.max(0,Math.min(1,((x-ax)*vx+(y-ay)*vy)/(vx*vx+vy*vy||1)));
  return Math.hypot(x-(ax+vx*t),y-(ay+vy*t));
 }
+function hitRect(x,y,r,b){const cx=Math.max(b.x,Math.min(x,b.x+b.w)),cy=Math.max(b.y,Math.min(y,b.y+b.h));return Math.hypot(x-cx,y-cy)<r;}
 function hitShape(x,y,r,b){
  if(b.type==='ellipse')return Math.hypot((x-b.x)/(b.rx+r),(y-b.y)/(b.ry+r))<1;
  if(b.type==='capsule')return distanceSegment(x,y,b.ax,b.ay,b.bx,b.by)<b.r+r;
