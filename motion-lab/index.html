@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>緋月 歩行ポーズ検査室 v0.1</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,sans-serif;background:#111b21;color:#eef3f8}*{box-sizing:border-box}body{margin:0;padding:16px max(12px,env(safe-area-inset-right)) 32px max(12px,env(safe-area-inset-left))}h1{font-size:20px;margin:0 0 5px}p{margin:4px 0 12px;color:#bed0dc;font-size:13px}main{max-width:1060px;margin:auto}.toolbar,.grid,.actions{display:flex;flex-wrap:wrap;gap:8px}.grid{gap:14px}.panel{background:#1e2a34;border:1px solid #4b6172;border-radius:12px;padding:12px;flex:1;min-width:280px}button,select,input[type=file]{font:inherit}button,select,.file{border:1px solid #708b9d;background:#2c4050;color:white;border-radius:9px;padding:10px 12px;min-height:42px}button.active{border-color:#eebd69;background:#70552d}button:focus-visible{outline:3px solid #f6cf8b}label{display:block;font-size:13px;margin:8px 0}.stage{display:grid;place-items:center;position:relative;aspect-ratio:1/1;max-height:55vh;background:repeating-conic-gradient(#303d46 0% 25%,#36454f 0% 50%) 0 0 /24px 24px;border-radius:10px;overflow:hidden}.stage canvas{height:100%;max-width:100%;aspect-ratio:1/1;object-fit:contain}.small{font-size:12px;color:#bdcbd5}.status{padding:10px;border:1px solid #598b70;background:#1b392e;border-radius:8px;margin:10px 0;font-size:13px}.warning{border-color:#ae8760;background:#493622}.swatch{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:4px}.blue{background:#3b91ff}.green{background:#37ce84}input[type=range]{width:100%}input[type=file]{width:100%;font-size:12px}code,pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}.footer{padding-top:10px}a{color:#8dd4ff}@media(orientation:landscape){.stage{max-height:66vh}} 
+</style></head><body><main>
+<h1>緋月・8方向歩行ポーズ検査室 <small>v0.1</small></h1>
+<p>本編とは独立した試作。身体の左右を3D数値で固定し、2D投影します。完成イラストは生成しません。</p>
+<div class="toolbar" id="dirs" aria-label="8方向"></div>
+<div class="toolbar" style="margin:10px 0"><button id="poseR" class="active">右足前・左腕前</button><button id="poseL">左足前・右腕前</button><button id="poseN">中立</button></div>
+<div id="status" class="status" role="status"></div>
+<div class="grid">
+<section class="panel">
+<strong>ポーズの骨格投影</strong>
+<div class="stage"><canvas id="pose" width="720" height="720" aria-label="身体側を色分けした8方向骨格"></canvas></div>
+<p><span class="swatch blue"></span>本人の右手・右足　 <span class="swatch green"></span>本人の左手・左足</p>
+<p class="small">右・左は常に緋月本人の身体基準。手前・奥は深度により描画順を変えています。グレーは胴体・頭。</p>
+</section>
+<section class="panel">
+<strong>正式画像との比較</strong>
+<div class="stage"><canvas id="compare" width="720" height="720" aria-label="ローカル画像とポーズの重ね合わせ"></canvas></div>
+<label>正式な静止画像を選択（端末内、サーバー送信なし）<input id="source" type="file" accept="image/png,image/jpeg,image/webp"></label>
+<label>骨格の重ね合わせ透明度 <output id="opacityText">70%</output><input id="opacity" type="range" min="0" max="100" value="70"></label>
+<label>比較画像の拡大率 <output id="scaleText">100%</output><input id="scale" type="range" min="30" max="180" value="100"></label>
+<p class="small">左右の見かけとデザインを人間が比較するための画面です。画像の自動骨格推定はしていません。</p>
+</section>
+</div>
+<section class="panel" style="margin-top:12px">
+<strong>出力と検査</strong>
+<div class="actions" style="margin:10px 0">
+<button id="exportPose">ポーズPNG保存</button><button id="exportJson">3D関節JSON保存</button><button id="exportAll">8方向PNGを順番に保存</button>
+</div>
+<p class="small">PNGは透明背景・左右色分けの制御用資料です。Safariでは保存または共有が開きます。複数ファイル保存は端末のダウンロード許可が必要な場合があります。</p>
+<pre id="checks"></pre>
+</section>
+<div class="footer small">元のゲーム画像やスプライトは変更しません。検査対象はポーズの論理座標であり、生成AIによるイラストの合格を意味しません。<a href="../">ゲーム本編へ戻る</a></div>
+</main>
+<script>
+'use strict';
+const dirDefs=[['front','正面',0],['front-right','右斜め前',45],['right','右',90],['back-right','右斜め後',135],['back','背面',180],['back-left','左斜め後',225],['left','左',270],['front-left','左斜め前',315]];
+// Coordinates in body-local frame: +X = character's own right; +Z = forward; +Y = upward.
+const state={dir:0,step:1,image:null,alpha:.7,scale:1};
+const poseCanvas=document.getElementById('pose'), compareCanvas=document.getElementById('compare'), status=document.getElementById('status');
+function anatomy(){
+ const s=state.step;
+ const p={
+ pelvis:[0,1.02,0],chest:[0,1.58,0],neck:[0,1.77,0],head:[0,1.97,0],
+ rightShoulder:[.28,1.57,0],leftShoulder:[-.28,1.57,0],
+ rightElbow:[.39,1.29,-.19*s],leftElbow:[-.39,1.29,.19*s],
+ rightWrist:[.42,1.05,-.34*s],leftWrist:[-.42,1.05,.34*s],
+ rightHip:[.16,1.00,0],leftHip:[-.16,1.00,0],
+ rightKnee:[.18,.58,.27*s],leftKnee:[-.18,.58,-.25*s],
+ rightAnkle:[.18,.10,.43*s],leftAnkle:[-.18,.10,-.39*s],
+ rightToe:[.18,.055,.64*s],leftToe:[-.18,.055,-.19*s]
+ };
+ if(s===0){for(const k of ['rightElbow','leftElbow','rightWrist','leftWrist','rightKnee','leftKnee','rightAnkle','leftAnkle','rightToe','leftToe'])p[k][2]=0; p.rightToe[2]=.13;p.leftToe[2]=.13;}
+ return p;
+}
+const limbs=[
+ ['rightShoulder','rightElbow','rightWrist','#3b91ff'],['leftShoulder','leftElbow','leftWrist','#37ce84'],
+ ['rightHip','rightKnee','rightAnkle','rightToe','#3b91ff'],['leftHip','leftKnee','leftAnkle','leftToe','#37ce84']
+];
+function project(pt,deg){
+ const rad=deg*Math.PI/180, x=pt[0], y=pt[1], z=pt[2];
+ const sx=x*Math.cos(rad)+z*Math.sin(rad);
+ const depth=z*Math.cos(rad)-x*Math.sin(rad);
+ return {x:360+sx*300,y:612-y*260-depth*34,depth};
+}
+function drawSkeleton(ctx,deg,alpha=1){
+ const p=anatomy();ctx.save();ctx.globalAlpha=alpha;
+ const bg=(a,b,w,color)=>{const x=project(p[a],deg),y=project(p[b],deg);ctx.strokeStyle=color;ctx.lineWidth=w;ctx.lineCap='round';ctx.beginPath();ctx.moveTo(x.x,x.y);ctx.lineTo(y.x,y.y);ctx.stroke();};
+ const segments=[];
+ for(const limb of limbs)for(let i=0;i<limb.length-2;i++){const a=limb[i],b=limb[i+1];segments.push({a,b,color:limb[limb.length-1],d:(project(p[a],deg).depth+project(p[b],deg).depth)/2});}
+ segments.push({a:'pelvis',b:'chest',color:'#d1dee8',d:0},{a:'chest',b:'neck',color:'#d1dee8',d:0});
+ segments.sort((a,b)=>a.d-b.d);
+ for(const s of segments)bg(s.a,s.b,22,s.color);
+ const head=project(p.head,deg);ctx.beginPath();ctx.arc(head.x,head.y,58,0,Math.PI*2);ctx.fillStyle='#d6dee5';ctx.fill();ctx.strokeStyle='#5c7182';ctx.lineWidth=4;ctx.stroke();
+ // Face direction nose cue, so front/back cannot be confused.
+ const nose=project([0,1.97,.23],deg);ctx.strokeStyle='#495766';ctx.lineWidth=7;ctx.beginPath();ctx.moveTo(head.x,head.y);ctx.lineTo(nose.x,nose.y);ctx.stroke();
+ for(const [name,point] of Object.entries(p)){if(name==='head')continue;const q=project(point,deg);ctx.beginPath();ctx.arc(q.x,q.y,6,0,Math.PI*2);ctx.fillStyle=name.startsWith('right')?'#d9edff':name.startsWith('left')?'#b5ffda':'#fff';ctx.fill();}
+ ctx.restore();return p;
+}
+function redraw(){
+ const d=dirDefs[state.dir];const c=poseCanvas.getContext('2d');c.clearRect(0,0,720,720);drawSkeleton(c,d[2]);
+ const q=compareCanvas.getContext('2d');q.clearRect(0,0,720,720);
+ if(state.image){const im=state.image;const ratio=Math.min(650/im.width,650/im.height)*state.scale;const w=im.width*ratio,h=im.height*ratio;q.drawImage(im,(720-w)/2,690-h,w,h);}
+ drawSkeleton(q,d[2],state.alpha);
+ document.querySelectorAll('#dirs button').forEach((b,i)=>b.classList.toggle('active',i===state.dir));
+ for(const id of ['poseR','poseL','poseN'])document.getElementById(id).classList.remove('active');
+ document.getElementById(state.step===1?'poseR':state.step===-1?'poseL':'poseN').classList.add('active');
+ const p=anatomy(),eps=1e-8;
+ const checks=[
+ ['右・左が独立した股関節で接続',p.rightHip[0]>0&&p.leftHip[0]<0],
+ ['右・左が独立した肩で接続',p.rightShoulder[0]>0&&p.leftShoulder[0]<0],
+ ['右足前（身体の前方+Z）',state.step!==1||p.rightAnkle[2]>p.leftAnkle[2]+eps],
+ ['左腕前（身体の前方+Z）',state.step!==1||p.leftWrist[2]>p.rightWrist[2]+eps],
+ ['左足前（反対ステップ）',state.step!==-1||p.leftAnkle[2]>p.rightAnkle[2]+eps],
+ ['右腕前（反対ステップ）',state.step!==-1||p.rightWrist[2]>p.leftWrist[2]+eps],
+ ['8方向で身体局所座標を共有',dirDefs.length===8&&dirDefs.every(x=>Number.isFinite(x[2]))]
+ ];
+ const ok=checks.every(x=>x[1]);status.className='status'+(ok?'':' warning');
+ status.textContent=d[1]+' / '+(state.step===1?'右足前・左腕前':state.step===-1?'左足前・右腕前':'中立')+'：座標検査 '+(ok?'PASS':'FAIL')+'（見た目の品質は未検証）';
+ document.getElementById('checks').textContent=checks.map(x=>(x[1]?'✓ ':'✗ ')+x[0]).join('\n');
+}
+function download(name,blob){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),10000);}
+function savePose(){poseCanvas.toBlob(b=>{if(b)download('hizuki_pose_'+dirDefs[state.dir][0]+'_'+(state.step===1?'right-forward':state.step===-1?'left-forward':'neutral')+'.png',b)},'image/png');}
+const buttons=document.getElementById('dirs');dirDefs.forEach((d,i)=>{const b=document.createElement('button');b.textContent=d[1];b.onclick=()=>{state.dir=i;redraw()};buttons.append(b);});
+for(const [id,step] of [['poseR',1],['poseL',-1],['poseN',0]])document.getElementById(id).onclick=()=>{state.step=step;redraw();};
+document.getElementById('source').onchange=e=>{const file=e.target.files?.[0];if(!file)return;const url=URL.createObjectURL(file),im=new Image();im.onload=()=>{state.image=im;URL.revokeObjectURL(url);redraw();};im.onerror=()=>{URL.revokeObjectURL(url);alert('画像を読み込めませんでした')};im.src=url;};
+document.getElementById('opacity').oninput=e=>{state.alpha=+e.target.value/100;document.getElementById('opacityText').textContent=e.target.value+'%';redraw();};
+document.getElementById('scale').oninput=e=>{state.scale=+e.target.value/100;document.getElementById('scaleText').textContent=e.target.value+'%';redraw();};
+document.getElementById('exportPose').onclick=savePose;
+document.getElementById('exportJson').onclick=()=>download('hizuki_pose_'+dirDefs[state.dir][0]+'.json',new Blob([JSON.stringify({schema:'hizuki-pose-v1',coordinateSystem:'body +X right +Y up +Z forward',direction:dirDefs[state.dir][0],cameraYawDegrees:dirDefs[state.dir][2],step:state.step,joints:anatomy()},null,2)],{type:'application/json'}));
+document.getElementById('exportAll').onclick=async()=>{const old=state.dir;for(let i=0;i<8;i++){state.dir=i;redraw();savePose();await new Promise(r=>setTimeout(r,350));}state.dir=old;redraw();};
+redraw();
+</script></body></html>
