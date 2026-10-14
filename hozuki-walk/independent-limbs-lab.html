@@ -11,8 +11,8 @@ canvas{display:block;width:100%;max-width:430px;height:auto;margin:0 auto;backgr
 button.on{background:#447c74;border-color:#7acdbc}label{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:14px}input[type=range]{flex:1;min-width:80px}
 small{color:#b5c9dd}strong{color:#ffe0a6}.status{font-size:13px;padding:7px;color:#bddadc}
 </style></head><body><main>
-<h1>緋月・新デザイン歩行ラボ v0.2</h1>
-<p>既存の右向き静止画を初期表示し、<strong>新デザイン画像を端末から読み込んで</strong>元絵を保持したまま部分マスクと関節回転で歩行を試験します。腕・脚は固定範囲の仮マスクによる暫定複製のため、完成素材ではありません。</p>
+<h1>緋月・新デザイン歩行ラボ v0.3</h1>
+<p>今回の新デザイン右向き画像を初期表示し、<strong>新デザイン画像を端末から読み込んで</strong>元絵を保持したまま部分マスクと関節回転で歩行を試験します。腕・脚は固定範囲の仮マスクによる暫定複製のため、完成素材ではありません。</p>
 <div class="panel"><canvas id="view" width="430" height="600" aria-label="歩行プレビュー"></canvas>
 <div class="status" id="status">原画を読み込み中…</div>
 <div class="panel"><strong>新デザインの画像を指定</strong><label>透過PNG <input id="customArt" type="file" accept="image/png,image/webp,image/*"></label><small>指定した画像は端末内で読み込んで合成します。GitHubへの画像送信はしません。横向き・全身・透過画像を推奨します。</small></div><div class="buttons"><button id="toggle" class="on">一時停止</button><button id="step">一歩ずつ</button><button id="reset">初期化</button></div>
@@ -30,9 +30,9 @@ const $=id=>document.getElementById(id);
 const S={playing:true,phase:0,last:0,frames:0,img:null,parts:{},status:'loading'};
 const W=362,H=543,baseX=34,baseY=14,scale=1;
 const image=new Image();image.crossOrigin='anonymous';
-image.onload=()=>{S.img=image;makeParts();$('status').textContent='既存の右向き原画を読み込みました（候補素材・未承認）。';S.status='ready'};
+image.onload=()=>{S.img=image;makeParts();$('status').textContent='新デザイン画像を読み込みました（4肢専用マスク・試験版）。';S.status='ready'};
 image.onerror=()=>{$('status').textContent='画像を読み込めませんでした。GitHub Pages上で再読み込みしてください。';S.status='error'};
-image.src='../field-lab/art/2.png?v=0.12.1';
+image.src='./hizuki-new-design-side.png?v=0.3.0';
 $('customArt').addEventListener('change',e=>{
  const file=e.target.files?.[0];if(!file)return;
  const url=URL.createObjectURL(file),custom=new Image();
@@ -53,13 +53,21 @@ $('customArt').addEventListener('change',e=>{
 function makeMask(path){const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.drawImage(image,0,0,W,H);g.globalCompositeOperation='destination-in';g.fillStyle='#fff';g.beginPath();path(g);g.fill();return c}
 function poly(points){return g=>{g.moveTo(...points[0]);for(const p of points.slice(1))g.lineTo(...p);g.closePath()}}
 function makeParts(){
- // Side-facing source landmarks. Exact masks remain experimental.
- const leg=poly([[216,404],[267,402],[264,429],[256,461],[276,492],[294,524],[191,524],[211,490],[212,459]]);
- const arm=poly([[209,281],[256,279],[276,318],[293,365],[285,396],[249,391],[233,349],[217,320]]);
+ const mask=points=>poly(points.map(([x,y])=>[x*W/1024,y*H/1536]));
+ const shapes={
+  farArm:mask([[407,492],[447,524],[480,559],[469,595],[451,655],[420,717],[379,794],[331,864],[287,925],[263,932],[236,907],[250,874],[294,806],[332,745],[365,679],[387,610]]),
+  nearArm:mask([[600,488],[632,523],[644,568],[667,621],[704,660],[751,714],[812,762],[854,765],[851,816],[817,827],[783,815],[725,768],[662,706],[615,651],[598,605]]),
+  farLeg:mask([[424,809],[496,820],[531,883],[508,950],[476,1030],[429,1104],[369,1185],[317,1264],[278,1320],[239,1380],[209,1458],[138,1485],[98,1471],[117,1434],[160,1370],[194,1280],[250,1190],[307,1109],[362,1028],[397,957]]),
+  nearLeg:mask([[520,829],[604,819],[642,880],[676,969],[708,1050],[741,1144],[779,1243],[810,1311],[853,1350],[938,1368],[980,1399],[979,1438],[925,1465],[850,1479],[791,1462],[753,1412],[737,1322],[706,1226],[666,1134],[635,1035],[593,951],[542,895]])
+ };
  const full=document.createElement('canvas');full.width=W;full.height=H;
- const g=full.getContext('2d');g.drawImage(image,0,0,W,H);
- for(const shape of [leg,arm]){g.save();g.globalCompositeOperation='destination-out';g.beginPath();shape(g);g.fill();g.restore()}
- S.parts={torso:full,nearLeg:makeMask(leg),farLeg:makeMask(leg),nearArm:makeMask(arm),farArm:makeMask(arm)};
+ const g=full.getContext('2d');g.drawImage(S.img,0,0,W,H);
+ const p={};
+ for(const [name,shape] of Object.entries(shapes)){
+  p[name]=makeMask(shape);
+  g.save();g.globalCompositeOperation='destination-out';g.beginPath();shape(g);g.fill();g.restore();
+ }
+ S.parts={torso:full,...p};
 }
 function drawPart(img,ax,ay,angle,offsetX=0,offsetY=0,alpha=1){ctx.save();ctx.translate(ax+offsetX,ay+offsetY);ctx.rotate(angle);ctx.globalAlpha=alpha;ctx.drawImage(img,-ax,-ay);ctx.restore()}
 function draw(){
@@ -75,15 +83,15 @@ function draw(){
   ctx.save();ctx.translate(0,bob);
   // Order is fixed by physical near/far designation, not by phase.
   // Rear leg and arm behind the body; near limbs above it.
-  drawPart(S.parts.farLeg,233,412,f.angle,f.dx-7,f.dy-2,.87);
-  drawPart(S.parts.farArm,226,291,fa,-12,-1,.83);
+  drawPart(S.parts.farLeg,161,303,f.angle*.7,f.dx*.3,f.dy*.4,1);
+  drawPart(S.parts.farArm,150,186,fa,0,0,1);
   ctx.drawImage(S.parts.torso,0,0);
-  drawPart(S.parts.nearLeg,233,412,n.angle,n.dx,n.dy,1);
-  drawPart(S.parts.nearArm,226,291,na,0,0,1);
+  drawPart(S.parts.nearLeg,197,301,n.angle*.7,n.dx*.3,n.dy*.4,1);
+  drawPart(S.parts.nearArm,216,188,na,0,0,1);
   ctx.restore();
   if($('overlay').checked){ctx.globalAlpha=.35;ctx.drawImage(S.img,0,0);ctx.globalAlpha=1}
   if($('guides').checked){
-    for(const [x,y,c,t] of [[233+n.dx,412+n.dy,'#ffbd75','手前脚'],[226,291,'#ffbd75','手前腕'],[226-12,291,'#91cfff','奥腕'],[233+f.dx-7,412+f.dy-2,'#91cfff','奥脚']]){
+    for(const [x,y,c,t] of [[197,301,'#ffbd75','手前脚'],[216,188,'#ffbd75','手前腕'],[150,186,'#91cfff','奥腕'],[161,303,'#91cfff','奥脚']]){
       ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle=c;ctx.fill();ctx.strokeStyle='#1b2535';ctx.lineWidth=1.5;ctx.stroke();
       ctx.fillStyle=c;ctx.font='12px sans-serif';ctx.fillText(t,x+8,y-7);
     }
