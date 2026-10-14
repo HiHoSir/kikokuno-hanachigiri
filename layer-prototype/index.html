@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.4</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.5</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182923;color:white;font:13px system-ui,sans-serif}canvas{width:100vw;height:100dvh;display:block;touch-action:none}button{border:1px solid #d9d9c2a0;background:#183732eb;color:#fff;border-radius:10px;padding:7px 9px;font-weight:700;min-height:36px;touch-action:none}button.active{background:#687e47}#top{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:7px;right:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;z-index:3;pointer-events:none}#top button{pointer-events:auto}#status{font-size:11px;background:#1a332ee8;border-radius:7px;padding:6px;max-width:100%;pointer-events:none}#pad{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);width:140px;height:140px;border:1px solid #d0dfbd9a;background:#18382ca8;border-radius:24px;touch-action:none;z-index:3;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);place-items:center;color:#efefd3;font-size:22px;user-select:none}#pad:after{content:'●';grid-area:2/2;color:#9ba989}#pad i{font-style:normal;pointer-events:none}#help{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 15px);background:#1a342ddc;border-radius:8px;padding:8px;font-size:11px;max-width:44vw;line-height:1.65}#help strong{color:#f7dea7}
 </style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script></head><body>
@@ -10,8 +10,8 @@
 (()=>{
 'use strict';
 const cvs=document.getElementById('view'),ctx=cvs.getContext('2d'),status=document.getElementById('status');
-const WORLD={w:960,h:680};let perspectiveImage=null,useIllustration=true;let W=0,H=0,dpr=1,sc=1,ox=0,oy=0,last=performance.now(),follow=true,showLayers=true,showHit=false,goal=null,joy={x:0,y:0},keys=new Set();
-const player={x:370,y:475,dir:1};const rect=(x,y,w,h)=>({type:'rect',x,y,w,h});
+const WORLD={w:1672,h:941};let perspectiveImage=null,useIllustration=true;let W=0,H=0,dpr=1,sc=1,ox=0,oy=0,last=performance.now(),follow=true,showLayers=true,showHit=false,goal=null,joy={x:0,y:0},keys=new Set();
+const player={x:745,y:563,dir:1};const rect=(x,y,w,h)=>({type:'rect',x,y,w,h});
 const obstacles=[
 rect(0,0,960,22),rect(0,658,960,22),rect(0,0,22,680),rect(938,0,22,680),
 rect(123,172,196,126),rect(507,132,218,128),
@@ -51,8 +51,7 @@ function paintIllustrationOcclusion(){
  // Copy only the relevant pixels of the unmodified original background ON TOP of
  // the hero. No synthetic geometry or color tint is substituted for the artwork.
  const sourceW=perspectiveImage.naturalWidth,sourceH=perspectiveImage.naturalHeight;
- const sx=sourceW/WORLD.w,sy=sourceH/WORLD.h;
- const headY=player.y-75;
+ const headY=player.y-100;
  for(const o of illustrationOccluders){
    if(player.y>=o.depth)continue;
    const overlap=o.type==='ellipse'
@@ -83,16 +82,30 @@ const depthObjects=[
  {id:'house1',x:123,y:172,w:196,h:126,depth:298},
  {id:'house2',x:507,y:132,w:218,h:128,depth:260}
 ];
+// Convert provisional 960x680 diagram coordinates once into the source artwork's
+// native 1672x941 coordinate system. This prevents image stretching and drift.
+const X=1672/960,Y=941/680;
+const convertRect=b=>{b.x*=X;b.y*=Y;b.w*=X;b.h*=Y;};
+[...obstacles,river,...illustrationSolids].forEach(convertRect);
+for(const o of depthObjects){
+ o.x*=X;o.y*=Y;o.w*=X;o.h*=Y;o.depth*=Y;
+ if(o.crownX!==undefined){o.crownX*=X;o.crownY*=Y;o.crownW*=X;o.crownH*=Y;}
+}
+for(const o of illustrationOccluders){
+ o.x*=X;o.y*=Y;o.depth*=Y;
+ if(o.type==='ellipse'){o.rx*=X;o.ry*=Y;}else{o.w*=X;o.h*=Y;}
+}
 function fill(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
 function oval(x,y,rx,ry,color){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
 function worldBase(){
- if(useIllustration && perspectiveImage){ctx.drawImage(perspectiveImage,0,0,960,680);return;}
+ if(useIllustration && perspectiveImage){ctx.drawImage(perspectiveImage,0,0,WORLD.w,WORLD.h);return;}
+ ctx.save();ctx.scale(X,Y);
  fill(0,0,960,680,'#86a67a');fill(28,306,902,62,'#c9b98a');fill(322,70,66,505,'#b5aa7b');
  fill(20,540,918,65,'#669bc0');fill(307,536,103,73,'#dac48d');
  fill(123,172,196,126,'#b87f67');fill(507,132,218,128,'#b87f67');
  ctx.strokeStyle='#e3ddae';ctx.lineWidth=3;ctx.strokeRect(123,172,196,126);ctx.strokeRect(507,132,218,128);
  // Rows are decorative; no input to collision.
- for(let y=45;y<650;y+=58){for(let x=52;x<940;x+=72){ctx.fillStyle='#749b70';ctx.fillRect(x,y,8,15)}}
+ for(let y=45;y<650;y+=58){for(let x=52;x<940;x+=72){ctx.fillStyle='#749b70';ctx.fillRect(x,y,8,15)}}ctx.restore();
 }
 // Visual layers, collision shapes and occlusion shapes deliberately stay independent.
 function basePart(o){
@@ -133,7 +146,7 @@ for(const id of ['follow','overview','layers','hit','bg'])document.getElementByI
 addEventListener('keydown',e=>{keys.add(e.key);if(e.key.startsWith('Arrow'))e.preventDefault()});addEventListener('keyup',e=>keys.delete(e.key));
 function drawHero(now,dt,moving,dx,dy){
  const bridge=window.__hozukiHero;
- if(bridge){bridge.draw(ctx,{x:player.x,y:player.y},1,78*(.89+.18*Math.max(0,Math.min(1,player.y/680))),player.dir,moving,dx,dy,now,dt,'idle',0)}
+ if(bridge){bridge.draw(ctx,{x:player.x,y:player.y},1,78*(.89+.18*Math.max(0,Math.min(1,player.y/941))),player.dir,moving,dx,dy,now,dt,'idle',0)}
  else{ /* Never render a substitute for the established protagonist. */ }
 }
 // Use the actual illustrated 2.5D scene from hozuki-walk, never a top-down replacement.
@@ -148,14 +161,14 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(keys.has('ArrowUp')||keys.has('w'))dy--;if(keys.has('ArrowDown')||keys.has('s'))dy++;
  if(Math.hypot(dx,dy)<.06&&goal){const vx=goal.x-player.x,vy=goal.y-player.y,l=Math.hypot(vx,vy);if(l<6)goal=null;else{dx=vx/l;dy=vy/l}}
  const len=Math.hypot(dx,dy);let moving=false;
- if(len>.06){dx/=len;dy/=len;const step=135*dt, nx=player.x+dx*step,ny=player.y+dy*step;
+ if(len>.06){dx/=len;dy/=len;const step=180*dt, nx=player.x+dx*step,ny=player.y+dy*step;
  if(!blocked(nx,ny)){player.x=nx;player.y=ny;moving=true}
  else if(!blocked(nx,player.y)){player.x=nx;moving=true}
  else if(!blocked(player.x,ny)){player.y=ny;moving=true}
  else goal=null;
  player.dir=(Math.round(Math.atan2(dx,dy)*4/Math.PI)+8)%8;
  }
- const fit=Math.min(W/WORLD.w,H/WORLD.h),targetSc=follow?Math.max(fit*1.8,Math.min(W/540,H/540)):fit;sc+=(targetSc-sc)*Math.min(1,dt*7);
+ const fit=Math.min(W/WORLD.w,H/WORLD.h),targetSc=follow?Math.max(fit*1.8,Math.min(W/540,H/580)):fit;sc+=(targetSc-sc)*Math.min(1,dt*7);
  const tx=follow?W*.5-player.x*sc:(W-WORLD.w*sc)/2,ty=follow?H*.48-player.y*sc:(H-WORLD.h*sc)/2;
  ox+=(tx-ox)*Math.min(1,dt*7);oy+=(ty-oy)*Math.min(1,dt*7);
  ctx.fillStyle='#172a25';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.scale(sc,sc);worldBase();
@@ -166,13 +179,13 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
      {depth:o.depth,order:0,draw:()=>basePart(o)},
      {depth:o.depth,order:1,draw:()=>elevatedPart(o)}
    ])),
-   {depth:player.y,order:2,draw:()=>drawHero(now,dt,moving,dx*135*dt,dy*135*dt)}
+   {depth:player.y,order:2,draw:()=>drawHero(now,dt,moving,dx*180*dt,dy*180*dt)}
  ];
  render.sort((a,b)=>a.depth-b.depth||a.order-b.order).forEach(o=>o.draw());
  if(useIllustration){paintIllustrationOcclusion();paintIllustrationDebug();}
  else guide();
  ctx.restore();
- status.textContent='v0.3.0 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 既存画像の読込待ち');
+ status.textContent='v0.3.5 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 既存画像の読込待ち');
  requestAnimationFrame(tick)
 }requestAnimationFrame(tick);
 })();
