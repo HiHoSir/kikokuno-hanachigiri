@@ -11,11 +11,11 @@ canvas{display:block;width:100%;max-width:430px;height:auto;margin:0 auto;backgr
 button.on{background:#447c74;border-color:#7acdbc}label{display:flex;align-items:center;gap:8px;padding:7px 0;font-size:14px}input[type=range]{flex:1;min-width:80px}
 small{color:#b5c9dd}strong{color:#ffe0a6}.status{font-size:13px;padding:7px;color:#bddadc}
 </style></head><body><main>
-<h1>緋月・独立四肢歩行ラボ v0.1</h1>
-<p>既存の8方向原画のうち<strong>右向き静止画</strong>を読み込み、元絵を保持したまま部分マスクと関節回転で歩行を試験します。原画の見えない腕・脚は暫定複製のため、完成素材ではありません。</p>
+<h1>緋月・新デザイン歩行ラボ v0.2</h1>
+<p>既存の右向き静止画を初期表示し、<strong>新デザイン画像を端末から読み込んで</strong>元絵を保持したまま部分マスクと関節回転で歩行を試験します。腕・脚は固定範囲の仮マスクによる暫定複製のため、完成素材ではありません。</p>
 <div class="panel"><canvas id="view" width="430" height="600" aria-label="歩行プレビュー"></canvas>
 <div class="status" id="status">原画を読み込み中…</div>
-<div class="buttons"><button id="toggle" class="on">一時停止</button><button id="step">一歩ずつ</button><button id="reset">初期化</button></div>
+<div class="panel"><strong>新デザインの画像を指定</strong><label>透過PNG <input id="customArt" type="file" accept="image/png,image/webp,image/*"></label><small>指定した画像は端末内で読み込んで合成します。GitHubへの画像送信はしません。横向き・全身・透過画像を推奨します。</small></div><div class="buttons"><button id="toggle" class="on">一時停止</button><button id="step">一歩ずつ</button><button id="reset">初期化</button></div>
 <label>歩幅 <input id="stride" type="range" min="0" max="90" value="42"><output id="strideOut">42</output></label>
 <label>腕振り <input id="arm" type="range" min="0" max="60" value="20"><output id="armOut">20</output></label>
 <label>速度 <input id="speed" type="range" min="30" max="180" value="90"><output id="speedOut">90</output></label>
@@ -33,6 +33,23 @@ const image=new Image();image.crossOrigin='anonymous';
 image.onload=()=>{S.img=image;makeParts();$('status').textContent='既存の右向き原画を読み込みました（候補素材・未承認）。';S.status='ready'};
 image.onerror=()=>{$('status').textContent='画像を読み込めませんでした。GitHub Pages上で再読み込みしてください。';S.status='error'};
 image.src='../field-lab/art/2.png?v=0.12.1';
+$('customArt').addEventListener('change',e=>{
+ const file=e.target.files?.[0];if(!file)return;
+ const url=URL.createObjectURL(file),custom=new Image();
+ custom.onload=()=>{
+  const work=document.createElement('canvas');work.width=W;work.height=H;
+  const wc=work.getContext('2d');
+  // Preserve the full design and aspect ratio; normalize into existing mask coordinates.
+  const ratio=Math.min(W/custom.width,H/custom.height);
+  const dw=custom.width*ratio,dh=custom.height*ratio;
+  wc.clearRect(0,0,W,H);wc.drawImage(custom,(W-dw)/2,H-dh-8,dw,dh);
+  const normalized=new Image();
+  normalized.onload=()=>{S.img=normalized;makeParts();S.phase=0;$('status').textContent='新デザインを読み込みました（仮マスク使用中）。肩・足の付け根が合っているか確認してください。';URL.revokeObjectURL(url)};
+  normalized.src=work.toDataURL('image/png');
+ };
+ custom.onerror=()=>{$('status').textContent='画像を読み込めませんでした。';URL.revokeObjectURL(url)};
+ custom.src=url;
+});
 function makeMask(path){const c=document.createElement('canvas');c.width=W;c.height=H;const g=c.getContext('2d');g.drawImage(image,0,0,W,H);g.globalCompositeOperation='destination-in';g.fillStyle='#fff';g.beginPath();path(g);g.fill();return c}
 function poly(points){return g=>{g.moveTo(...points[0]);for(const p of points.slice(1))g.lineTo(...p);g.closePath()}}
 function makeParts(){
