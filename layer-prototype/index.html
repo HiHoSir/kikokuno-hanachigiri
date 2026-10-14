@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.0</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.1</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182923;color:white;font:13px system-ui,sans-serif}canvas{width:100vw;height:100dvh;display:block;touch-action:none}button{border:1px solid #d9d9c2a0;background:#183732eb;color:#fff;border-radius:10px;padding:7px 9px;font-weight:700;min-height:36px;touch-action:none}button.active{background:#687e47}#top{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:7px;right:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;z-index:3;pointer-events:none}#top button{pointer-events:auto}#status{font-size:11px;background:#1a332ee8;border-radius:7px;padding:6px;max-width:100%;pointer-events:none}#pad{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);width:140px;height:140px;border:1px solid #d0dfbd9a;background:#18382ca8;border-radius:24px;touch-action:none;z-index:3;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);place-items:center;color:#efefd3;font-size:22px;user-select:none}#pad:after{content:'●';grid-area:2/2;color:#9ba989}#pad i{font-style:normal;pointer-events:none}#help{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 15px);background:#1a342ddc;border-radius:8px;padding:8px;font-size:11px;max-width:44vw;line-height:1.65}#help strong{color:#f7dea7}
 </style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script></head><body>
@@ -109,17 +109,16 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  const tx=follow?W*.5-player.x*sc:(W-WORLD.w*sc)/2,ty=follow?H*.48-player.y*sc:(H-WORLD.h*sc)/2;
  ox+=(tx-ox)*Math.min(1,dt*7);oy+=(ty-oy)*Math.min(1,dt*7);
  ctx.fillStyle='#172a25';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.scale(sc,sc);worldBase();
- // Three independent passes: structural bases sorted against hero, then high overlays
- // chosen by feet-depth. Do not use image rectangle as a collision shape.
- const render=[...depthObjects.map(o=>({depth:o.depth,draw:()=>basePart(o)})),{depth:player.y,draw:()=>drawHero(now,dt,moving,dx*135*dt,dy*135*dt)}];
- render.sort((a,b)=>a.depth-b.depth).forEach(o=>o.draw());
- for(const o of depthObjects){if(occludes(o))elevatedPart(o);}
- // Non-occluding elevated graphics are drawn before the hero in a second clipping pass:
- // their visible upper silhouette must remain even when the hero is in front.
- for(const o of depthObjects){if(!occludes(o)){
-   ctx.save();ctx.beginPath();ctx.rect(0,0,WORLD.w,Math.min(WORLD.h,Math.max(0,player.y-106)));
-   ctx.clip();elevatedPart(o);ctx.restore();
- }}
+ // Render bases and elevated alpha shapes separately at the physical base depth.
+ // The crown/roof can cover a character behind it without making its visual area solid.
+ const render=[
+   ...depthObjects.flatMap(o=>[
+     {depth:o.depth,order:0,draw:()=>basePart(o)},
+     {depth:o.depth,order:1,draw:()=>elevatedPart(o)}
+   ]),
+   {depth:player.y,order:2,draw:()=>drawHero(now,dt,moving,dx*135*dt,dy*135*dt)}
+ ];
+ render.sort((a,b)=>a.depth-b.depth||a.order-b.order).forEach(o=>o.draw());
  guide();ctx.restore();
  status.textContent='v0.3.0 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 既存画像の読込待ち');
  requestAnimationFrame(tick)
