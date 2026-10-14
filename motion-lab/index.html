@@ -62,7 +62,7 @@ const limbs=[
 ];
 function project(pt,deg){
  const rad=deg*Math.PI/180, x=pt[0], y=pt[1], z=pt[2];
- const sx=x*Math.cos(rad)+z*Math.sin(rad);
+ const sx=-x*Math.cos(rad)+z*Math.sin(rad);
  const depth=z*Math.cos(rad)-x*Math.sin(rad);
  return {x:360+sx*300,y:612-y*260-depth*34,depth};
 }
