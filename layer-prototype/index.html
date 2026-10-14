@@ -1,16 +1,16 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.2.2</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.0</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182923;color:white;font:13px system-ui,sans-serif}canvas{width:100vw;height:100dvh;display:block;touch-action:none}button{border:1px solid #d9d9c2a0;background:#183732eb;color:#fff;border-radius:10px;padding:7px 9px;font-weight:700;min-height:36px;touch-action:none}button.active{background:#687e47}#top{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:7px;right:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;z-index:3;pointer-events:none}#top button{pointer-events:auto}#status{font-size:11px;background:#1a332ee8;border-radius:7px;padding:6px;max-width:100%;pointer-events:none}#pad{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);width:140px;height:140px;border:1px solid #d0dfbd9a;background:#18382ca8;border-radius:24px;touch-action:none;z-index:3;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);place-items:center;color:#efefd3;font-size:22px;user-select:none}#pad:after{content:'●';grid-area:2/2;color:#9ba989}#pad i{font-style:normal;pointer-events:none}#help{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 15px);background:#1a342ddc;border-radius:8px;padding:8px;font-size:11px;max-width:44vw;line-height:1.65}#help strong{color:#f7dea7}
 </style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script></head><body>
-<canvas id="view"></canvas><div id="top"><button id="follow" class="active">追従</button><button id="overview">全体</button><button id="layers" class="active">レイヤー表示</button><button id="hit">判定表示</button><span id="status">主人公を読み込み中</span></div>
+<canvas id="view"></canvas><div id="top"><button id="follow" class="active">追従</button><button id="overview">全体</button><button id="layers" class="active">レイヤー表示</button><button id="hit">判定表示</button><button id="bg">背景切替</button><span id="status">主人公を読み込み中</span></div>
 <div id="pad"><i style="grid-area:1/2">▲</i><i style="grid-area:2/1">◀</i><i style="grid-area:2/3">▶</i><i style="grid-area:3/2">▼</i></div>
-<div id="help"><strong>既存2.5D背景＋単色判定モデル</strong><div>建物・木・柱は仮配置。判定の動作検証用です</div><div>木・柱・屋根の前後を移動</div><div>画面タップ移動 / 十字パッド</div></div>
+<div id="help"><strong>既存2.5D背景＋単色判定モデル</strong><div>赤:衝突範囲 / 青:遮蔽範囲。木は幹だけ衝突します</div><div>単色模式図が標準。背景切替は比較用で、座標調整前です</div><div>画面タップ移動 / 十字パッド</div></div>
 <script>
 (()=>{
 'use strict';
 const cvs=document.getElementById('view'),ctx=cvs.getContext('2d'),status=document.getElementById('status');
-const WORLD={w:960,h:680};let perspectiveImage=null;let W=0,H=0,dpr=1,sc=1,ox=0,oy=0,last=performance.now(),follow=true,showLayers=true,showHit=false,goal=null,joy={x:0,y:0},keys=new Set();
+const WORLD={w:960,h:680};let perspectiveImage=null,useIllustration=false;let W=0,H=0,dpr=1,sc=1,ox=0,oy=0,last=performance.now(),follow=true,showLayers=true,showHit=false,goal=null,joy={x:0,y:0},keys=new Set();
 const player={x:370,y:475,dir:1};const rect=(x,y,w,h)=>({type:'rect',x,y,w,h});
 const obstacles=[
 rect(0,0,960,22),rect(0,658,960,22),rect(0,0,22,680),rect(938,0,22,680),
@@ -39,7 +39,7 @@ const depthObjects=[
 function fill(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
 function oval(x,y,rx,ry,color){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
 function worldBase(){
- if(perspectiveImage){ctx.drawImage(perspectiveImage,0,0,960,680);return;}
+ if(useIllustration && perspectiveImage){ctx.drawImage(perspectiveImage,0,0,960,680);return;}
  fill(0,0,960,680,'#86a67a');fill(28,306,902,62,'#c9b98a');fill(322,70,66,505,'#b5aa7b');
  fill(20,540,918,65,'#669bc0');fill(307,536,103,73,'#dac48d');
  fill(123,172,196,126,'#b87f67');fill(507,132,218,128,'#b87f67');
@@ -47,21 +47,39 @@ function worldBase(){
  // Rows are decorative; no input to collision.
  for(let y=45;y<650;y+=58){for(let x=52;x<940;x+=72){ctx.fillStyle='#749b70';ctx.fillRect(x,y,8,15)}}
 }
-function objectPaint(o){
- if(o.id.startsWith('tree')){fill(o.x,o.y,o.w,o.h,'#826040');oval(o.crownX,o.crownY,o.crownW/2,o.crownH/2,'#42765b');oval(o.crownX-22,o.crownY-12,38,37,'#59956d');}
+// Visual layers, collision shapes and occlusion shapes deliberately stay independent.
+function basePart(o){
+ if(o.id.startsWith('tree')){oval(o.x+o.w/2,o.y+o.h,24,9,'#46684966');fill(o.x,o.y-45,o.w,o.h+45,'#826040');}
  else if(o.id.startsWith('post')){fill(o.x-1,o.y-82,o.w+2,o.h+82,'#8e6650');fill(o.x-5,o.y-88,o.w+10,11,'#c6a16e');}
- else{fill(o.x-13,o.y-88,o.w+26,95,'#6f827e');fill(o.x-22,o.y-88,o.w+44,18,'#435e62');}
+ else{fill(o.x,o.y,o.w,o.h,'#b87f67');fill(o.x+12,o.y+15,o.w-24,o.h-28,'#dcb48c');}
+}
+function elevatedPart(o){
+ if(o.id.startsWith('tree')){oval(o.crownX,o.crownY,o.crownW/2,o.crownH/2,'#42765b');oval(o.crownX-22,o.crownY-12,38,37,'#59956d');}
+ else if(o.id.startsWith('house')){fill(o.x-13,o.y-88,o.w+26,95,'#6f827e');fill(o.x-22,o.y-88,o.w+44,18,'#435e62');}
+}
+// An elevated crown may cross the hero sprite area even while the trunk is separately solid.
+function crownOverlapsHero(o){
+ if(o.id.startsWith('tree')){
+   const rx=o.crownW/2+24,ry=o.crownH/2+42;
+   const dx=(player.x-o.crownX)/rx,dy=(player.y-68-o.crownY)/ry;
+   return dx*dx+dy*dy<1.0;
+ }
+ return player.x>o.x-35&&player.x<o.x+o.w+35&&player.y-100<o.y+15;
+}
+function occludes(o){
+ // Sprite feet determine front/back, while the visual alpha shape determines pixel coverage.
+ return player.y<o.depth && crownOverlapsHero(o);
 }
 function guide(){
  if(showLayers){ctx.save();ctx.font='bold 14px system-ui';ctx.fillStyle='#24392c';ctx.fillText('遮蔽・深度切替ゾーン',455,335);ctx.fillText('橋は通行可能',410,633);ctx.fillText('建物は通行不可',130,322);ctx.restore()}
- if(showHit){ctx.save();ctx.fillStyle='#ff363645';for(const r of obstacles)ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillRect(river.x,river.y,287,river.h);ctx.fillRect(410,river.y,528,river.h);ctx.strokeStyle='#ef3b3b';ctx.lineWidth=2;for(const o of depthObjects){ctx.strokeRect(o.x,o.y,o.w,o.h)}ctx.restore()}
+ if(showHit){ctx.save();ctx.fillStyle='#ff363645';for(const r of obstacles)ctx.fillRect(r.x,r.y,r.w,r.h);ctx.fillRect(river.x,river.y,287,river.h);ctx.fillRect(410,river.y,528,river.h);ctx.strokeStyle='#ef3b3b';ctx.lineWidth=2;for(const o of depthObjects){ctx.strokeRect(o.x,o.y,o.w,o.h)}ctx.strokeStyle='#268bf1';ctx.lineWidth=3;for(const o of depthObjects){if(o.id.startsWith('tree')){ctx.beginPath();ctx.ellipse(o.crownX,o.crownY,o.crownW/2,o.crownH/2,0,0,Math.PI*2);ctx.stroke()}else if(o.id.startsWith('house'))ctx.strokeRect(o.x-22,o.y-88,o.w+44,106)}ctx.restore()}
 }
 function project(x,y){return{x:x*sc+ox,y:y*sc+oy}}function unproject(x,y){return{x:(x-ox)/sc,y:(y-oy)/sc}}
 function resize(){W=innerWidth;H=innerHeight;dpr=Math.min(devicePixelRatio||1,2);cvs.width=W*dpr;cvs.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}resize();addEventListener('resize',resize);
 const pad=document.getElementById('pad');function padMove(e){const b=pad.getBoundingClientRect(),x=(e.clientX-b.left-b.width/2)/52,y=(e.clientY-b.top-b.height/2)/52,l=Math.hypot(x,y);joy={x:l>1?x/l:x,y:l>1?y/l:y};goal=null}
 pad.addEventListener('pointerdown',e=>{pad.setPointerCapture(e.pointerId);padMove(e)});pad.addEventListener('pointermove',e=>{if(pad.hasPointerCapture(e.pointerId))padMove(e)});for(const t of ['pointercancel','pointerup','lostpointercapture'])pad.addEventListener(t,()=>joy={x:0,y:0});
 cvs.addEventListener('pointerdown',e=>{const p=unproject(e.clientX,e.clientY);if(!blocked(p.x,p.y))goal=p});
-for(const id of ['follow','overview','layers','hit'])document.getElementById(id).onclick=()=>{if(id==='follow'||id==='overview'){follow=id==='follow';document.getElementById('follow').classList.toggle('active',follow);document.getElementById('overview').classList.toggle('active',!follow)}if(id==='layers'){showLayers=!showLayers;document.getElementById(id).classList.toggle('active',showLayers)}if(id==='hit'){showHit=!showHit;document.getElementById(id).classList.toggle('active',showHit)}};
+for(const id of ['follow','overview','layers','hit','bg'])document.getElementById(id).onclick=()=>{if(id==='follow'||id==='overview'){follow=id==='follow';document.getElementById('follow').classList.toggle('active',follow);document.getElementById('overview').classList.toggle('active',!follow)}if(id==='layers'){showLayers=!showLayers;document.getElementById(id).classList.toggle('active',showLayers)}if(id==='hit'){showHit=!showHit;document.getElementById(id).classList.toggle('active',showHit)}if(id==='bg'){useIllustration=!useIllustration;document.getElementById(id).classList.toggle('active',useIllustration)}};
 addEventListener('keydown',e=>{keys.add(e.key);if(e.key.startsWith('Arrow'))e.preventDefault()});addEventListener('keyup',e=>keys.delete(e.key));
 function drawHero(now,dt,moving,dx,dy){
  const bridge=window.__hozukiHero;
@@ -91,10 +109,19 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  const tx=follow?W*.5-player.x*sc:(W-WORLD.w*sc)/2,ty=follow?H*.48-player.y*sc:(H-WORLD.h*sc)/2;
  ox+=(tx-ox)*Math.min(1,dt*7);oy+=(ty-oy)*Math.min(1,dt*7);
  ctx.fillStyle='#172a25';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.scale(sc,sc);worldBase();
- // Sort tall objects by their physical base, never their image bounding box.
- const render=[...depthObjects.map(o=>({depth:o.depth,draw:()=>objectPaint(o)})),{depth:player.y,draw:()=>drawHero(now,dt,moving,dx*135*dt,dy*135*dt)}];
- render.sort((a,b)=>a.depth-b.depth).forEach(o=>o.draw());guide();ctx.restore();
- status.textContent='v0.2.2 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 代替表示');
+ // Three independent passes: structural bases sorted against hero, then high overlays
+ // chosen by feet-depth. Do not use image rectangle as a collision shape.
+ const render=[...depthObjects.map(o=>({depth:o.depth,draw:()=>basePart(o)})),{depth:player.y,draw:()=>drawHero(now,dt,moving,dx*135*dt,dy*135*dt)}];
+ render.sort((a,b)=>a.depth-b.depth).forEach(o=>o.draw());
+ for(const o of depthObjects){if(occludes(o))elevatedPart(o);}
+ // Non-occluding elevated graphics are drawn before the hero in a second clipping pass:
+ // their visible upper silhouette must remain even when the hero is in front.
+ for(const o of depthObjects){if(!occludes(o)){
+   ctx.save();ctx.beginPath();ctx.rect(0,0,WORLD.w,Math.min(WORLD.h,Math.max(0,player.y-106)));
+   ctx.clip();elevatedPart(o);ctx.restore();
+ }}
+ guide();ctx.restore();
+ status.textContent='v0.3.0 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 既存画像の読込待ち');
  requestAnimationFrame(tick)
 }requestAnimationFrame(tick);
 })();
