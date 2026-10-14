@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.7</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.8</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182923;color:white;font:13px system-ui,sans-serif}canvas{width:100vw;height:100dvh;display:block;touch-action:none}button{border:1px solid #d9d9c2a0;background:#183732eb;color:#fff;border-radius:10px;padding:7px 9px;font-weight:700;min-height:36px;touch-action:none}button.active{background:#687e47}#top{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:7px;right:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;z-index:3;pointer-events:none}#top button{pointer-events:auto}#status{font-size:11px;background:#1a332ee8;border-radius:7px;padding:6px;max-width:100%;pointer-events:none}#pad{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);width:140px;height:140px;border:1px solid #d0dfbd9a;background:#18382ca8;border-radius:24px;touch-action:none;z-index:3;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);place-items:center;color:#efefd3;font-size:22px;user-select:none}#pad:after{content:'●';grid-area:2/2;color:#9ba989}#pad i{font-style:normal;pointer-events:none}#help{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 15px);background:#1a342ddc;border-radius:8px;padding:8px;font-size:11px;max-width:44vw;line-height:1.65}#help strong{color:#f7dea7}
 </style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script></head><body>
@@ -22,10 +22,14 @@ const river=rect(20,540,918,65);
 // Approximate regions in prototype coordinates (960 x 680).
 // Collision footprints and visual occlusion masks are independent.
 const illustrationSolids=[
- rect(123,172,196,126),rect(507,132,218,128),
- rect(360,235,26,42),rect(768,320,30,39),
- rect(423,396,26,28),rect(700,440,26,30),
- rect(20,540,287,65),rect(410,540,528,65)
+ {type:'polygon',points:[[123,184],[145,170],[301,171],[322,197],[315,288],[131,297],[119,271]]},
+ {type:'polygon',points:[[509,152],[537,133],[702,136],[729,166],[719,253],[512,261],[499,233]]},
+ {type:'ellipse',x:373,y:260,rx:18,ry:18},
+ {type:'ellipse',x:783,y:344,rx:20,ry:17},
+ {type:'capsule',ax:435,ay:393,bx:436,by:424,r:13},
+ {type:'capsule',ax:712,ay:441,bx:714,by:469,r:13},
+ {type:'polygon',points:[[20,536],[172,543],[307,539],[307,607],[178,602],[20,609]]},
+ {type:'polygon',points:[[410,539],[569,544],[780,536],[938,541],[938,606],[735,602],[520,610],[410,607]]}
 ];
 const illustrationOccluders=[
  {type:'ellipse',x:373,y:155,rx:68,ry:56,depth:278},
@@ -35,15 +39,22 @@ const illustrationOccluders=[
  {type:'rect',x:417,y:308,w:38,h:100,depth:424},
  {type:'rect',x:694,y:351,w:38,h:102,depth:470}
 ];
-function hitRect(x,y,r,b){
- const cx=Math.max(b.x,Math.min(x,b.x+b.w));
- const cy=Math.max(b.y,Math.min(y,b.y+b.h));
- return (x-cx)**2+(y-cy)**2<r*r;
+function distanceSegment(x,y,ax,ay,bx,by){
+ const vx=bx-ax,vy=by-ay,t=Math.max(0,Math.min(1,((x-ax)*vx+(y-ay)*vy)/(vx*vx+vy*vy||1)));
+ return Math.hypot(x-(ax+vx*t),y-(ay+vy*t));
 }
-
+function hitShape(x,y,r,b){
+ if(b.type==='ellipse')return Math.hypot((x-b.x)/(b.rx+r),(y-b.y)/(b.ry+r))<1;
+ if(b.type==='capsule')return distanceSegment(x,y,b.ax,b.ay,b.bx,b.by)<b.r+r;
+ const p=b.points;
+ let inside=false;
+ for(let i=0,j=p.length-1;i<p.length;j=i++){const a=p[i],c=p[j];if((a[1]>y)!==(c[1]>y)&&x<(c[0]-a[0])*(y-a[1])/(c[1]-a[1])+a[0])inside=!inside;}
+ if(inside)return true;
+ return p.some((a,i)=>{const c=p[(i+1)%p.length];return distanceSegment(x,y,a[0],a[1],c[0],c[1])<r;});
+}
 function blocked(x,y,r=11){
  if(x<r||y<r||x>WORLD.w-r||y>WORLD.h-r)return true;
- if(useIllustration)return illustrationSolids.some(b=>hitRect(x,y,r,b));
+ if(useIllustration)return illustrationSolids.some(b=>hitShape(x,y,r,b));
  return [...obstacles,river].some(b=>(b!==river||x<=307||x>=410)&&hitRect(x,y,r,b));
 }
 function paintIllustrationOcclusion(){
@@ -69,7 +80,13 @@ function paintIllustrationOcclusion(){
 function paintIllustrationDebug(){
  if(!showHit)return;
  ctx.save();ctx.lineWidth=2;ctx.strokeStyle='#f05252';
- illustrationSolids.forEach(b=>ctx.strokeRect(b.x,b.y,b.w,b.h));
+ illustrationSolids.forEach(b=>{
+ ctx.beginPath();
+ if(b.type==='polygon'){b.points.forEach((p,i)=>i?ctx.lineTo(...p):ctx.moveTo(...p));ctx.closePath();}
+ else if(b.type==='ellipse')ctx.ellipse(b.x,b.y,b.rx,b.ry,0,0,Math.PI*2);
+ else {ctx.moveTo(b.ax,b.ay);ctx.lineTo(b.bx,b.by);ctx.lineWidth=2*b.r;}
+ ctx.stroke();ctx.lineWidth=2;
+});
  ctx.strokeStyle='#328fff';
  illustrationOccluders.forEach(o=>{ctx.beginPath();if(o.type==='ellipse')ctx.ellipse(o.x,o.y,o.rx,o.ry,0,0,Math.PI*2);else ctx.rect(o.x,o.y,o.w,o.h);ctx.stroke()});
  ctx.restore();
@@ -86,7 +103,12 @@ const depthObjects=[
 // native 1672x941 coordinate system. This prevents image stretching and drift.
 const X=1672/960,Y=941/680;
 const convertRect=b=>{b.x*=X;b.y*=Y;b.w*=X;b.h*=Y;};
-[...obstacles,river,...illustrationSolids].forEach(convertRect);
+[...obstacles,river].forEach(convertRect);
+for(const b of illustrationSolids){
+ if(b.type==='polygon')b.points.forEach(p=>{p[0]*=X;p[1]*=Y});
+ if(b.type==='ellipse'){b.x*=X;b.y*=Y;b.rx*=X;b.ry*=Y;}
+ if(b.type==='capsule'){b.ax*=X;b.bx*=X;b.ay*=Y;b.by*=Y;b.r*=Math.min(X,Y);}
+}
 for(const o of depthObjects){
  o.x*=X;o.y*=Y;o.w*=X;o.h*=Y;o.depth*=Y;
  if(o.crownX!==undefined){o.crownX*=X;o.crownY*=Y;o.crownW*=X;o.crownH*=Y;}
