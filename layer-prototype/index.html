@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.5</title>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"><title>背景レイヤー・衝突・遮蔽検証 v0.3.6</title>
 <style>
 *{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#182923;color:white;font:13px system-ui,sans-serif}canvas{width:100vw;height:100dvh;display:block;touch-action:none}button{border:1px solid #d9d9c2a0;background:#183732eb;color:#fff;border-radius:10px;padding:7px 9px;font-weight:700;min-height:36px;touch-action:none}button.active{background:#687e47}#top{position:fixed;top:calc(env(safe-area-inset-top) + 6px);left:7px;right:7px;display:flex;flex-wrap:wrap;align-items:center;gap:5px;z-index:3;pointer-events:none}#top button{pointer-events:auto}#status{font-size:11px;background:#1a332ee8;border-radius:7px;padding:6px;max-width:100%;pointer-events:none}#pad{position:fixed;left:14px;bottom:calc(env(safe-area-inset-bottom) + 12px);width:140px;height:140px;border:1px solid #d0dfbd9a;background:#18382ca8;border-radius:24px;touch-action:none;z-index:3;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);place-items:center;color:#efefd3;font-size:22px;user-select:none}#pad:after{content:'●';grid-area:2/2;color:#9ba989}#pad i{font-style:normal;pointer-events:none}#help{position:fixed;right:9px;bottom:calc(env(safe-area-inset-bottom) + 15px);background:#1a342ddc;border-radius:8px;padding:8px;font-size:11px;max-width:44vw;line-height:1.65}#help strong{color:#f7dea7}
 </style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script></head><body>
@@ -10,7 +10,7 @@
 (()=>{
 'use strict';
 const cvs=document.getElementById('view'),ctx=cvs.getContext('2d'),status=document.getElementById('status');
-const WORLD={w:1672,h:941};let perspectiveImage=null,useIllustration=true;let W=0,H=0,dpr=1,sc=1,ox=0,oy=0,last=performance.now(),follow=true,showLayers=true,showHit=false,goal=null,joy={x:0,y:0},keys=new Set();
+const WORLD={w:1672,h:941};let perspectiveImage=null,useIllustration=true;let W=0,H=0,dpr=1,sc=1,ox=0,oy=0,last=performance.now(),cameraInitialized=false,follow=true,showLayers=true,showHit=false,goal=null,joy={x:0,y:0},keys=new Set();
 const player={x:745,y:563,dir:1};const rect=(x,y,w,h)=>({type:'rect',x,y,w,h});
 const obstacles=[
 rect(0,0,960,22),rect(0,658,960,22),rect(0,0,22,680),rect(938,0,22,680),
@@ -98,7 +98,7 @@ for(const o of illustrationOccluders){
 function fill(x,y,w,h,color){ctx.fillStyle=color;ctx.fillRect(x,y,w,h)}
 function oval(x,y,rx,ry,color){ctx.beginPath();ctx.ellipse(x,y,rx,ry,0,0,Math.PI*2);ctx.fillStyle=color;ctx.fill()}
 function worldBase(){
- if(useIllustration && perspectiveImage){ctx.drawImage(perspectiveImage,0,0,WORLD.w,WORLD.h);return;}
+ if(useIllustration && perspectiveImage && perspectiveImage.complete && perspectiveImage.naturalWidth){ctx.drawImage(perspectiveImage,0,0,WORLD.w,WORLD.h);return;}
  ctx.save();ctx.scale(X,Y);
  fill(0,0,960,680,'#86a67a');fill(28,306,902,62,'#c9b98a');fill(322,70,66,505,'#b5aa7b');
  fill(20,540,918,65,'#669bc0');fill(307,536,103,73,'#dac48d');
@@ -168,9 +168,9 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  else goal=null;
  player.dir=(Math.round(Math.atan2(dx,dy)*4/Math.PI)+8)%8;
  }
- const fit=Math.min(W/WORLD.w,H/WORLD.h),targetSc=follow?Math.max(fit*1.8,Math.min(W/540,H/580)):fit;sc+=(targetSc-sc)*Math.min(1,dt*7);
+ const fit=Math.min(W/WORLD.w,H/WORLD.h),targetSc=follow?Math.max(fit*1.8,Math.min(W/540,H/580)):fit;if(!cameraInitialized)sc=targetSc;else sc+=(targetSc-sc)*Math.min(1,dt*7);
  const tx=follow?W*.5-player.x*sc:(W-WORLD.w*sc)/2,ty=follow?H*.48-player.y*sc:(H-WORLD.h*sc)/2;
- ox+=(tx-ox)*Math.min(1,dt*7);oy+=(ty-oy)*Math.min(1,dt*7);
+ if(!cameraInitialized){ox=tx;oy=ty;cameraInitialized=true;}else{ox+=(tx-ox)*Math.min(1,dt*7);oy+=(ty-oy)*Math.min(1,dt*7);}
  ctx.fillStyle='#172a25';ctx.fillRect(0,0,W,H);ctx.save();ctx.translate(ox,oy);ctx.scale(sc,sc);worldBase();
  // Render bases and elevated alpha shapes separately at the physical base depth.
  // The crown/roof can cover a character behind it without making its visual area solid.
@@ -185,7 +185,7 @@ function tick(now){const dt=Math.min(.05,(now-last)/1000);last=now;
  if(useIllustration){paintIllustrationOcclusion();paintIllustrationDebug();}
  else guide();
  ctx.restore();
- status.textContent='v0.3.5 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 既存画像の読込待ち');
+ status.textContent='v0.3.6 / '+Math.round(player.x)+','+Math.round(player.y)+' / '+(blocked(player.x,player.y)?'判定エラー':'移動可能')+(window.__hozukiHero?' / 既存アニメ':' / 既存画像の読込待ち');
  requestAnimationFrame(tick)
 }requestAnimationFrame(tick);
 })();
