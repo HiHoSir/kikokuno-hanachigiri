@@ -45,8 +45,10 @@
 #gestures button{min-height:32px;font-size:11px}
 #msg{bottom:calc(env(safe-area-inset-bottom) + 270px)}
 @media(max-height:620px){#gestures{bottom:calc(env(safe-area-inset-bottom) + 145px)}#msg{bottom:calc(env(safe-area-inset-bottom) + 212px)}}
+#audio-toggle{position:fixed;top:calc(env(safe-area-inset-top) + 84px);left:8px;z-index:8;min-height:35px;padding:5px 11px;font-size:12px;background:#32463aef;border:1px solid #d5bc8b}
+@media(max-height:620px){#audio-toggle{top:calc(env(safe-area-inset-top) + 84px)}}
 </style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
-</head><body><canvas id="game"></canvas><div id="info"><b>新生 鬼哭の花契り — 2.5D技術検証 v0.25.0</b><small><span id="area-name">鬼灯の里 — 散策実験</span> ／ 8方向主人公＋小川・橋・兵具屋・宿屋・茶店<br>移動：スライドD-pad／WASD　調べる：A／Enter　壺・井戸・野菜　自動保存</small></div><div id="area-status">現在地：鬼灯の里 — 散策実験</div><button id="go-hill">高台の入口へ</button><div id="gestures"><button id="surprise">驚き</button><button id="wave">手振り</button><button id="bow">おじぎ</button><button id="cheer">喜ぶ</button></div><div id="msg"></div><div id="error"></div><div id="controls"><div id="dpad" role="group" aria-label="8方向移動D-pad"><span class="up">▲</span><span class="down">▼</span><span class="left">◀</span><span class="right">▶</span><span class="center"></span></div><button id="talk">A</button></div><script>
+</head><body><canvas id="game"></canvas><div id="info"><b>新生 鬼哭の花契り — 2.5D技術検証 v0.25.1</b><small><span id="area-name">鬼灯の里 — 散策実験</span> ／ 8方向主人公＋小川・橋・兵具屋・宿屋・茶店<br>移動：スライドD-pad／WASD　調べる：A／Enter　壺・井戸・野菜　自動保存</small></div><div id="area-status">現在地：鬼灯の里 — 散策実験</div><button id="audio-toggle" data-muted="false" aria-label="音楽と効果音の切り替え">♪ ON</button><button id="go-hill">高台の入口へ</button><div id="gestures"><button id="surprise">驚き</button><button id="wave">手振り</button><button id="bow">おじぎ</button><button id="cheer">喜ぶ</button></div><div id="msg"></div><div id="error"></div><div id="controls"><div id="dpad" role="group" aria-label="8方向移動D-pad"><span class="up">▲</span><span class="down">▼</span><span class="left">◀</span><span class="right">▶</span><span class="center"></span></div><button id="talk">A</button></div><script>
 (function(){
  const panel=document.querySelector('#error');
  let opaqueError=false;
@@ -68,4 +70,4 @@
  },3000)});
 
 })();
-</script><script type="module" src="./src/main.js?v=0.25.0"></script></body></html>
+</script><script type="module" src="./src/main.js?v=0.25.1-audio"></script></body></html>
