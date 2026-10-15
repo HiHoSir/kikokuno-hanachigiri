@@ -1,3 +1,4 @@
+import {createGameAudio} from './audio.js?v=20261015.1';
 import * as THREE from 'three';
 import {worldFromScreen,moveWithCollision} from './movement.js';
 import {hozukiArea} from './areas/hozuki.js?v=0.19.0';
@@ -35,12 +36,21 @@ const character=await createLabCharacter(scene,'./field-lab/');
 let facing=0,gait=0;let mode='idle',modeStarted=0,modeUntil=0;
 const cameraControl=createCameraController(camera);
 const msg=document.querySelector('#msg');
+const audio=createGameAudio();
+audio.setArea(area.id);
+const audioButton=document.querySelector('#audio-toggle');
+audioButton?.addEventListener('click',event=>{event.stopPropagation();const muted=audioButton.dataset.muted!=='true';audioButton.dataset.muted=String(muted);audio.setMuted(muted);audioButton.textContent=muted?'♪ OFF':'♪ ON';});
+let audioUnlocked=false;
+async function startAudio(){if(audioUnlocked)return;audioUnlocked=await audio.unlock();if(audioUnlocked)window.removeEventListener('pointerdown',startAudio);}
+window.addEventListener('pointerdown',startAudio,{passive:true});
+window.addEventListener('keydown',startAudio);
 const areaName=document.querySelector('#area-name');
 function persist(){if(paintedDemo)return;try{localStorage.setItem(SAVE_KEY,encodeSave(state))}catch{}}
 function enterArea(event){
   const next=applyTransition(state,event,resolveArea);
   if(!next)return;
   world.dispose();area=next;world=createWorld(scene,area);
+  audio.cancel();audio.setArea(area.id);
   areaName.textContent=area.name;
   refreshStatus();
   cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z)+1.25,state.player.z);
@@ -56,8 +66,9 @@ function action(){
   enterArea(result);
   if(result.changed)persist();
   refreshStatus();
-  msg.textContent=result.text;
-  msg.style.display='block';messageUntil=performance.now()+3000;
+  if(result.changed)audio.effect('obtain');else audio.effect('action');
+  audio.speak(result.text,msg);
+  msg.style.display='block';messageUntil=performance.now()+Math.max(3000,[...result.text].length*95+600);
 }
 const hillButton=document.querySelector('#go-hill');
 hillButton?.addEventListener('click',()=>{
@@ -68,7 +79,8 @@ hillButton?.addEventListener('click',()=>{
  facing=4;gait=0;mode='idle';modeUntil=0;
  cameraControl.target.set(state.player.x,surfaceHeightAt(area,state.player.x,state.player.z)+1.25,state.player.z);
  persist();
- msg.textContent=paintedDemo&&!onSummit?'イラスト検証：風魔の鈴の高台に移動しました。':'風魔の鈴へ続く登り道です。画面の上方向へ進んでください。';
+ audio.effect('action');
+ audio.speak(paintedDemo&&!onSummit?'イラスト検証：風魔の鈴の高台に移動しました。':'風魔の鈴へ続く登り道です。画面の上方向へ進んでください。',msg);
  msg.style.display='block';messageUntil=performance.now()+4500;
 });
 const input=createInput(action);
@@ -79,7 +91,7 @@ function resize(){
 window.addEventListener('resize',resize);resize();
 cameraControl.update(state.player,1,surfaceHeightAt(area,state.player.x,state.player.z));
 areaName.textContent=area.name;refreshStatus();
-window.addEventListener('pagehide',persist);
+window.addEventListener('pagehide',()=>{audio.cancel();persist();});
 let nextAutosave=performance.now()+3500;
 let previous=performance.now();
 function frame(now){
