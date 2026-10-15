@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>鬼灯の里｜NPC疑似音声テスト</title>
+<style>
+*{box-sizing:border-box}body{background:#172321;color:#f1e9cf;font-family:-apple-system,BlinkMacSystemFont,system-ui,sans-serif;margin:0;padding:22px}main{max-width:620px;margin:24px auto}h1{font-size:25px}p{line-height:1.65}label{display:block;margin:22px 0 10px}textarea{width:100%;min-height:84px;padding:13px;border:1px solid #b8aa88;border-radius:9px;background:#f9f1de;color:#252d25;font:17px/1.5 system-ui}.dialog{background:#283930;border:2px solid #d9c394;border-radius:12px;min-height:130px;padding:20px;font-size:23px;line-height:1.7;white-space:pre-wrap}button{background:#d9c394;border:0;border-radius:9px;padding:14px 18px;font-size:17px;margin:14px 8px 0 0;color:#263027;cursor:pointer}small{color:#d0c9af}#status{font-size:14px;color:#c8c4ac;margin-top:13px}
+</style></head><body><main><h1>鬼灯の里・子供NPC音声</h1><p>文章を見ながら聞くと、そのセリフを喋っているように感じる疑似音声の実験です。</p>
+<label for="line">NPCのセリフ</label><textarea id="line">おはよう！ きょうもいい天気だね。</textarea>
+<div class="dialog" id="dialog">タップで会話を開始</div>
+<button id="speak">会話を再生</button><button id="mute">音声 ON</button>
+<div id="status">Safariでは、最初のボタン操作で音声を有効化します。</div>
+<p><small>音声ファイルのダウンロード不要。文字送りに同期してブラウザ内で合成します。</small></p>
+</main><script>
+(()=>{'use strict';let ctx=null,enabled=true,token=0;const $=id=>document.getElementById(id);const kana='あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆよらりるれろわをん';const vowels=['あかさたなはまやらわ','いきしちにひみり','うくすつぬふむゆる','えけせてねへめれ','おこそとのほもよろを'];
+function vowelIndex(ch){for(let i=0;i<vowels.length;i++)if(vowels[i].includes(ch))return i;return 2}
+function chirp(ch,index){if(!enabled||!ctx)return;const now=ctx.currentTime,dur=.083,v=vowelIndex(ch),ranges=[440,390,360,410,340],fundamental=(ranges[v]+(index%4)*11)*(0.99+Math.random()*.02);const osc=ctx.createOscillator(),gain=ctx.createGain(),filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=1200;filter.Q.value=.3;osc.type='triangle';osc.frequency.setValueAtTime(fundamental,now);osc.frequency.exponentialRampToValueAtTime(fundamental*.89,now+dur);gain.gain.setValueAtTime(0,now);gain.gain.linearRampToValueAtTime(.053,now+.013);gain.gain.setTargetAtTime(0,now+.033,.017);osc.connect(filter).connect(gain).connect(ctx.destination);osc.start(now);osc.stop(now+dur+.06)}
+$('speak').onclick=async()=>{token++;const id=token;try{ctx??=new(window.AudioContext||window.webkitAudioContext)();await ctx.resume();$('status').textContent='再生中';}catch(e){$('status').textContent='音声を開始できませんでした: '+e.message;return;}const s=$('line').value;$('dialog').textContent='';for(let i=0;i<s.length;i++){if(id!==token)return;const ch=s[i];$('dialog').textContent+=ch;if(!/[\s、。！？!?]/.test(ch)&&kana.includes(ch))chirp(ch,i);await new Promise(r=>setTimeout(r,/[、。！？!?]/.test(ch)?170:70));}if(id===token)$('status').textContent='再生完了';};
+$('mute').onclick=()=>{enabled=!enabled;$('mute').textContent='音声 '+(enabled?'ON':'OFF')};})();
+</script></body></html>
