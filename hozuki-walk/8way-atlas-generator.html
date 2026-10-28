@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>緋月 8方向歩行アトラス試作</title>
+<style>*{box-sizing:border-box}body{margin:0;background:#101821;color:#f0f4f7;font:14px system-ui}main{max-width:1050px;margin:auto;padding:12px}h1{font-size:20px}p{line-height:1.7;color:#c9d5df}section{background:#1d2c3b;border:1px solid #3e5366;border-radius:12px;padding:12px;margin:12px 0}.controls{display:flex;gap:9px;flex-wrap:wrap;align-items:center}button,select{background:#34536a;color:white;border:1px solid #7a98af;border-radius:9px;padding:11px;min-height:44px}button:disabled{opacity:.4}label{display:flex;gap:8px;align-items:center}input[type=range]{max-width:120px}canvas{display:block;max-width:100%;height:auto;image-rendering:auto;background:repeating-conic-gradient(#304052 0 25%,#1b2a39 0 50%) 50%/20px 20px}#view{height:350px;display:flex;justify-content:center}#view canvas{height:100%;width:auto}#atlas{width:100%}pre{white-space:pre-wrap;word-break:break-word;color:#cbdbef;max-height:180px;overflow:auto}a{color:#9ddfff}</style></head>
+<body><main><h1>緋月 8方向歩行アセット生成ラボ <small>実験版</small></h1>
+<p>既存の <code>models/hizuki/candidate.glb</code> を直接使用。画像の描き直しなしで、同一モデル・同一カメラ・同一歩行位相から8方向×6コマを出力します。造形自体は未承認です。</p>
+<section><div id="status" role="status">GLB読み込み中…</div><div id="view"></div><div class="controls">
+<label>方向<select id="direction"><option value="0">前</option><option value="1">右前</option><option value="2">右</option><option value="3">右後</option><option value="4">後</option><option value="5">左後</option><option value="6">左</option><option value="7">左前</option></select></label>
+<label>歩幅 <input id="stride" type="range" min="0" max="80" value="32"><output id="strideText">32</output></label>
+<label>速度 <input id="speed" type="range" min="1" max="12" value="5"></label>
+<button id="toggle">一時停止</button><button id="generate" disabled>8×6コマ生成</button>
+</div><p>腕・脚の関節をモデル内のボーンから特定し、左右反対位相で動かします。ボーンが特定できない場合は書き出しを止めます。角度ごとにAI生成する処理はありません。</p></section>
+<section><h2>スプライトアトラス</h2><p>1セル192×256px／列は6フレーム／行は前→右前→右→右後→後→左後→左→左前。背景透過。書き出し用PNGと設定JSONを生成します。</p><canvas id="atlas" width="1152" height="2048"></canvas><div class="controls"><button id="png" disabled>PNG保存</button><button id="json" disabled>JSON保存</button></div></section>
+<section><h2>骨格診断</h2><pre id="bones">読み込み待ち</pre><p>モデルの歩行用の骨格を正しく判定できない場合、ボーン名と診断結果をここで確認できます。</p><a href="./hizuki-3d-review.html">元の3D造形レビュー</a></section>
+</main>
+<script type="module">
+import * as THREE from 'https://esm.sh/three@0.180.0';
+import {GLTFLoader} from 'https://esm.sh/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
+const $=s=>document.querySelector(s),status=$('#status'),w=192,h=256,frames=6,dirs=8;
+const scene=new THREE.Scene(),camera=new THREE.OrthographicCamera(-.5,.5,.67,-.67,.01,100);
+const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(1);renderer.setSize(w,h);renderer.setClearColor(0,0);$('#view').append(renderer.domElement);
+scene.add(new THREE.HemisphereLight(0xffffff,0x65778b,2.2));
+const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(-2,4,5);scene.add(key);
+let figure,bones=[],legL,legR,armL,armR,hip,original=new Map(),elapsed=0,running=true,bounds;
+const names=['front','front_right','right','back_right','back','back_left','left','front_left'];
+const clk=new THREE.Clock();
+function findBone(side,group){
+ const p=side==='L'?/(left|_l\b|\.l\b|l[_-])/i:/(right|_r\b|\.r\b|r[_-])/i;
+ const q=group==='leg'?/(upper.?leg|thigh|upleg|leg[_-]?upper)/i:/(upper.?arm|arm[_-]?upper|shoulder)/i;
+ return bones.find(b=>p.test(b.name)&&q.test(b.name));
+}
+function resetPose(){for(const [b,q] of original)b.quaternion.copy(q)}
+function pose(phase){
+ resetPose();const s=Number($('#stride').value)/100;
+ const a=Math.sin(phase*Math.PI*2),lift=Math.max(0,Math.cos(phase*Math.PI*2));
+ // The motion is procedural and only alters genuine arm/leg joints.
+ legL.rotation.x+=s*a;legR.rotation.x-=s*a;
+ armL.rotation.x-=s*.75*a;armR.rotation.x+=s*.75*a;
+ if(hip)hip.position.y+=lift*.008*bounds.y;
+}
+function turn(d){figure.rotation.y=d*Math.PI/4}
+function render(phase,d){pose(phase);turn(d);renderer.render(scene,camera)}
+function tick(){requestAnimationFrame(tick);if(!figure)return;const dt=Math.min(.05,clk.getDelta());if(running)elapsed+=dt*Number($('#speed').value)/5;render(elapsed%1,Number($('#direction').value))}
+const gltf=await new Promise((resolve,reject)=>new GLTFLoader().load('../models/hizuki/candidate.glb',resolve,undefined,reject)).catch(e=>{status.textContent='GLB読込失敗: '+e.message;return null});
+if(gltf){
+ figure=gltf.scene;scene.add(figure);figure.updateMatrixWorld(true);
+ const box=new THREE.Box3().setFromObject(figure),center=box.getCenter(new THREE.Vector3());bounds=box.getSize(new THREE.Vector3());
+ figure.position.sub(center);figure.position.y+=bounds.y*.05;
+ const aspect=w/h,zoom=Math.max(bounds.y/1.18,bounds.x/aspect/1.05,bounds.z/aspect/1.05);
+ camera.left=-zoom*aspect/2;camera.right=zoom*aspect/2;camera.top=zoom/2;camera.bottom=-zoom/2;camera.position.set(0,bounds.y*.025,zoom*3);camera.lookAt(0,0,0);camera.updateProjectionMatrix();
+ figure.traverse(o=>{if(o.isBone)bones.push(o)});
+ bones.forEach(b=>original.set(b,b.quaternion.clone()));
+ legL=findBone('L','leg');legR=findBone('R','leg');armL=findBone('L','arm');armR=findBone('R','arm');
+ hip=bones.find(b=>/(hips|pelvis)/i.test(b.name));
+ // Ensure bone names and parent hierarchy can be inspected before any export.
+ $('#bones').textContent=JSON.stringify({meshCount:(()=>{let n=0;figure.traverse(o=>{if(o.isMesh)n++});return n})(),skins:gltf.parser.json.skins?.length||0,clips:gltf.animations.map(a=>a.name),bones:bones.map(b=>b.name),mapped:{legL:legL?.name,legR:legR?.name,armL:armL?.name,armR:armR?.name,hip:hip?.name}},null,2);
+ if([legL,legR,armL,armR].every(Boolean)){$('#generate').disabled=false;status.textContent='モデル読み込み成功。4本の脚・腕ボーンを検出。8方向レンダリング可能。造形・歩行品質は未承認。'}else {status.textContent='GLBは読み込めましたが、歩行用ボーン名を認識できません。誤った画像を作らないため生成を停止しています。';}
+ tick();
+}
+$('#toggle').onclick=()=>{running=!running;$('#toggle').textContent=running?'一時停止':'再生'};
+$('#stride').oninput=()=>$('#strideText').value=$('#stride').value;
+$('#generate').onclick=async()=>{
+ $('#generate').disabled=true;
+ const canvas=$('#atlas'),ctx=canvas.getContext('2d');ctx.clearRect(0,0,canvas.width,canvas.height);
+ for(let d=0;d<dirs;d++)for(let f=0;f<frames;f++){render(f/frames,d);ctx.drawImage(renderer.domElement,f*w,d*h,w,h);}
+ $('#png').disabled=false;$('#json').disabled=false;$('#generate').disabled=false;
+ status.textContent='48コマを現在のモデルから生成しました。造形・歩行の目視検査後に採用してください。';
+};
+$('#png').onclick=()=>{const a=document.createElement('a');a.href=$('#atlas').toDataURL('image/png');a.download='hizuki-walk-8way-experimental.png';a.click()};
+$('#json').onclick=()=>{const data={type:'experimental',approved:false,source:'models/hizuki/candidate.glb',cell:{width:w,height:h},columns:frames,rows:dirs,directions:names,framesPerDirection:frames,stride:Number($('#stride').value),fps:Number($('#speed').value),footAnchor:{x:w/2,y:Math.round(h*.96)},notes:'The reference model sculpt is unapproved; verify frame-by-frame motion and ground contact.'};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)],{type:'application/json'}));a.download='hizuki-walk-8way-experimental.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)};
+</script></body></html>
