@@ -21,7 +21,7 @@ const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,preserveDrawin
 renderer.setPixelRatio(1);renderer.setSize(w,h);renderer.setClearColor(0,0);$('#view').append(renderer.domElement);
 scene.add(new THREE.HemisphereLight(0xffffff,0x65778b,2.2));
 const key=new THREE.DirectionalLight(0xffffff,2.2);key.position.set(-2,4,5);scene.add(key);
-let figure,bones=[],legL,legR,armL,armR,hip,original=new Map(),elapsed=0,running=true,bounds;
+let figure,bones=[],legL,legR,armL,armR,hip,original=new Map(),hipBase=null,elapsed=0,running=true,bounds;
 const names=['front','front_right','right','back_right','back','back_left','left','front_left'];
 const clk=new THREE.Clock();
 function findBone(side,group){
@@ -29,7 +29,7 @@ function findBone(side,group){
  const q=group==='leg'?/(upper.?leg|thigh|upleg|leg[_-]?upper)/i:/(upper.?arm|arm[_-]?upper|shoulder)/i;
  return bones.find(b=>p.test(b.name)&&q.test(b.name));
 }
-function resetPose(){for(const [b,q] of original)b.quaternion.copy(q)}
+function resetPose(){for(const [b,q] of original)b.quaternion.copy(q);if(hip&&hipBase)hip.position.copy(hipBase)}
 function pose(phase){
  resetPose();const s=Number($('#stride').value)/100;
  const a=Math.sin(phase*Math.PI*2),lift=Math.max(0,Math.cos(phase*Math.PI*2));
@@ -51,7 +51,7 @@ if(gltf){
  figure.traverse(o=>{if(o.isBone)bones.push(o)});
  bones.forEach(b=>original.set(b,b.quaternion.clone()));
  legL=findBone('L','leg');legR=findBone('R','leg');armL=findBone('L','arm');armR=findBone('R','arm');
- hip=bones.find(b=>/(hips|pelvis)/i.test(b.name));
+ hip=bones.find(b=>/(hips|pelvis)/i.test(b.name));if(hip)hipBase=hip.position.clone();
  // Ensure bone names and parent hierarchy can be inspected before any export.
  $('#bones').textContent=JSON.stringify({meshCount:(()=>{let n=0;figure.traverse(o=>{if(o.isMesh)n++});return n})(),skins:gltf.parser.json.skins?.length||0,clips:gltf.animations.map(a=>a.name),bones:bones.map(b=>b.name),mapped:{legL:legL?.name,legR:legR?.name,armL:armL?.name,armR:armR?.name,hip:hip?.name}},null,2);
  if([legL,legR,armL,armR].every(Boolean)){$('#generate').disabled=false;status.textContent='モデル読み込み成功。4本の脚・腕ボーンを検出。8方向レンダリング可能。造形・歩行品質は未承認。'}else {status.textContent='GLBは読み込めましたが、歩行用ボーン名を認識できません。誤った画像を作らないため生成を停止しています。';}
