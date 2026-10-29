@@ -64,6 +64,20 @@ try{
   await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('JSONを読み込みました'));
   await page.locator('#undo').click();
   assert.equal(await page.evaluate(()=>window.__KIKOKU_PIXEL_EDITOR.getInfo().dir),'front_right');
+  // The authored prototype should load as actual editable RGBA, not as an overlay.
+  await page.locator('#directions button').first().click();
+  await page.locator('#frames button').first().click();
+  const oldPixelData=await page.evaluate(()=>[...window.__KIKOKU_PIXEL_EDITOR.getCurrent()]);
+  await page.locator('#loadHandPixelExample').click();
+  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('手打ち正面試作を読み込みました'));
+  const opaque=await page.evaluate(()=>{
+    const img=window.__KIKOKU_PIXEL_EDITOR.getCurrent();let count=0;
+    for(let i=3;i<img.length;i+=4)if(img[i]!==0)count++;
+    return count;
+  });
+  assert.ok(opaque>1500,'authored sprite not loaded into editable pixel buffer');
+  await page.locator('#undo').click();
+  assert.deepEqual(await page.evaluate(()=>[...window.__KIKOKU_PIXEL_EDITOR.getCurrent()]),oldPixelData,'sample import Undo must restore exact RGBA');
   // Ensure a new full-array import can be undone without discarding unrelated frames.
   await page.screenshot({path:'/tmp/kikoku-pixel-64-qa/'+name+'.png',fullPage:true});
   assert.deepEqual(errors,[],name+' JS errors');
