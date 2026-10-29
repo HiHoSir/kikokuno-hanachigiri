@@ -60,6 +60,25 @@ $('color').oninput=()=>{color=$('color').value;buildPalette();};
 $('clearFrame').onclick=()=>{if(!confirm('現在のコマだけを透明にしますか？'))return;pushUndo();current().fill(0);refresh();};
 $('copyFrame').onclick=()=>{if(frame===0)return status('コマ1には直前コマがありません');if(!confirm('直前コマを現在のコマへ複写しますか？'))return;pushUndo();current().set(sheets[idx(direction,frame-1)]);refresh();};
 $('referenceFile').onchange=e=>{const file=e.target.files[0];if(!file)return;const url=URL.createObjectURL(file),im=new Image();im.onload=()=>{URL.revokeObjectURL(url);refCustom=im;reference=im;refresh();status('独自の下絵を重ねました。実際のドットデータは変化していません。');};im.onerror=()=>{URL.revokeObjectURL(url);status('下絵の読み込みに失敗しました');};im.src=url;};
+
+$('loadHandPixelExample').onclick=()=>{
+ if(direction!==0||frame!==0){status('サンプルは「正面・コマ1」を選択してから読み込んでください。');return;}
+ if(!confirm('手打ち正面64×96pxの試作をこのコマに読み込みますか？（Undo可能）'))return;
+ const im=new Image();
+ im.onload=()=>{
+  if(im.width!==W||im.height!==H){status('サンプル寸法が64×96ではありません');return;}
+  // If the user changed frame while the PNG was loading, reject the update.
+  if(direction!==0||frame!==0){status('読み込み中にコマが切り替わったため適用しませんでした。');return;}
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(im,0,0);
+  const patch=g.getImageData(0,0,W,H).data;
+  pushUndo();current().set(patch);refresh();
+  status('64×96手打ち正面試作を読み込みました。現在のコマ1にのみ反映、Undo可能です。');
+ };
+ im.onerror=()=>status('サンプルPNGを読み込めませんでした。');
+ im.src='./examples/hizuki-front-handpixel-64x96.png';
+};
+
 $('fps').oninput=()=>$('fpsValue').textContent=$('fps').value;
 function animate(now){if(!animation)return;if(!lastTick||now-lastTick>=1000/Number($('fps').value)){animFrame=(animFrame+1)%FRAMES;lastTick=now;paintOn(walk,sheets[idx(direction,animFrame)]);}animReq=requestAnimationFrame(animate);}
 $('play').onclick=()=>{animation=!animation;$('play').textContent=animation?'■ 停止':'▶ 再生';lastTick=0;if(animation)animReq=requestAnimationFrame(animate);else{cancelAnimationFrame(animReq);refresh();}};
