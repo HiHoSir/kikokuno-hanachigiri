@@ -1,0 +1,295 @@
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="editor-build" content="cursor-2"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>kikoku · AI画素修正ラボ（32px試作）</title><style>
+:root{font-family:system-ui,-apple-system,"Hiragino Kaku Gothic ProN",sans-serif;color-scheme:dark;background:#151b23;color:#edf1f7}*{box-sizing:border-box}body{margin:0}header{padding:15px 16px;border-bottom:1px solid #394454;background:#1e2936}h1{font-size:17px;margin:0 0 5px}small,.muted{color:#aeb8c9}.wrap{max-width:1140px;margin:auto;padding:14px;display:grid;grid-template-columns:minmax(280px,1fr) 305px;gap:16px}.panel{border:1px solid #3a4657;background:#202b39;border-radius:12px;padding:12px}.toolbar,.actions{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:9px}button,.filebtn,select,input[type=color]{font:inherit;background:#324253;border:1px solid #627287;color:#fff;border-radius:8px;padding:9px;cursor:pointer;min-height:41px}button[aria-pressed=true]{background:#946348;border-color:#eebc84}button:focus-visible{outline:2px solid #9fe1ff}.canvasbox{display:flex;justify-content:center;align-items:center;background:#121820;border-radius:8px;overflow:hidden;padding:10px;min-height:320px;touch-action:none}#draw{display:block;width:min(100%,512px);aspect-ratio:1;image-rendering:pixelated;touch-action:none;cursor:crosshair}#preview{image-rendering:pixelated;width:96px;height:96px;border:1px solid #84909d;background:linear-gradient(45deg,#586577 25%,transparent 25%),linear-gradient(-45deg,#586577 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#586577 75%),linear-gradient(-45deg,transparent 75%,#586577 75%);background-size:16px 16px;background-position:0 0,0 8px,8px -8px,-8px 0px}label{font-size:13px;color:#d4deeb}#palette{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;margin-top:8px;max-height:245px;overflow-y:auto;overscroll-behavior:contain}.swatch{height:44px;min-height:44px;padding:0;border-radius:5px;border:2px solid #b0baca}.swatch[aria-pressed=true]{outline:2px solid #f6f6f6;outline-offset:1px}.hint{font-size:12px;line-height:1.5;color:#adbacb;margin-top:10px}.status{background:#101822;border-radius:7px;padding:9px;white-space:pre-wrap;font-size:12px;color:#c5d5e1}.flex{display:flex;gap:12px;align-items:center;flex-wrap:wrap}input[type=range]{width:115px}.filebtn{display:inline-flex;align-items:center}.filebtn input{display:none}.rowtitle{font-weight:700;margin:14px 0 8px}textarea{background:#101820;color:#e3ebf2;border:1px solid #58677b;border-radius:6px;width:100%;min-height:80px;font-family:monospace;font-size:11px}.foot{margin:12px 0;color:#b6c3d4;font-size:12px;line-height:1.7}@media(max-width:760px){.wrap{display:flex;flex-direction:column;gap:8px;padding:7px}.panel{margin-bottom:4px;padding:9px}.canvasbox{min-height:0;padding:4px}#draw{width:min(100%,min(94vw,450px))}header{padding:9px}.toolbar button,.actions button,.filebtn{min-height:46px}#palette{grid-template-columns:repeat(6,minmax(0,1fr));max-height:192px}.swatch{min-height:47px;height:47px}.cursorpad{grid-template-columns:repeat(3,66px);grid-template-rows:repeat(3,54px)}.cursorpad button{min-height:54px}}
+.directions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:10px}.directions button{display:flex;flex-direction:column;align-items:center;padding:6px;gap:4px;font-size:12px;min-width:0}.directions canvas{width:52px;height:52px;image-rendering:pixelated;background:repeating-conic-gradient(#647283 0% 25%,#344354 0% 50%) 50% / 14px 14px}.directions span{white-space:nowrap} @media(max-width:390px){.directions canvas{width:38px;height:38px}}
+.convert-controls{display:grid;grid-template-columns:1fr 1fr;gap:8px}.convert-controls label{display:flex;flex-direction:column;gap:5px}.convert-controls input{max-width:100%;width:100%}.convert-samples{display:flex;align-items:start;gap:14px;margin:10px 0}.convert-samples canvas{width:112px;height:112px;image-rendering:pixelated;background:repeating-conic-gradient(#4a5565 0% 25%,#293340 0% 50%) 50% / 14px 14px;border:1px solid #77869b}@media(max-width:390px){.convert-samples canvas{width:88px;height:88px}}.walkstrip{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0}.walkstrip button{min-width:84px}.walkstrip button[aria-pressed=true]{background:#946348}.walkpreview{image-rendering:pixelated;width:96px;height:96px;background:repeating-conic-gradient(#647283 0% 25%,#344354 0% 50%) 50% / 16px 16px;border:1px solid #84909d}.muted-note{font-size:12px;color:#bfd0df}details{border-top:1px solid #4b596b;margin-top:10px;padding-top:8px}summary{cursor:pointer;padding:8px 0;font-weight:bold}.cursorbar{margin:12px 0;padding:10px;background:#14202d;border:1px solid #506074;border-radius:10px}.cursorpad{display:grid;grid-template-columns:repeat(3,56px);grid-template-rows:repeat(3,48px);gap:5px;justify-content:center;margin:8px auto}.cursorpad button{min-height:48px;padding:4px;touch-action:manipulation;font-size:21px}.cursorpad .center{background:#946348}.cursorbar button{touch-action:manipulation}.cursor-info{text-align:center;font-size:13px;font-variant-numeric:tabular-nums}.cursor-highlight{outline:3px solid #ffd47c}.editor-option{display:flex;align-items:center;gap:5px;margin:8px 0}
+/* Compact touch workspace: rearranged in JS without duplicating controls */
+.touch-dock{display:none}.touch-workspace #mobilePaletteDock{display:block}.touch-workspace .wrap{display:block;max-width:100%;padding:5px}.touch-workspace .panel{margin:0 0 7px;padding:7px}.touch-workspace .canvasbox{padding:2px;min-height:0}.touch-workspace #draw{width:min(calc(100vw - 28px),calc(100dvh - 245px),480px);max-width:100%;margin:auto}.touch-workspace #tools{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;margin:4px 0}.touch-workspace #tools button{padding:7px 2px;min-height:43px;font-size:13px}.touch-workspace .directions{margin:4px 0;gap:3px}.touch-workspace .directions button{padding:2px;gap:1px}.touch-workspace .directions canvas{width:31px;height:31px}.touch-workspace .walkstrip{margin:4px 0;gap:4px}.touch-workspace .walkstrip button{min-width:0;flex:1;padding:5px;min-height:38px;font-size:12px}.touch-workspace .cursorbar{padding:5px;margin:5px 0}.touch-workspace .cursor-info{font-size:12px}.touch-workspace .cursor-info button{min-height:37px;padding:5px}.touch-workspace .cursorpad{grid-template-columns:repeat(3,45px);grid-template-rows:repeat(3,38px);gap:3px;margin:3px auto}.touch-workspace .cursorpad button{min-height:38px;padding:0}.touch-workspace #palette{display:flex;gap:4px;overflow-x:auto;overflow-y:hidden;max-height:none;padding:3px 3px 9px;scrollbar-width:thin;scroll-snap-type:x proximity}.touch-workspace #palette .swatch{flex:0 0 42px;height:45px;min-height:45px;scroll-snap-align:start}.touch-workspace #mobilePaletteDock{margin:4px 0;border:1px solid #526076;padding:5px;border-radius:9px;background:#1c2a3b}.touch-workspace #mobilePaletteDock .rowtitle{margin:0 0 3px;font-size:12px}.touch-workspace .mobile-actionbar{display:flex;gap:6px;align-items:center}.touch-workspace .mobile-actionbar button{flex:1;min-height:39px;padding:5px}.touch-workspace .cursorbar .hint{display:none}.touch-workspace .cursorbar .editor-option{margin:2px}.touch-workspace #mobileWorkspace{display:flex;flex-direction:column}.touch-workspace #mobileWorkspace .canvasbox{order:1}.touch-workspace #mobileWorkspace #mobilePaletteDock{order:2}.touch-workspace #mobileWorkspace .cursorbar{order:3}.touch-workspace #mobileWorkspace .mobile-actionbar{order:4}.touch-workspace #mobileWorkspace .canvas-options{order:5}.touch-workspace .mobile-secondary{display:none}.touch-workspace .mobile-secondary.open{display:block}.touch-workspace .mobile-secondary summary{padding:10px}.touch-workspace .foot{margin:5px 0}.touch-workspace header{padding:7px 10px}.touch-workspace header small{display:none}.touch-workspace header h1{font-size:14px}.touch-workspace #mobileWorkspace .cursorpad{display:none}.touch-workspace #mobileWorkspace .cursorbar.cursor-active .cursorpad{display:grid}.touch-workspace .cursorbar:not(.cursor-active) .cursor-info{display:none}
+@media(orientation:landscape) and (pointer:coarse){.touch-workspace #mobileWorkspace{display:grid;grid-template-columns:minmax(220px,56vw) minmax(180px,1fr);gap:6px;align-items:start}.touch-workspace #mobileWorkspace .canvasbox{grid-column:1;grid-row:1/5}.touch-workspace #mobileWorkspace #mobilePaletteDock{grid-column:2;grid-row:1}.touch-workspace #mobileWorkspace .cursorbar{grid-column:2;grid-row:2}.touch-workspace #mobileWorkspace .mobile-actionbar{grid-column:2;grid-row:3}.touch-workspace #draw{width:min(calc(100dvh - 108px),56vw)}.touch-workspace #mobileWorkspace .cursorbar.cursor-active .cursorpad{grid-template-columns:repeat(3,42px);grid-template-rows:repeat(3,33px)}}
+
+/* Independent AI pixel lab; existing mobile editor CSS and controls remain unchanged. */
+#aiPixelPanel{max-width:1140px;margin:12px auto 22px;padding:15px}
+#aiPixelPanel h2{margin:0 0 8px;font-size:17px}
+#aiPixelPanel .ai-note{font-size:12px;line-height:1.55;color:#bdd1e5}
+#aiPixelPanel .ai-controls{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}
+#aiPixelPanel .ai-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+#aiPixelPanel label{display:block;margin:8px 0 4px}
+#aiPixelPanel textarea{font-size:12px;line-height:1.45;min-height:110px}
+#aiPixelPanel #aiPatch{min-height:165px}
+#aiPixelPanel .ai-previews{display:flex;gap:15px;align-items:center;flex-wrap:wrap;margin:12px 0}
+#aiPixelPanel .ai-previews canvas{width:128px;height:128px;image-rendering:pixelated;background:repeating-conic-gradient(#657282 0 25%,#2c384a 0 50%) 50% / 16px 16px;border:1px solid #8390a0}
+#aiPixelPanel .ai-previews span{display:block;font-size:12px;margin-bottom:5px}
+#aiPixelPanel #aiPromptOutput{min-height:80px}
+#aiPixelPanel button:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:760px){#aiPixelPanel{margin:8px;padding:9px}#aiPixelPanel .ai-cols{grid-template-columns:1fr}#aiPixelPanel .ai-previews canvas{width:112px;height:112px}#aiPixelPanel button{min-height:45px}}
+</style></head><body><header><h1>kikoku · ドット絵エディタ［AI画素修正ラボ］ <small style="display:inline;font-size:11px">CURSOR 2</small></h1><small>32×32の実画素 ／ 4方向の静止画＋歩行差分A/B ／ 未承認画像を自動生成しない</small></header><div class="wrap"><section class="panel"><div class="toolbar" id="tools"><button data-tool="pencil" aria-pressed="true">鉛筆</button><button data-tool="erase">消しゴム</button><button data-tool="fill">塗りつぶし</button><button data-tool="pick">スポイト</button></div><div class="rowtitle">4方向の切り替え — <span id="directionName">正面</span></div><div class="directions"><button id="direction0" aria-pressed="true"><canvas id="thumb0" width="32" height="32"></canvas><span>正面</span></button><button id="direction1" aria-pressed="false"><canvas id="thumb1" width="32" height="32"></canvas><span>背面</span></button><button id="direction2" aria-pressed="false"><canvas id="thumb2" width="32" height="32"></canvas><span>左</span></button><button id="direction3" aria-pressed="false"><canvas id="thumb3" width="32" height="32"></canvas><span>右</span></button></div><div class="rowtitle">編集対象（静止は基礎素材、歩行はA・Bの2差分のみ）</div><div class="walkstrip"><button id="pose0" aria-pressed="true">基本・静止画</button><button id="pose1" aria-pressed="false">歩行A</button><button id="pose2" aria-pressed="false">歩行B</button></div><div class="cursorbar"><div class="flex"><label class="editor-option"><input id="cursorMode" type="checkbox"> 選択カーソルモード（指で位置指定）</label><span class="muted">指を離すだけでは描きません</span></div><div class="cursor-info">選択画素 <strong id="cursorXY">（16,16）</strong> <button id="cursorPick">色を拾う</button><button id="cursorErase">消す</button></div><div class="cursorpad" aria-label="画素選択の十字キー"><span></span><button id="cursorUp" aria-label="1画素上へ">▲</button><span></span><button id="cursorLeft" aria-label="1画素左へ">◀</button><button id="cursorPaint" class="center" aria-label="選択画素を塗る">●</button><button id="cursorRight" aria-label="1画素右へ">▶</button><span></span><button id="cursorDown" aria-label="1画素下へ">▼</button><span></span></div><label class="editor-option"><input id="lockSkin" type="checkbox"> 肌色を保護（読み込み時の肌色RGBを固定）</label><div class="flex"><button id="lockHeadWalk">この方向の歩行A/Bの頭部を静止画と一致させる</button></div><p class="hint">肌色保護はJSON・PNG読み込み時の肌色パレットを基準にします。顔の色を保持したまま髪と衣装を編集できます。頭部固定は上側17行を静止画から複写し、足元の動きは残します。</p></div><div class="canvasbox"><canvas id="draw" width="512" height="512" aria-label="32×32px編集画面"></canvas></div><div class="flex" style="margin-top:10px"><label><input id="onion" type="checkbox"> 前コマを薄く表示</label><label><input id="grid" type="checkbox" checked> グリッド</label><label><input id="mirror" type="checkbox"> 左右対称</label><label>参考画像の濃さ <input id="opacity" type="range" min="0" max="100" value="32"></label></div><p class="hint">指やマウスで1画素ずつ描けます。左右対称は正面の顔に便利です。参考画像は編集画素とは別レイヤーで表示し、PNGには混ぜません。</p></section><aside class="panel"><div class="flex"><div><label>実寸プレビュー</label><div><canvas id="preview" width="32" height="32"></canvas></div></div><div><label>選択色</label><div style="margin-top:9px"><input id="color" type="color" value="#6c5686"></div><label style="display:block;margin-top:10px">座標 <span id="xy">--</span></label></div></div><div class="rowtitle">配色（読み込んだ画像の使用色）</div><div id="palette"></div><div class="rowtitle">歩行アニメーション</div><div class="flex"><button id="play">▶ 再生</button><label>速度 <input id="fps" type="range" min="2" max="12" value="6"><span id="fpsValue">6</span> fps</label><canvas id="walkPreview" class="walkpreview" width="32" height="32"></canvas></div><p class="hint">歩行プレビューはA → Bのみを再生します。静止画は独立した基本素材で、歩行差分として数えません。</p><div class="rowtitle">方向データ</div><div class="actions"><label>コピー元 <select id="copyFrom"><option value="0">正面</option><option value="1">背面</option><option value="2">左</option><option value="3">右</option></select></label><button id="copyDirection">現在の方向へコピー</button></div><div class="rowtitle">コマの操作</div><div class="actions"><label>コピー元コマ <select id="copyPose"><option value="0">静止</option><option value="1">歩行A</option><option value="2">歩行B</option></select></label><button id="copyPoseButton">このコマへコピー</button><button id="flip">現在のコマを左右反転</button></div><div class="rowtitle">操作</div><div class="actions"><button id="undo">元に戻す</button><button id="redo">やり直す</button><button id="clear">全消去</button></div><div class="rowtitle">参考画像・既存画素</div><div class="actions"><label class="filebtn">参考画像を開く<input id="referenceFile" type="file" accept="image/*"></label><label class="filebtn">32px／4方向PNG読込<input id="pngFile" type="file" accept="image/png,image/*"></label></div><details id="converter"><summary>原画から32pxへ変換・色補正</summary><p class="hint">人物が透過されているPNG推奨。人物の周囲を自動検出し、指定高さに縮小します。非透過画像の背景は自動除去しません。</p><label class="filebtn">原画PNGを読み込む<input id="sourceFile" type="file" accept="image/png,image/webp,image/jpeg,image/*"></label><div class="convert-controls" style="margin-top:8px"><label>表示高さ <span id="heightVal">27</span>px<input id="convertHeight" type="range" min="16" max="28" value="27"></label><label>色数 <span id="colorsVal">16</span><input id="convertColors" type="range" min="6" max="32" value="16" step="2"></label><label>明るさ <span id="brightVal">0</span><input id="convertBright" type="range" min="-60" max="60" value="0"></label><label>コントラスト <span id="contrastVal">100</span>%<input id="convertContrast" type="range" min="60" max="200" value="100"></label><label>彩度 <span id="saturationVal">100</span>%<input id="convertSaturation" type="range" min="0" max="200" value="100"></label><label><span>縮小方法</span><select id="convertSampling"><option value="area">面積平均（推奨）</option><option value="nearest">最近傍</option></select></label></div><label><input id="convertOutline" type="checkbox"> 外縁を暗く補正</label><div class="convert-samples"><div><small>32px変換プレビュー</small><div><canvas id="convertedPreview" width="32" height="32"></canvas></div></div><div><small>現在のコマ</small><div><canvas id="beforePreview" width="32" height="32"></canvas></div></div></div><div class="actions"><button id="convertRefresh">プレビューを再計算</button><button id="convertApply">このコマに適用</button></div><p class="hint" id="convertInfo">変換元を選択してください。変換はプレビューのみで、自動保存しません。</p></details><div class="rowtitle">保存・再現</div><div class="actions"><button id="exportPNG">現在の方向PNG（32px）</button><button id="exportAtlas">4方向静止PNG（128×32px）</button><button id="exportWalk">歩行アトラスPNG（96×128px）</button><button id="exportJSON">編集JSON</button><label class="filebtn">JSON読込<input id="jsonFile" type="file" accept="application/json,.json"></label></div><div class="status" id="status">準備完了。静止画を基準に歩行A・Bだけを編集できます。</div><details><summary>追加オプション・規格情報</summary><p class="foot">ゲーム互換アトラスは幅96px×高さ128px。第1列は基本・静止画で、歩行コマは第2列A・第3列Bのみ。行は正面/背面/右/左です。各コマは32×32pxで透明を維持。以前の4方向データでは各方向の静止だけを読み込み、歩行コマは自動生成しません。</p></details><p class="foot">画像生成は行いません。画素編集は32×32 RGBAで保持します。参考画像や既存PNGの読み込みは端末内で処理され、ネットワーク送信されません。保存したJSONは後からAIによる座標指定の修正にも利用できます。</p></aside></div>
+<section class="panel" id="aiPixelPanel" aria-label="AIドット打ち研究">
+ <h2>AIによるドット打ち（独立試作）</h2>
+ <p class="ai-note">既存の32×32ドットエディタをそのまま複製しました。画像生成・自動縮小はしません。現在の画素情報をChatGPTに渡し、返された画素単位の修正案を差分プレビューして適用できます。画像や指示は自動送信されません。</p>
+ <div class="ai-controls"><button id="aiLoadHizuki" type="button">参考用32px緋月を読み込む</button></div>
+ <div class="ai-cols">
+  <div><label for="aiInstruction"><strong>① AIに依頼したい修正</strong></label>
+    <textarea id="aiInstruction" placeholder="例：目の左右バランスを整えて。髪・服・ポーズはそのまま。"></textarea>
+    <div class="ai-controls"><button id="aiCopy" type="button">現在の画素＋依頼文をコピー</button></div>
+    <label for="aiPromptOutput">AIに渡す指示文（コピーできないときはこちら）</label>
+    <textarea id="aiPromptOutput" hidden readonly aria-label="AIへの指示"></textarea>
+  </div>
+  <div><label for="aiPatch"><strong>② AIから返ってきたJSONパッチ</strong></label>
+    <textarea id="aiPatch" spellcheck="false" placeholder='{"format":"yaksha-pixel-patch-v1","direction":"front","pose":"idle","pixels":[{"x":16,"y":12,"rgba":[20,30,60,255]}]}'></textarea>
+    <div class="ai-controls"><button id="aiPreview" type="button">差分プレビュー</button><button id="aiApply" type="button" disabled>確認して適用</button></div>
+  </div>
+ </div>
+ <div class="ai-previews">
+  <div><span>編集前</span><canvas id="aiBefore" width="32" height="32"></canvas></div>
+  <div><span>編集候補（未反映）</span><canvas id="aiAfter" width="32" height="32"></canvas></div>
+ </div>
+ <div id="aiStatus" class="status" role="status" aria-live="polite"></div>
+ <p class="ai-note">AI接続用のAPIキーは不要です。この段階はChatGPTとのコピー・貼り付け連携で、自律的なAIモデルをエディタ内に搭載したものではありません。Undo・JSON保存は既存機能を利用します。元のpixel-editor.htmlと本編には変更を加えません。</p>
+</section>
+<script>
+(()=>{'use strict';
+const N=32,S=16,ORDER=['front','back','left','right'],NAMES=['正面','背面','左向き','右向き'],POSES=['基本・静止画','歩行A','歩行B'];
+const $=id=>document.getElementById(id),draw=$('draw'),ctx=draw.getContext('2d'),preview=$('preview'),pc=preview.getContext('2d');
+const off=document.createElement('canvas');off.width=off.height=N;const oc=off.getContext('2d',{willReadFrequently:true});
+const frames=Array.from({length:12},()=>new Uint8ClampedArray(N*N*4));const history=[],future=[];let pose=0,playing=false,lastTick=0,walkStep=0,raf=0;
+const slot=(d=dir,p=pose)=>d*3+p, current=()=>frames[slot()];
+let dir=0,tool='pencil',color='#6c5686',down=false,last=-1,ref=null,referenceURL=null;let cursorX=16,cursorY=16;let skinColors=new Set();
+const status=s=>$('status').textContent=s;
+const defaultPalette=['#1c202d','#424d65','#78b5df','#b0d8ee','#fff3e8','#f5cbae','#cb5761','#8f303f','#f8be61','#675062','#765b46','#ffffff','#2d2d2d','#697b55','#eaa5ad','#ab95ca'];
+let pal=defaultPalette.slice();
+function refreshPaletteFromPixels(){
+ const counts=new Map();
+ for(const a of frames)for(let i=0;i<a.length;i+=4){
+  if(a[i+3]<128)continue;
+  const hex='#'+[a[i],a[i+1],a[i+2]].map(v=>v.toString(16).padStart(2,'0')).join('');
+  counts.set(hex,(counts.get(hex)||0)+1);
+ }
+ pal=counts.size?[...counts].sort((a,b)=>b[1]-a[1]).map(x=>x[0]):defaultPalette.slice();
+ paintPalette();
+}
+function paintPalette(){
+ const el=$('palette');el.replaceChildren();
+ for(const v of pal){
+  const b=document.createElement('button');b.type='button';b.className='swatch';b.style.background=v;
+  b.dataset.color=v;b.title=v;b.setAttribute('aria-label','色 '+v);
+  b.onclick=()=>{$('color').value=color=v;updatePalette();};
+  el.appendChild(b);
+ }
+ updatePalette();
+}
+function snapshot(){history.push({dir,pose,data:current().slice()});if(history.length>100)history.shift();future.length=0;}
+function restore(entry){frames[entry.dir*3+entry.pose].set(entry.data);dir=entry.dir;pose=entry.pose;syncDir();syncPose();render();}
+function rgba(hex){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16)).concat(255);}
+function get(i){return Array.from(current().slice(i*4,i*4+4));}
+function isSkinColor(c){return skinColors.has(c.slice(0,3).join(','));}
+function set(i,c){const old=current().slice(i*4,i*4+4);if($('lockSkin').checked&&(isSkinColor(old)||isSkinColor(c)))return false;current().set(c,i*4);return true;}
+function hex(i){return '#'+get(i).slice(0,3).map(x=>x.toString(16).padStart(2,'0')).join('');}
+function paint(i,c){set(i,c);if($('mirror').checked){const x=i%N,y=i/N|0;set(y*N+N-1-x,c);}}
+function stroke(i){if(i<0||i>=N*N)return;
+ if(tool==='pick'){if(get(i)[3]){$('color').value=color=hex(i);updatePalette();}return;}
+ if(tool==='fill'){let prior=get(i),next=rgba(color);if(prior.every((v,k)=>v===next[k]))return;snapshot();const queue=[i],seen=new Uint8Array(N*N);while(queue.length){const n=queue.pop();if(seen[n])continue;seen[n]=1;if(!get(n).every((v,k)=>v===prior[k]))continue;paint(n,next);const x=n%N,y=n/N|0;if(x>0)queue.push(n-1);if(x<31)queue.push(n+1);if(y>0)queue.push(n-32);if(y<31)queue.push(n+32);}render();return;}
+ paint(i,tool==='erase'?[0,0,0,0]:rgba(color));render();}
+function pixelsToCanvas(arr,dst){dst.putImageData(new ImageData(arr,N,N),0,0);}
+function render(){pixelsToCanvas(current(),oc);pc.clearRect(0,0,N,N);pc.drawImage(off,0,0);
+ ctx.clearRect(0,0,512,512);for(let y=0;y<N;y++)for(let x=0;x<N;x++){ctx.fillStyle=(x+y)%2?'#45515c':'#58646e';ctx.fillRect(x*S,y*S,S,S);}
+ if($('onion').checked&&pose!==0){pixelsToCanvas(frames[slot(dir,0)],oc);ctx.save();ctx.globalAlpha=.22;ctx.imageSmoothingEnabled=false;ctx.drawImage(off,0,0,512,512);ctx.restore();pixelsToCanvas(current(),oc);}
+ if(ref){ctx.save();ctx.globalAlpha=+$('opacity').value/100;ctx.imageSmoothingEnabled=true;ctx.drawImage(ref,0,0,512,512);ctx.restore();}
+ ctx.imageSmoothingEnabled=false;ctx.drawImage(off,0,0,512,512);
+ if($('cursorMode').checked){ctx.save();ctx.strokeStyle='#ffe292';ctx.lineWidth=3;ctx.strokeRect(cursorX*S+2,cursorY*S+2,S-4,S-4);ctx.restore();}
+ if($('grid').checked){ctx.strokeStyle='rgba(12,17,25,.35)';ctx.lineWidth=1;ctx.beginPath();for(let k=0;k<=N;k++){let t=k*S+.5;ctx.moveTo(t,0);ctx.lineTo(t,512);ctx.moveTo(0,t);ctx.lineTo(512,t);}ctx.stroke();}
+ for(let i=0;i<4;i++){const c=$('thumb'+i);if(!c)continue;const g=c.getContext('2d');g.clearRect(0,0,32,32);pixelsToCanvas(frames[slot(i,0)],oc);g.drawImage(off,0,0);}
+ pixelsToCanvas(current(),oc);const w=$('walkPreview').getContext('2d');w.clearRect(0,0,32,32);pixelsToCanvas(frames[slot(dir,playing?[1,2][walkStep]:pose)],oc);w.drawImage(off,0,0);pixelsToCanvas(current(),oc);
+}
+function syncDir(){for(let i=0;i<4;i++){const b=$('direction'+i);b.setAttribute('aria-pressed',String(dir===i));} $('directionName').textContent=NAMES[dir];}
+function syncPose(){for(let p=0;p<3;p++)$('pose'+p).setAttribute('aria-pressed',String(p===pose));}
+function choosePose(p){pose=p;syncPose();render();status(NAMES[dir]+'・'+POSES[pose]+'を編集中');}
+function chooseDir(i){dir=i;syncDir();render();status(NAMES[dir]+'を編集中です。');}
+function point(e){const r=draw.getBoundingClientRect(),x=Math.floor((e.clientX-r.left)*32/r.width),y=Math.floor((e.clientY-r.top)*32/r.height);if(x<0||x>=32||y<0||y>=32)return -1;$('xy').textContent=`(${x}, ${y})`;return y*32+x;}
+function setCursor(i){if(i<0)return;cursorX=i%N;cursorY=i/N|0;$('cursorXY').textContent='（'+cursorX+','+cursorY+'）';$('xy').textContent='('+cursorX+', '+cursorY+')';render();}
+function begin(e){e.preventDefault();const i=point(e);if(i<0)return;if($('cursorMode').checked){setCursor(i);return;}down=true;last=i;draw.setPointerCapture(e.pointerId);if(tool!=='fill'&&tool!=='pick')snapshot();stroke(i);}
+function move(e){if($('cursorMode').checked)return;const i=point(e);if(!down||i<0||i===last||tool==='fill'||tool==='pick')return;let x0=last%N,y0=last/N|0,x1=i%N,y1=i/N|0,dx=Math.abs(x1-x0),dy=-Math.abs(y1-y0),sx=x0<x1?1:-1,sy=y0<y1?1:-1,err=dx+dy;while(true){stroke(y0*N+x0);if(x0===x1&&y0===y1)break;const e2=2*err;if(e2>=dy){err+=dy;x0+=sx;}if(e2<=dx){err+=dx;y0+=sy;}}last=i;}
+function end(){down=false;last=-1;}
+draw.addEventListener('pointerdown',begin);draw.addEventListener('pointermove',move);draw.addEventListener('pointerup',end);draw.addEventListener('pointercancel',end);
+function syncCursorMode(){
+ const active=$('cursorMode').checked,bar=document.querySelector('.cursorbar'),toggle=$('cursorToggle');
+ bar?.classList.toggle('cursor-active',active);
+ if(toggle){toggle.textContent=active?'指で描く':'照準で修正';toggle.setAttribute('aria-pressed',String(active));}
+ end();render();
+}
+$('cursorMode').onchange=syncCursorMode;
+const moveCursor=(dx,dy)=>{cursorX=Math.min(31,Math.max(0,cursorX+dx));cursorY=Math.min(31,Math.max(0,cursorY+dy));setCursor(cursorY*32+cursorX);};
+$('cursorUp').onclick=()=>moveCursor(0,-1);$('cursorDown').onclick=()=>moveCursor(0,1);$('cursorLeft').onclick=()=>moveCursor(-1,0);$('cursorRight').onclick=()=>moveCursor(1,0);
+$('cursorPaint').onclick=()=>{const i=cursorY*32+cursorX;if(tool!=='pick'&&tool!=='fill')snapshot();stroke(i);};
+$('cursorErase').onclick=()=>{snapshot();set(cursorY*32+cursorX,[0,0,0,0]);render();};
+$('cursorPick').onclick=()=>{const i=cursorY*32+cursorX;if(get(i)[3]){$('color').value=color=hex(i);updatePalette();}};
+function captureSkinPalette(){const colors=new Set();const known=[[251,225,208],[246,214,196],[238,180,169],[247,212,188],[250,219,197],[234,166,150]];for(let d=0;d<4;d++)for(let p=0;p<3;p++){const a=frames[slot(d,p)];for(let i=0;i<a.length;i+=4){if(!a[i+3])continue;const rgb=[a[i],a[i+1],a[i+2]];if(known.some(c=>c.every((v,j)=>v===rgb[j]))||(rgb[0]>165&&rgb[0]>rgb[1]*1.08&&rgb[1]>=rgb[2]&&rgb[1]>110&&rgb[2]>100&&rgb[0]-rgb[2]<110)){colors.add(rgb.join(','));}}}skinColors=colors;}
+$('lockHeadWalk').onclick=()=>{if(!confirm(NAMES[dir]+'の歩行A/Bの上側17行を静止画にそろえますか？ 足元は維持されます。'))return;for(let p=1;p<=2;p++){history.push({dir,pose:p,data:frames[slot(dir,p)].slice()});}future.length=0;const source=frames[slot(dir,0)].slice();for(let p=1;p<=2;p++)frames[slot(dir,p)].set(source.slice(0,32*17*4),0);render();status('頭部を静止画と一致させました。肌色と足元は元のデータを維持しています。');};
+$('grid').onchange=render;$('onion').onchange=render;$('opacity').oninput=render;$('color').oninput=()=>{color=$('color').value;updatePalette();};
+document.querySelectorAll('[data-tool]').forEach(b=>b.onclick=()=>{tool=b.dataset.tool;document.querySelectorAll('[data-tool]').forEach(z=>z.setAttribute('aria-pressed',String(z===b)));});
+function updatePalette(){[...$('palette').children].forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.color===color)));}
+paintPalette();
+$('undo').onclick=()=>{const h=history.pop();if(!h)return;future.push({dir:h.dir,pose:h.pose,data:frames[h.dir*3+h.pose].slice()});restore(h);};
+$('redo').onclick=()=>{const h=future.pop();if(!h)return;history.push({dir:h.dir,pose:h.pose,data:frames[h.dir*3+h.pose].slice()});restore(h);};
+$('clear').onclick=()=>{if(!confirm(NAMES[dir]+'・'+POSES[pose]+'を透明にしますか？'))return;snapshot();current().fill(0);render();};
+$('copyDirection').onclick=()=>{const target=Number($('copyFrom').value);if(target===dir){status('コピー元とコピー先が同じです');return;}if(!confirm(NAMES[target]+'を'+NAMES[dir]+'へコピーしますか？'))return;snapshot();current().set(frames[slot(target,pose)]);render();status('同じ歩行コマを別方向からコピーしました');};
+$('copyPoseButton').onclick=()=>{const p=Number($('copyPose').value);if(p===pose)return status('同じコマです');if(!confirm(POSES[p]+'を'+POSES[pose]+'にコピーしますか？'))return;snapshot();current().set(frames[slot(dir,p)]);render();status('歩行コマをコピーしました');};
+$('flip').onclick=()=>{snapshot();const old=current().slice();for(let y=0;y<32;y++)for(let x=0;x<32;x++)current().set(old.slice((y*32+31-x)*4,(y*32+32-x)*4),(y*32+x)*4);render();};
+for(let p=0;p<3;p++)$('pose'+p).onclick=()=>choosePose(p);
+$('fps').oninput=()=>{$('fpsValue').textContent=$('fps').value};
+$('play').onclick=()=>{playing=!playing;$('play').textContent=playing?'■ 停止':'▶ 再生';lastTick=0;walkStep=0;if(playing)raf=requestAnimationFrame(animate);else cancelAnimationFrame(raf);render();};
+function animate(t){if(!playing)return;const ms=1000/Number($('fps').value);if(!lastTick||t-lastTick>=ms){walkStep=(walkStep+1)%2;lastTick=t;render();}raf=requestAnimationFrame(animate);}
+function save(blob,name){const a=document.createElement('a'),url=URL.createObjectURL(blob);a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+function makeAtlas(){const c=document.createElement('canvas');c.width=128;c.height=32;const g=c.getContext('2d');for(let i=0;i<4;i++){pixelsToCanvas(frames[slot(i,0)],oc);g.drawImage(off,i*32,0);}pixelsToCanvas(current(),oc);return c;}
+$('exportPNG').onclick=()=>{const c=document.createElement('canvas');c.width=c.height=32;c.getContext('2d').putImageData(new ImageData(current(),32,32),0,0);c.toBlob(b=>b?save(b,'sprite-'+ORDER[dir]+'-32.png'):status('PNG出力失敗'),'image/png');};
+$('exportAtlas').onclick=()=>makeAtlas().toBlob(b=>b?save(b,'sprite-4dir-128x32.png'):status('PNG出力失敗'),'image/png');
+function makeWalkAtlas(){const c=document.createElement('canvas');c.width=96;c.height=128;const g=c.getContext('2d');for(let d=0;d<4;d++){const y=[0,1,3,2][d];for(let p=0;p<3;p++){pixelsToCanvas(frames[slot(d,p)],oc);g.drawImage(off,p*32,y*32);}}pixelsToCanvas(current(),oc);return c;}
+$('exportWalk').onclick=()=>makeWalkAtlas().toBlob(b=>b?save(b,'sprite-walk-96x128.png'):status('歩行アトラスのPNG出力失敗'),'image/png');
+$('exportJSON').onclick=()=>save(new Blob([JSON.stringify({format:'yaksha-pixel-v3',width:32,height:32,order:ORDER,poses:['idle','walkA','walkB'],frames:Object.fromEntries(ORDER.map((id,d)=>[id,[0,1,2].map(p=>Array.from(frames[slot(d,p)]))]))})],{type:'application/json'}),'sprite-walk-4dir.json');
+function importPNG(file){if(!file)return;const url=URL.createObjectURL(file),im=new Image();im.onload=()=>{const c=document.createElement('canvas'),g=c.getContext('2d',{willReadFrequently:true});
+ if(im.width===128&&im.height===32){c.width=128;c.height=32;g.drawImage(im,0,0);for(let i=0;i<4;i++){frames[slot(i,0)].set(g.getImageData(i*32,0,32,32).data);}history.length=0;future.length=0;status('128×32の4方向PNGを読み込みました（正面・背面・左・右）。');}
+ else if(im.width===96&&im.height===128){c.width=96;c.height=128;g.drawImage(im,0,0);for(let d=0;d<4;d++)for(let p=0;p<3;p++)frames[slot(d,p)].set(g.getImageData(p*32,[0,1,3,2][d]*32,32,32).data);history.length=0;future.length=0;status('96×128の歩行アトラスを読み込みました。');}
+ else if(im.width===32&&im.height===32){c.width=c.height=32;g.drawImage(im,0,0);snapshot();current().set(g.getImageData(0,0,32,32).data);status(NAMES[dir]+'へ32×32PNGを読み込みました。');}
+ else{status('PNGは32×32、128×32、96×128に対応しています。自動縮小は行いません。');URL.revokeObjectURL(url);return;}
+ URL.revokeObjectURL(url);captureSkinPalette();refreshPaletteFromPixels();render();};im.onerror=()=>{status('画像を読み込めませんでした');URL.revokeObjectURL(url);};im.src=url;}
+$('pngFile').onchange=e=>importPNG(e.target.files[0]);
+$('referenceFile').onchange=e=>{const f=e.target.files[0];if(!f)return;if(referenceURL)URL.revokeObjectURL(referenceURL);referenceURL=URL.createObjectURL(f);const im=new Image();im.onload=()=>{ref=im;render();status('参考画像を重ねました。PNGには混ぜません。');};im.src=referenceURL;};
+$('jsonFile').onchange=async e=>{try{const f=e.target.files[0];if(!f)return;const j=JSON.parse(await f.text());if(j.format==='yaksha-pixel-v1'&&j.width===32&&j.height===32&&Array.isArray(j.rgba)&&j.rgba.length===4096){snapshot();current().set(j.rgba);status('旧形式の32px JSONを'+NAMES[dir]+'に読み込みました。');}
+ else if(j.format==='yaksha-pixel-v2'&&j.width===32&&j.height===32&&j.frames&&ORDER.every(id=>Array.isArray(j.frames[id])&&j.frames[id].length===4096)){for(let i=0;i<4;i++){const arr=j.frames[ORDER[i]];if(!arr.every(v=>Number.isInteger(v)&&v>=0&&v<=255))throw Error('RGBA値が不正です');}for(let i=0;i<4;i++)frames[slot(i,0)].set(j.frames[ORDER[i]]);history.length=0;future.length=0;status('4方向JSONを読み込みました。');}
+ else if(j.format==='yaksha-pixel-v3'&&j.width===32&&j.height===32&&j.frames&&ORDER.every(id=>Array.isArray(j.frames[id])&&j.frames[id].length===3&&j.frames[id].every(a=>Array.isArray(a)&&a.length===4096&&a.every(v=>Number.isInteger(v)&&v>=0&&v<=255)))){for(let d=0;d<4;d++)for(let p=0;p<3;p++)frames[slot(d,p)].set(j.frames[ORDER[d]][p]);history.length=0;future.length=0;status('12コマJSONを読み込みました。');}
+ else throw Error('編集JSONの形式が違います');captureSkinPalette();refreshPaletteFromPixels();render();}catch(err){status('JSON読み込みエラー: '+err.message);}};
+
+/* Pixel conversion is deterministic and local to the device; no AI synthesis. */
+let sourceImage=null,sourceURL=null,convertResult=null;
+const convertIds=['convertHeight','convertColors','convertBright','convertContrast','convertSaturation'];
+const clamp255=v=>Math.max(0,Math.min(255,Math.round(v)));
+const srcCanvas=document.createElement('canvas');
+function convertPreview(){
+ if(!sourceImage){$('convertInfo').textContent='透過PNGなどの原画を選択してください。';return;}
+ const w=sourceImage.naturalWidth,h=sourceImage.naturalHeight;
+ if(w*h>16000000){$('convertInfo').textContent='原画の画素数が大きすぎます（上限1600万画素）。';return;}
+ srcCanvas.width=w;srcCanvas.height=h;
+ const srcCtx=srcCanvas.getContext('2d',{willReadFrequently:true});srcCtx.clearRect(0,0,w,h);srcCtx.drawImage(sourceImage,0,0);
+ const raw=srcCtx.getImageData(0,0,w,h).data;
+ let x0=w,y0=h,x1=-1,y1=-1,opaqueCount=0;
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){const a=raw[(y*w+x)*4+3];if(a>=128){opaqueCount++;if(x<x0)x0=x;if(y<y0)y0=y;if(x>x1)x1=x;if(y>y1)y1=y;}}
+ if(x1<0){$('convertInfo').textContent='不透明な人物画素が見つかりません。';convertResult=null;return;}
+ const sw=x1-x0+1,sh=y1-y0+1,targetH=+$('convertHeight').value,targetW=Math.max(1,Math.round(sw*targetH/sh));
+ if(targetW>30){$('convertInfo').textContent='人物が横長のため収まりません。高さを下げるか原画の余白を調整してください。';convertResult=null;return;}
+ const left=Math.floor((32-targetW)/2),top=Math.floor((32-targetH)/2);
+ const sample=document.createElement('canvas');sample.width=32;sample.height=32;
+ const sc=sample.getContext('2d',{willReadFrequently:true});sc.clearRect(0,0,32,32);
+ sc.imageSmoothingEnabled=$('convertSampling').value==='area';sc.imageSmoothingQuality='high';
+ sc.drawImage(sourceImage,x0,y0,sw,sh,left,top,targetW,targetH);
+ const data=sc.getImageData(0,0,32,32),d=data.data,brightness=+$('convertBright').value,contrast=+$('convertContrast').value/100,sat=+$('convertSaturation').value/100;
+ const seen=[];
+ for(let i=0;i<d.length;i+=4){const a=d[i+3];if(a<110){d[i]=d[i+1]=d[i+2]=d[i+3]=0;continue;}d[i+3]=255;
+  let rr=(d[i]-128)*contrast+128+brightness,gg=(d[i+1]-128)*contrast+128+brightness,bb=(d[i+2]-128)*contrast+128+brightness;
+  const lum=.2126*rr+.7152*gg+.0722*bb;
+  rr=clamp255(lum+(rr-lum)*sat);gg=clamp255(lum+(gg-lum)*sat);bb=clamp255(lum+(bb-lum)*sat);
+  d[i]=rr;d[i+1]=gg;d[i+2]=bb;seen.push([rr,gg,bb]);
+ }
+ // Weighted median-cut palette: deterministic, no diffusion or unwanted checkerboard.
+ const colorLimit=+$('convertColors').value;
+ let boxes=[seen],palette=[];
+ const range=(points,c)=>Math.max(...points.map(p=>p[c]))-Math.min(...points.map(p=>p[c]));
+ while(boxes.length<colorLimit){
+  let choice=-1,score=0,chan=0;
+  for(let k=0;k<boxes.length;k++){const b=boxes[k];if(b.length<2)continue;
+   for(let c=0;c<3;c++){const r=range(b,c);if(r>score){score=r;choice=k;chan=c;}}}
+  if(choice<0||score===0)break;
+  const b=boxes.splice(choice,1)[0].sort((a,z)=>a[chan]-z[chan]),mid=Math.floor(b.length/2);
+  boxes.push(b.slice(0,mid),b.slice(mid));
+ }
+ palette=boxes.filter(b=>b.length).map(b=>[0,1,2].map(c=>Math.round(b.reduce((a,z)=>a+z[c],0)/b.length)));
+ if(!palette.length){$('convertInfo').textContent='有効な画素がありません';return;}
+ for(let i=0;i<d.length;i+=4){if(!d[i+3])continue;let best=0,dist=Infinity;
+  for(let k=0;k<palette.length;k++){const c=palette[k],dd=(d[i]-c[0])**2+(d[i+1]-c[1])**2+(d[i+2]-c[2])**2;if(dd<dist){dist=dd;best=k;}}
+  const c=palette[best];d[i]=c[0];d[i+1]=c[1];d[i+2]=c[2];
+ }
+ if($('convertOutline').checked){const old=new Uint8ClampedArray(d);for(let y=0;y<32;y++)for(let x=0;x<32;x++){const i=(y*32+x)*4;if(!old[i+3])continue;
+  if(x===0||y===0||x===31||y===31||!old[i-4+3]||!old[i+4+3]||!old[i-128+3]||!old[i+128+3]){
+   d[i]=clamp255(old[i]*.60);d[i+1]=clamp255(old[i+1]*.60);d[i+2]=clamp255(old[i+2]*.60);
+  }
+ }}
+ convertResult=new Uint8ClampedArray(d);
+ const dst=$('convertedPreview').getContext('2d');dst.clearRect(0,0,32,32);dst.putImageData(data,0,0);
+ const before=$('beforePreview').getContext('2d');before.putImageData(new ImageData(current(),32,32),0,0);
+ const fullAlpha=opaqueCount===w*h;
+ $('convertInfo').textContent='原画 '+w+'×'+h+'px → '+targetW+'×'+targetH+'px（32px枠に配置）／'+palette.length+'色'+(fullAlpha?'。背景が不透明です。背景除去は別途必要です。':'')+'。適用するまでは編集内容を変更しません。';
+}
+$('sourceFile').onchange=e=>{const f=e.target.files[0];if(!f)return;if(sourceURL)URL.revokeObjectURL(sourceURL);sourceURL=URL.createObjectURL(f);const im=new Image();im.onload=()=>{sourceImage=im;convertPreview();};im.onerror=()=>{$('convertInfo').textContent='原画を読み込めませんでした';};im.src=sourceURL;};
+function syncConverterLabels(){for(const id of convertIds){const label=id==='convertHeight'?'heightVal':id==='convertColors'?'colorsVal':id==='convertBright'?'brightVal':id==='convertContrast'?'contrastVal':'saturationVal';$(label).textContent=$(id).value;}}
+for(const id of convertIds)$(id).addEventListener('input',()=>{syncConverterLabels();convertPreview();});
+$('convertSampling').onchange=convertPreview;$('convertOutline').onchange=convertPreview;$('convertRefresh').onclick=convertPreview;
+$('convertApply').onclick=()=>{if(!convertResult){status('原画を先に読み込み、変換プレビューを確認してください');return;}
+ if(!confirm(NAMES[dir]+'・'+POSES[pose]+'を変換結果で上書きしますか？（元に戻せます）'))return;
+ snapshot();if($('lockSkin').checked){for(let i=0;i<1024;i++)set(i,Array.from(convertResult.slice(i*4,i*4+4)));}else current().set(convertResult);render();status('変換結果を適用しました。画素は手動編集できます。');};
+
+for(let i=0;i<4;i++)$('direction'+i).onclick=()=>chooseDir(i);
+$('mirror').onchange=()=>{if($('mirror').checked&&dir!==0)status('左右対称は正面以外では使わないことを推奨します。');};
+$('directionName').textContent=NAMES[dir];syncDir();syncPose();setCursor(16*32+16);
+
+function setupTouchWorkspace(){
+ const ua=navigator.userAgent||'';
+ const touch=/iPhone|iPad|iPod|Android/i.test(ua)||matchMedia('(pointer:coarse)').matches;
+ if(!touch)return;
+ document.body.classList.add('touch-workspace');
+ $('cursorMode').checked=true; // Safe mobile default: select first, paint with the center button.
+ const editor=document.querySelector('.wrap > section.panel'),aside=document.querySelector('.wrap > aside.panel');
+ const canvasBox=editor.querySelector('.canvasbox');
+ const workspace=document.createElement('div');workspace.id='mobileWorkspace';
+ editor.insertBefore(workspace,canvasBox);workspace.appendChild(canvasBox);
+ const palDock=document.createElement('div');palDock.id='mobilePaletteDock';palDock.className='touch-dock';
+ const heading=aside.querySelector('#palette').previousElementSibling;
+ palDock.appendChild(heading);palDock.appendChild($('palette'));workspace.appendChild(palDock);
+ const cursor=editor.querySelector('.cursorbar');workspace.appendChild(cursor);
+ const actions=document.createElement('div');actions.className='mobile-actionbar';
+ for(const id of ['undo','redo'])actions.appendChild($(id));
+ const showCursor=document.createElement('button');showCursor.id='cursorToggle';showCursor.type='button';showCursor.textContent='指で描く';showCursor.setAttribute('aria-pressed','true');showCursor.onclick=()=>{$('cursorMode').click();};
+ actions.appendChild(showCursor);workspace.appendChild(actions);
+ const options=Array.from(editor.children).find(el=>el.classList.contains('flex')&&el.querySelector('#mirror'));if(options){options.classList.add('canvas-options');workspace.appendChild(options);}
+ const compact=document.createElement('details');compact.className='mobile-secondary';
+ const summary=document.createElement('summary');summary.textContent='詳細設定・その他の操作';compact.appendChild(summary);
+ // Nonessential options remain accessible, close to the canvas when requested.
+ const tail=Array.from(editor.children).filter(el=>el!==workspace&&el.id!=='tools'&&!el.classList.contains('directions')&&!el.classList.contains('walkstrip')&&!el.classList.contains('rowtitle'));
+ for(const el of tail){if(el.parentElement===editor && el.tagName!=='P')compact.appendChild(el);}
+ editor.appendChild(compact);
+ // Preserve the top tool/pose/direction controls, fold accessory settings.
+ syncCursorMode();
+}
+
+/* Controlled bridge: the clone alone grants external UI access to the current 32px frame. */
+window.YakshaPixelBridge={
+  info:()=>({direction:ORDER[dir],pose:['idle','walkA','walkB'][pose]}),
+  current:()=>current().slice(),
+  apply:changes=>{
+    if(!Array.isArray(changes)||changes.length>1024)throw Error('Too many pixel edits');
+    if(!changes.length)return 0;
+    snapshot();let written=0;
+    for(const p of changes){
+      if(!Number.isInteger(p.x)||p.x<0||p.x>=32||!Number.isInteger(p.y)||p.y<0||p.y>=32)throw Error('Bad pixel coordinate');
+      if(set(p.y*32+p.x,p.rgba))written++;
+    }
+    refreshPaletteFromPixels();render();
+    status('画素パッチ '+written+'ドットを適用しました');
+    return written;
+  },
+  loadApproved:()=>new Promise((resolve,reject)=>{
+    const im=new Image();
+    im.onload=()=>{
+      if(im.width!==96||im.height!==128)return reject(Error('期待した96×128pxアトラスではありません'));
+      const c=document.createElement('canvas');c.width=96;c.height=128;
+      const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(im,0,0);
+      for(let d=0;d<4;d++)for(let p=0;p<3;p++)
+        frames[slot(d,p)].set(g.getImageData(p*32,[0,1,3,2][d]*32,32,32).data);
+      history.length=0;future.length=0;captureSkinPalette();refreshPaletteFromPixels();render();
+      status('参照用緋月32px歩行アトラスを読み込みました');
+      resolve();
+    };
+    im.onerror=()=>reject(Error('緋月画像を読み込めませんでした'));
+    im.src='./reference/sample-yaksha32.png';
+  })
+};
+
+setupTouchWorkspace();
+})();
+</script><script src="./ai-pixel-bridge.js"></script></body></html>

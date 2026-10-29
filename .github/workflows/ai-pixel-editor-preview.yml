@@ -1,0 +1,68 @@
+name: Publish isolated AI pixel editor preview
+on:
+  push:
+    branches:
+      - main
+      - improve/ai-pixel-editor-port
+    paths:
+      - 'experiments/ai-pixel-editor/**'
+      - '.github/workflows/ai-pixel-editor-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: github-pages-site
+  cancel-in-progress: false
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: production
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          path: experiment
+      - name: Assemble production-identical site with isolated lab preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site
+          tar -C production --exclude=.git --exclude=.github -cf - . | tar -C site -xf -
+          test -s site/index.html
+          cmp production/index.html site/index.html
+          mkdir -p site/experiments/ai-pixel-editor
+          cp -a experiment/experiments/ai-pixel-editor/. site/experiments/ai-pixel-editor/
+          test -s site/experiments/ai-pixel-editor/index.html
+          test -s site/experiments/ai-pixel-editor/ai-pixel-bridge.js
+          test -s site/experiments/ai-pixel-editor/reference/sample-yaksha32.png
+          echo "branch=${GITHUB_REF_NAME}" > site/experiments/ai-pixel-editor/PREVIEW_BUILD.txt
+          git -C experiment rev-parse HEAD >> site/experiments/ai-pixel-editor/PREVIEW_BUILD.txt
+          python3 - <<'PY'
+          from pathlib import Path
+          root=Path('site')
+          total=sum(f.stat().st_size for f in root.rglob('*') if f.is_file())
+          assert total < 900_000_000, "site larger than safe Pages publishing limit"
+          print('Pages raw size: %.1f MB' % (total/1_000_000))
+          PY
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: package
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy production and isolated preview together
+        id: deployment
+        uses: actions/deploy-pages@v4
