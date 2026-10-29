@@ -14,7 +14,7 @@
 <div class="workspace"><canvas id="draw" width="64" height="96" aria-label="64×96の編集キャンバス"></canvas></div>
 <div class="toolbar mobile-select"><label class="inline"><input id="cursorMode" type="checkbox"> 選択モード（タップで画素選択）</label><span id="selectedPoint">x=32 y=48</span><button id="cursorPaint">● 1px打つ</button><button id="cursorErase">消す</button></div>
 <div class="toolbar"><label class="inline"><input id="grid" type="checkbox"> 格子</label><label class="inline"><input id="showReference" type="checkbox" checked> 下絵</label><label class="inline">下絵濃度 <input id="referenceOpacity" type="range" min="0" max="100" value="27"></label></div>
-<div class="toolbar"><label class="inline">選択色 <input id="color" type="color" value="#cb5761"></label><button id="clearFrame">このコマを消去</button><button id="copyFrame">直前コマを複写</button><label class="filebtn">下絵PNG変更<input id="referenceFile" type="file" accept="image/png,image/webp,image/jpeg"></label></div>
+<div class="toolbar"><label class="inline">選択色 <input id="color" type="color" value="#cb5761"></label><button id="loadHandPixelExample" type="button">手打ち正面サンプル</button><button id="clearFrame">このコマを消去</button><button id="copyFrame">直前コマを複写</button><label class="filebtn">下絵PNG変更<input id="referenceFile" type="file" accept="image/png,image/webp,image/jpeg"></label></div>
 <div id="palette" aria-label="使用色パレット"></div>
 <div class="status" id="status">64×96の空キャンバス。下絵は描画画素へ混ぜません。</div>
 </section>
