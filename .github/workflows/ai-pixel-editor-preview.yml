@@ -2,6 +2,7 @@ name: Publish isolated AI pixel editor preview
 on:
   push:
     branches:
+      - main
       - improve/ai-pixel-editor-port
     paths:
       - 'experiments/ai-pixel-editor/**'
@@ -25,7 +26,7 @@ jobs:
           path: production
       - uses: actions/checkout@v4
         with:
-          ref: improve/ai-pixel-editor-port
+          ref: ${{ github.ref_name }}
           path: experiment
       - name: Assemble production-identical site with isolated lab preview
         shell: bash
@@ -40,7 +41,7 @@ jobs:
           test -s site/experiments/ai-pixel-editor/index.html
           test -s site/experiments/ai-pixel-editor/ai-pixel-bridge.js
           test -s site/experiments/ai-pixel-editor/reference/sample-yaksha32.png
-          echo "branch=improve/ai-pixel-editor-port" > site/experiments/ai-pixel-editor/PREVIEW_BUILD.txt
+          echo "branch=${GITHUB_REF_NAME}" > site/experiments/ai-pixel-editor/PREVIEW_BUILD.txt
           git -C experiment rev-parse HEAD >> site/experiments/ai-pixel-editor/PREVIEW_BUILD.txt
           python3 - <<'PY'
           from pathlib import Path
@@ -54,6 +55,7 @@ jobs:
         with:
           path: site
   deploy:
+    if: github.ref == 'refs/heads/main'
     needs: package
     runs-on: ubuntu-24.04
     timeout-minutes: 10
