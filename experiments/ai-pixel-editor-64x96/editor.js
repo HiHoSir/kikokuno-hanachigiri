@@ -79,6 +79,59 @@ $('loadHandPixelExample').onclick=()=>{
  im.src='./examples/hizuki-front-handpixel-64x96.png';
 };
 
+
+/* Silhouette-first pixel drafting: alpha threshold -> solid black -> NEAREST only.
+   This is a geometry reference, never an automatic sprite-color downsample.
+   The source image remains separate; explicit preview and approval are required. */
+let silhouetteProposal=null;
+$('silhouetteThreshold').oninput=()=>{$('silhouetteThresholdValue').textContent=$('silhouetteThreshold').value; silhouetteProposal=null;$('silhouetteApply').disabled=true;};
+function buildSilhouette(){
+ silhouetteProposal=null;$('silhouetteApply').disabled=true;
+ try{
+  if(!reference)throw Error('下絵PNGがまだ読み込まれていません。下絵の読込完了後に再試行してください。');
+  const rw=reference.naturalWidth||reference.width,rh=reference.naturalHeight||reference.height;
+  if(!rw||!rh||rw*rh>12_000_000)throw Error('下絵のサイズが無効または大きすぎます。');
+  const source=document.createElement('canvas');source.width=rw;source.height=rh;
+  const cg=source.getContext('2d',{willReadFrequently:true});cg.drawImage(reference,0,0);
+  const data=cg.getImageData(0,0,rw,rh);
+  const threshold=Number($('silhouetteThreshold').value);
+  let x0=rw,y0=rh,x1=-1,y1=-1,coverage=0;
+  for(let y=0;y<rh;y++)for(let x=0;x<rw;x++){const i=(y*rw+x)*4;if(data.data[i+3]>=threshold){
+    if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y;coverage++;
+    data.data[i]=18;data.data[i+1]=22;data.data[i+2]=34;data.data[i+3]=255;
+   }else{data.data[i]=data.data[i+1]=data.data[i+2]=data.data[i+3]=0;}}
+  if(coverage===0)throw Error('透明度から人物を検出できませんでした。');
+  if(coverage/(rw*rh)>.82)throw Error('下絵の背景が不透明の可能性があります。透明背景PNGを指定してください。');
+  cg.putImageData(data,0,0);
+  const bw=x1-x0+1,bh=y1-y0+1,scale=Math.min(60/bw,92/bh);
+  const dw=Math.max(1,Math.min(60,Math.round(bw*scale))),dh=Math.max(1,Math.min(92,Math.round(bh*scale)));
+  const dx=Math.floor((W-dw)/2),dy=H-1-dh; // one transparent floor row
+  const c=document.createElement('canvas');c.width=W;c.height=H;
+  const g=c.getContext('2d',{willReadFrequently:true});
+  g.imageSmoothingEnabled=false;
+  g.drawImage(source,x0,y0,bw,bh,dx,dy,dw,dh);
+  const silhouette=g.getImageData(0,0,W,H).data;
+  const now=current().slice(),base=hash(now);
+  paintOn($('silhouetteBefore'),now);
+  paintOn($('silhouettePreview'),silhouette);
+  silhouetteProposal={pixels:silhouette,direction,frame,baseHash:base};
+  $('silhouetteApply').disabled=false;
+  $('silhouetteInfo').textContent='シルエットの外接領域 '+bw+'×'+bh+'px → '+dw+'×'+dh+'px、配置 x='+dx+', y='+dy+'。Nearest法・色数1・余白は透明。まだ元絵へ適用していません。';
+ }catch(e){$('silhouetteInfo').textContent='シルエット生成エラー: '+e.message;}
+}
+$('silhouetteBuild').onclick=buildSilhouette;
+$('silhouetteApply').onclick=()=>{
+ if(!silhouetteProposal)return;
+ if(direction!==silhouetteProposal.direction||frame!==silhouetteProposal.frame||hash(current())!==silhouetteProposal.baseHash){
+  silhouetteProposal=null;$('silhouetteApply').disabled=true;
+  $('silhouetteInfo').textContent='画素またはコマが変わりました。再生成してください。';return;
+ }
+ if(!confirm('現在のコマを黒塗りシルエット下書きで置き換えますか？（Undo可能）'))return;
+ pushUndo();current().set(silhouetteProposal.pixels);refresh();
+ silhouetteProposal=null;$('silhouetteApply').disabled=true;
+ $('silhouetteInfo').textContent='黒塗り下書きを適用しました。鉛筆・塗りつぶし・AI修正で仕上げてください。';
+};
+
 $('fps').oninput=()=>$('fpsValue').textContent=$('fps').value;
 function animate(now){if(!animation)return;if(!lastTick||now-lastTick>=1000/Number($('fps').value)){animFrame=(animFrame+1)%FRAMES;lastTick=now;paintOn(walk,sheets[idx(direction,animFrame)]);}animReq=requestAnimationFrame(animate);}
 $('play').onclick=()=>{animation=!animation;$('play').textContent=animation?'■ 停止':'▶ 再生';lastTick=0;if(animation)animReq=requestAnimationFrame(animate);else{cancelAnimationFrame(animReq);refresh();}};
