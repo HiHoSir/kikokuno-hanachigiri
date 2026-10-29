@@ -12,6 +12,13 @@
 <h3>歩行アニメーションのコマ</h3><div id="frames" class="frames" aria-label="コマ切替"></div>
 <div class="toolbar" id="tools" style="margin-top:10px"><button data-tool="pencil" aria-pressed="true">鉛筆</button><button data-tool="erase">消去</button><button data-tool="fill">塗り</button><button data-tool="pick">スポイト</button><button id="undo">↶ 戻す</button><button id="redo">↷ 進む</button></div>
 <div class="workspace"><canvas id="draw" width="64" height="96" aria-label="64×96の編集キャンバス"></canvas></div>
+<details id="silhouetteLab">
+ <summary>黒塗りNearest下書き（原画の形を保つ）</summary>
+ <p class="help">透明背景の原画を黒いシルエットにして、<strong>形だけ</strong>を64×96へ最近傍縮小します。髪・顔・衣装の色は自動縮小しません。形を比較してから現在のコマへ適用できます。1px編集・Undo・AIパッチで描き込みを続けられます。</p>
+ <div class="toolbar"><label class="inline">輪郭の不透明度しきい値 <input id="silhouetteThreshold" type="range" min="32" max="224" step="16" value="128"><span id="silhouetteThresholdValue">128</span></label><button id="silhouetteBuild">原画から黒塗り下書きを生成</button><button id="silhouetteApply" disabled>確認してこのコマに適用</button></div>
+ <div class="previews"><figure><figcaption>適用前の現在の絵</figcaption><canvas id="silhouetteBefore" width="64" height="96" class="sprite-preview"></canvas></figure><figure><figcaption>Nearest縮小した黒塗り下書き</figcaption><canvas id="silhouettePreview" width="64" height="96" class="sprite-preview"></canvas></figure></div>
+ <div id="silhouetteInfo" class="status">下絵PNGを読み込んでから「生成」を押してください。PNGの透明度から輪郭を取ります。</div>
+</details>
 <div class="toolbar mobile-select"><label class="inline"><input id="cursorMode" type="checkbox"> 選択モード（タップで画素選択）</label><span id="selectedPoint">x=32 y=48</span><button id="cursorPaint">● 1px打つ</button><button id="cursorErase">消す</button></div>
 <div class="toolbar"><label class="inline"><input id="grid" type="checkbox"> 格子</label><label class="inline"><input id="showReference" type="checkbox" checked> 下絵</label><label class="inline">下絵濃度 <input id="referenceOpacity" type="range" min="0" max="100" value="27"></label></div>
 <div class="toolbar"><label class="inline">選択色 <input id="color" type="color" value="#cb5761"></label><button id="loadHandPixelExample" type="button">手打ち正面サンプル</button><button id="clearFrame">このコマを消去</button><button id="copyFrame">直前コマを複写</button><label class="filebtn">下絵PNG変更<input id="referenceFile" type="file" accept="image/png,image/webp,image/jpeg"></label></div>
