@@ -1,0 +1,92 @@
+name: Package and verify 64x96 AI pixel editor preview
+
+on:
+  pull_request:
+    paths:
+      - 'experiments/ai-pixel-editor-64x96/**'
+      - '.github/workflows/ai-pixel-64x96-publication.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/ai-pixel-editor-64x96/**'
+      - '.github/workflows/ai-pixel-64x96-publication.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  preview-artifact:
+    name: Package exact editor and source references before merge
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare self-contained layout of the proposed Pages files
+        shell: bash
+        run: |
+          set -euo pipefail
+          root=preview-site
+          mkdir -p "$root/experiments/ai-pixel-editor-64x96" "$root/assets/characters/hizuki"
+          cp -a experiments/ai-pixel-editor-64x96/. "$root/experiments/ai-pixel-editor-64x96/"
+          cp -a assets/characters/hizuki/8direction "$root/assets/characters/hizuki/"
+          test -s "$root/experiments/ai-pixel-editor-64x96/index.html"
+          test -s "$root/experiments/ai-pixel-editor-64x96/editor.js"
+          test -s "$root/experiments/ai-pixel-editor-64x96/examples/hizuki-front-handpixel-64x96.png"
+          test "$(find "$root/assets/characters/hizuki/8direction" -name '*.png' | wc -l)" -eq 8
+          printf 'commit=%s\npr=%s\n' "$GITHUB_SHA" "${{ github.event.pull_request.number }}" > "$root/experiments/ai-pixel-editor-64x96/PREVIEW_BUILD.txt"
+          (cd "$root" && find . -type f -print0 | sort -z | xargs -0 sha256sum) > preview-file-manifest.sha256
+          printf 'Pre-merge package (not public GitHub Pages):\n'
+          du -sh "$root"
+          cat preview-file-manifest.sha256 | tail -n 5
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kikoku-64x96-editor-preview
+          path: |
+            preview-site/
+            preview-file-manifest.sha256
+          retention-days: 14
+          if-no-files-found: error
+
+  pages-check:
+    name: Verify GitHub Pages endpoints after approved main merge
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Wait for main-based Pages to expose the merged 64x96 editor
+        shell: bash
+        run: |
+          set -euo pipefail
+          base="https://hihosir.github.io/kikokuno-hanachigiri"
+          verify() {
+            curl --fail --location --silent --show-error --retry 2 --max-time 20 "$1?commit=${GITHUB_SHA}" -o "$2"
+          }
+          # Pages' built-in deployment may finish after this push workflow starts.
+          ok=0
+          for i in $(seq 1 30); do
+            if verify "$base/experiments/ai-pixel-editor-64x96/index.html" /tmp/ai-pixel-page.html &&
+               grep -q '黒塗りNearest下書き' /tmp/ai-pixel-page.html &&
+               verify "$base/experiments/ai-pixel-editor-64x96/editor.js" /tmp/ai-pixel-editor.js &&
+               grep -q "const W=64,H=96" /tmp/ai-pixel-editor.js &&
+               verify "$base/experiments/ai-pixel-editor-64x96/examples/hizuki-front-handpixel-64x96.png" /tmp/hizuki-sample.png &&
+               verify "$base/assets/characters/hizuki/8direction/01_front.png" /tmp/hizuki-reference.png &&
+               verify "$base/index.html" /tmp/kikoku-root.html; then
+              ok=1
+              echo 'Pages 64x96 editor, script, PNG, original reference, and game root: OK'
+              break
+            fi
+            echo "Pages not yet synchronized ($i/30)"
+            sleep 8
+          done
+          test "$ok" -eq 1 || { echo 'Pages content did not appear in expected window'; exit 1; }
+          python3 - <<'PY'
+          from pathlib import Path
+          for n in ['/tmp/hizuki-sample.png','/tmp/hizuki-reference.png']:
+              assert Path(n).read_bytes().startswith(b'\x89PNG\r\n\x1a\n'), n+' is not a valid PNG'
+          source=Path('index.html').read_bytes()
+          served=Path('/tmp/kikoku-root.html').read_bytes()
+          assert source == served, 'Main game entry differs from source of truth'
+          print('PNG signatures valid; main game index byte-identical to deployed index')
+          PY
