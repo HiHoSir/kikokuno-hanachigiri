@@ -81,6 +81,7 @@ try{
   // Silhouette-first drafting must use the *real original* PNG alpha and never mutate before approval.
   const beforeSilhouette=await page.evaluate(()=>[...window.__KIKOKU_PIXEL_EDITOR.getCurrent()]);
   await page.waitForFunction(()=>document.querySelector('#status').textContent!==null);
+  await page.locator('#silhouetteLab summary').click();
   await page.locator('#silhouetteBuild').click();
   let silState=await page.locator('#silhouetteInfo').innerText();
   if(silState.includes('読み込まれていません')){
