@@ -1,0 +1,36 @@
+name: AI pixel editor browser smoke
+on:
+  pull_request:
+    paths:
+      - 'experiments/ai-pixel-editor/**'
+      - 'tests/ai-pixel-editor.browser.mjs'
+      - '.github/workflows/ai-pixel-editor-browser.yml'
+  push:
+    branches: [improve/ai-pixel-editor-port]
+    paths:
+      - 'experiments/ai-pixel-editor/**'
+      - 'tests/ai-pixel-editor.browser.mjs'
+      - '.github/workflows/ai-pixel-editor-browser.yml'
+permissions:
+  contents: read
+jobs:
+  editor-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install chromium
+      - name: Run real browser pixel editing smoke test
+        run: |
+          python3 -m http.server 8765 >/tmp/kikoku-ai-pixel-http.log 2>&1 &
+          node tests/ai-pixel-editor.browser.mjs
+      - name: Upload mobile and desktop screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ai-pixel-editor-browser-qa
+          path: /tmp/kikoku-ai-pixel-qa/
