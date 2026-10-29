@@ -1,11 +1,12 @@
-import {chromium} from 'playwright';
+import {chromium,webkit} from 'playwright';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 fs.mkdirSync('/tmp/kikoku-pixel-64-qa',{recursive:true});
-const browser=await chromium.launch({headless:true});
-try{
+for(const engine of [chromium,webkit]){
+ const browser=await engine.launch({headless:true});
+ try{
  for(const mobile of [false,true]){
-  const name=mobile?'mobile':'desktop';
+  const name=(engine===webkit?'webkit-':'chromium-')+(mobile?'mobile':'desktop');
   const page=await browser.newPage({viewport:mobile?{width:390,height:844}:{width:1280,height:900},deviceScaleFactor:mobile?3:1,hasTouch:mobile,isMobile:mobile,acceptDownloads:true});
   const errors=[];page.on('pageerror',e=>errors.push(e.message));page.on('dialog',d=>d.accept());
   await page.goto('http://127.0.0.1:8765/experiments/ai-pixel-editor-64x96/index.html',{waitUntil:'domcontentloaded'});
@@ -114,3 +115,4 @@ try{
   await page.close();
  }
 }finally{await browser.close();}
+}
