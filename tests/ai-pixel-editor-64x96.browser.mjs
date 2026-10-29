@@ -78,6 +78,34 @@ try{
   assert.ok(opaque>1500,'authored sprite not loaded into editable pixel buffer');
   await page.locator('#undo').click();
   assert.deepEqual(await page.evaluate(()=>[...window.__KIKOKU_PIXEL_EDITOR.getCurrent()]),oldPixelData,'sample import Undo must restore exact RGBA');
+  // Silhouette-first drafting must use the *real original* PNG alpha and never mutate before approval.
+  const beforeSilhouette=await page.evaluate(()=>[...window.__KIKOKU_PIXEL_EDITOR.getCurrent()]);
+  await page.waitForFunction(()=>document.querySelector('#status').textContent!==null);
+  await page.locator('#silhouetteBuild').click();
+  let silState=await page.locator('#silhouetteInfo').innerText();
+  if(silState.includes('読み込まれていません')){
+    await page.waitForTimeout(1200);
+    await page.locator('#silhouetteBuild').click();
+    silState=await page.locator('#silhouetteInfo').innerText();
+  }
+  assert.match(silState,/Nearest法/,name+' silhouette preview failed: '+silState);
+  assert.equal(await page.locator('#silhouetteApply').isDisabled(),false);
+  assert.deepEqual(await page.evaluate(()=>[...window.__KIKOKU_PIXEL_EDITOR.getCurrent()]),beforeSilhouette,'silhouette preview must not mutate original');
+  const draft=await page.evaluate(()=>{
+    const a=document.querySelector('#silhouettePreview').getContext('2d').getImageData(0,0,64,96).data;
+    let ink=0;let transparent=0;const colors=new Set();
+    for(let i=0;i<a.length;i+=4){if(a[i+3]){ink++;colors.add([a[i],a[i+1],a[i+2],a[i+3]].join(','));}else transparent++;}
+    return {ink,transparent,colors:[...colors]};
+  });
+  assert.ok(draft.ink>500&&draft.ink<6000,'silhouette must be person-sized');
+  assert.ok(draft.transparent>50,'silhouette must retain transparent surroundings');
+  assert.equal(draft.colors.length,1,'solid black silhouette must contain exactly one color');
+  await page.locator('#silhouetteApply').click();
+  assert.equal(await page.evaluate(()=>window.__KIKOKU_PIXEL_EDITOR.getCurrent().some(x=>x!==0)),true,'silhouette apply failed');
+  await page.locator('#undo').click();
+  assert.deepEqual(await page.evaluate(()=>[...window.__KIKOKU_PIXEL_EDITOR.getCurrent()]),beforeSilhouette,'silhouette Undo must restore every RGBA value');
+  console.log('PASS '+name+': source alpha -> nearest black silhouette, preview no-mutation, one-color, apply and Undo');
+
   // Ensure a new full-array import can be undone without discarding unrelated frames.
   await page.screenshot({path:'/tmp/kikoku-pixel-64-qa/'+name+'.png',fullPage:true});
   assert.deepEqual(errors,[],name+' JS errors');
