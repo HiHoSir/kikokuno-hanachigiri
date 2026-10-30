@@ -1,0 +1,102 @@
+name: Verify Hizuki Eternia right-walk pixel study
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/hizuki-v8-eternia-proportions/**'
+      - '.github/workflows/hizuki-v8-eternia-proportions.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-and-pages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Chromium and WebKit
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify 3 synchronised right-walk sprites across 4 browser/device configurations
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory . >/tmp/eternia-right-walk.log 2>&1 &
+          mkdir -p /tmp/eternia-rightwalk-qa
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {chromium,webkit} from 'playwright';
+          const url='http://127.0.0.1:8765/experiments/hizuki-v8-eternia-proportions/';
+          for(const [name,engine] of [['chromium',chromium],['webkit',webkit]]){
+            const browser=await engine.launch({headless:true});
+            try {
+              for(const mobile of [false,true]){
+                const context=await browser.newContext({
+                  viewport: mobile?{width:390,height:844}:{width:1180,height:900},
+                  hasTouch:mobile,isMobile:mobile,deviceScaleFactor:mobile?3:1
+                });
+                const page=await context.newPage();
+                const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+                const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
+                assert.equal(response.status(),200);
+                await page.waitForFunction(()=>loaded===3,null,{timeout:20000});
+                assert.equal(await page.locator('canvas').count(),3);
+                for(const k of ['B','E','F']){
+                  const meta=await page.evaluate(k=>({width:imgs[k].naturalWidth,height:imgs[k].naturalHeight}),k);
+                  assert.deepEqual(meta,{width:512,height:96});
+                }
+                await page.locator('#zoom').selectOption('1.2');
+                await page.locator('#fps').selectOption('8');
+                await page.locator('#toggle').click();
+                const f=await page.evaluate(()=>frame);
+                await page.waitForTimeout(190);
+                assert.equal(await page.evaluate(()=>frame),f,'paused frame should remain fixed');
+                await page.locator('#step').click();
+                assert.equal(await page.evaluate(()=>frame),(f+1)%8);
+                const hold=page.locator('#hold');
+                await hold.scrollIntoViewIfNeeded();
+                const rect=await hold.boundingBox();assert(rect);
+                await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
+                await page.mouse.down();
+                try {
+                  await page.waitForFunction(()=>worldX>5,null,{timeout:6500});
+                } finally {await page.mouse.up();}
+                assert(await page.evaluate(()=>worldX>5));
+                await page.locator('#reset').click();
+                assert.equal(await page.evaluate(()=>worldX),0);
+                await page.locator('#toggle').click();
+                const start=await page.evaluate(()=>frame);
+                await page.waitForTimeout(420);
+                const end=await page.evaluate(()=>frame);
+                assert.notEqual(start,end,'loop advances frames');
+                assert.deepEqual(errors,[]);
+                await page.screenshot({path:'/tmp/eternia-rightwalk-qa/'+name+'-'+(mobile?'mobile':'desktop')+'.png',fullPage:true});
+                console.log('PASS',name,mobile?'mobile':'desktop','B/E/F 8 frames, pause/step, free movement');
+                await context.close();
+              }
+            } finally {await browser.close();}
+          }
+          JS
+      - name: Verify published Pages URL and embedded artwork
+        run: |
+          set -euo pipefail
+          url=https://hihosir.github.io/kikokuno-hanachigiri/experiments/hizuki-v8-eternia-proportions/
+          ok=0
+          for i in $(seq 1 25); do
+            if curl -fsSL --max-time 15 "$url?sha=$GITHUB_SHA" -o /tmp/eternia-preview.html &&
+               grep -q 'エターニア寄り' /tmp/eternia-preview.html &&
+               grep -q 'data:image/png;base64,' /tmp/eternia-preview.html; then
+              echo 'Pages published and verified';ok=1;break
+            fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-v8-eternia-rightwalk-browser-shots
+          path: /tmp/eternia-rightwalk-qa/
+          if-no-files-found: ignore
