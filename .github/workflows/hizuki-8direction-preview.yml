@@ -63,9 +63,9 @@ jobs:
                 await page.mouse.down();
                 try {
                   await page.waitForFunction(() => {
-                    const v=Number((document.querySelector('#positionLabel').textContent.match(/-?[0-9]+(?:\\.[0-9]+)?/))[0]);
+                    const v=Number((document.querySelector('#positionLabel').textContent.match(/-?[0-9]+(?:\.[0-9]+)?/))[0]);
                     return v>5;
-                  },{timeout:4500});
+                  },null,{timeout:4500});
                 } catch (e) {
                   console.log('MOVEMENT DIAGNOSTICS',engineName,mobile,await page.evaluate(()=>({visibility:document.visibilityState,ready,px,py,last,frame,keys:[...keys],pointerDir})));
                   throw e;
