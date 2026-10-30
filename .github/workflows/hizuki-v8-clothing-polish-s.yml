@@ -1,0 +1,100 @@
+name: Verify Hizuki V8 R S clothing pixel comparison
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/hizuki-v8-clothing-polish-s/**'
+      - '.github/workflows/hizuki-v8-clothing-polish-s.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare-on-webkit-chromium:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install headless browsers
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Validate 48 PNG sheets and R/S frame transparency in browsers
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/hizuki-v8-S-QA
+          python3 -m http.server 8765 --directory . >/tmp/hizuki-v8-S-http.log 2>&1 &
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {chromium,webkit} from 'playwright';
+          const url='http://127.0.0.1:8765/experiments/hizuki-v8-clothing-polish-s/';
+          for(const [name,engine] of [['chromium',chromium],['webkit',webkit]]){
+            const browser=await engine.launch({headless:true});
+            try{
+              for(const mobile of [false,true]){
+                const ctx=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1200,height:900},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:mobile?3:1});
+                const page=await ctx.newPage();
+                const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+                const resp=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});assert.equal(resp.status(),200);
+                await page.waitForFunction(()=>loaded===48,null,{timeout:30000});
+                assert.equal(await page.locator('#directions button').count(),8);
+                const qa=await page.evaluate(()=>{
+                  const directions=['front','front_right','right','back_right','back','back_left','left','front_left'];
+                  const actions=['idle','walk','run'];
+                  let checked=0, changed=0;
+                  const can=document.createElement('canvas'),c=can.getContext('2d',{willReadFrequently:true});
+                  for(const a of actions)for(const d of directions){
+                    const R=images.get('R/'+a+'/'+d),S=images.get('S/'+a+'/'+d);
+                    if(!R||!S||R.width!==S.width||R.height!==S.height||R.height!==96)throw Error('sheet size mismatch '+a+'/'+d);
+                    if(R.width!==(a==='idle'?64:512))throw Error('frame count mismatch '+a+'/'+d);
+                    can.width=R.width;can.height=96;
+                    c.clearRect(0,0,can.width,96);c.drawImage(R,0,0);
+                    const ra=c.getImageData(0,0,can.width,96).data;
+                    c.clearRect(0,0,can.width,96);c.drawImage(S,0,0);
+                    const sa=c.getImageData(0,0,can.width,96).data;
+                    for(let i=0;i<ra.length;i+=4){
+                      if(ra[i+3]!==sa[i+3])throw Error('alpha mismatch '+a+'/'+d+' @ '+i);
+                      if(ra[i]!==sa[i]||ra[i+1]!==sa[i+1]||ra[i+2]!==sa[i+2])changed++;
+                    }
+                    checked++;
+                  }
+                  return {checked,changed};
+                });
+                assert.equal(qa.checked,24);assert(qa.changed>0);
+                await page.locator('#act').selectOption('run');
+                await page.locator('#directions button[data-dir="0"]').click();
+                await page.waitForFunction(()=>document.querySelector('#frameinfo').textContent.includes('正面'));
+                await page.locator('#play').click();const old=await page.evaluate(()=>frame);
+                await page.waitForTimeout(140);assert.equal(await page.evaluate(()=>frame),old);
+                await page.locator('#step').click();await page.waitForTimeout(100);
+                assert.notEqual(await page.evaluate(()=>frame),old);
+                assert.deepEqual(errors,[]);
+                await page.screenshot({path:'/tmp/hizuki-v8-S-QA/'+name+'-'+(mobile?'mobile':'desktop')+'.png',fullPage:true});
+                console.log('PASS',name,mobile?'mobile':'desktop','PNG sheets',qa.checked,'RGB changes',qa.changed,'alpha equal');
+                await ctx.close();
+              }
+            }finally{await browser.close();}
+          }
+          JS
+      - name: Confirm public Pages deployment
+        run: |
+          set -euo pipefail
+          url=https://hihosir.github.io/kikokuno-hanachigiri/experiments/hizuki-v8-clothing-polish-s/
+          ok=0
+          for i in $(seq 1 28); do
+            if curl -fsSL --max-time 15 "$url?sha=$GITHUB_SHA" -o /tmp/rs-published.html &&
+                grep -q '緋月V8' /tmp/rs-published.html &&
+                grep -q 'data:image/png;base64,' /tmp/rs-published.html; then
+              ok=1;echo 'Pages published and verified';break
+            fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-v8-clothing-R-S-browser-qa
+          path: /tmp/hizuki-v8-S-QA/
+          if-no-files-found: ignore
