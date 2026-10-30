@@ -1,0 +1,86 @@
+name: Verify V8 unchanged-shape pixel craft rightwalk
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/hizuki-v8-pixel-craft-preview/**'
+      - '.github/workflows/hizuki-v8-pixel-craft-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-and-pages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser engines
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify sprites and synchronous animation
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory . > /tmp/v8-craft-http.log 2>&1 &
+          mkdir -p /tmp/v8-craft-qa
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {chromium,webkit} from 'playwright';
+          const url='http://127.0.0.1:8765/experiments/hizuki-v8-pixel-craft-preview/';
+          for(const [name,engine] of [['chromium',chromium],['webkit',webkit]]){
+            const browser=await engine.launch({headless:true});
+            try{
+              for(const mobile of [false,true]){
+                const context=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1200,height:880},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:mobile?3:1});
+                const page=await context.newPage();
+                const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+                const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
+                assert.equal(response.status(),200);
+                await page.waitForFunction(()=>ready===3,null,{timeout:20000});
+                assert.equal(await page.locator('canvas').count(),3);
+                for(const kind of ['B','G','H']){
+                  const dims=await page.evaluate(k=>({w:imgs[k].naturalWidth,h:imgs[k].naturalHeight}),kind);
+                  assert.deepEqual(dims,{w:512,h:96});
+                }
+                await page.locator('#toggle').click();
+                const initial=await page.evaluate(()=>frame);
+                await page.waitForTimeout(160);
+                assert.equal(await page.evaluate(()=>frame),initial);
+                await page.locator('#step').click();
+                assert.equal(await page.evaluate(()=>frame),(initial+1)%8);
+                await page.locator('#zoom').selectOption('2');
+                await page.locator('#fps').selectOption('12');
+                await page.locator('#toggle').click();
+                await page.waitForTimeout(300);
+                assert.notEqual(await page.evaluate(()=>frame),(initial+1)%8);
+                await page.screenshot({path:'/tmp/v8-craft-qa/'+name+'-'+(mobile?'mobile':'desktop')+'.png',fullPage:true});
+                assert.deepEqual(errors,[]);
+                console.log('PASS',name,mobile?'mobile':'desktop');
+                await context.close();
+              }
+            }finally{await browser.close();}
+          }
+          JS
+      - name: Validate published Pages file
+        run: |
+          set -euo pipefail
+          url=https://hihosir.github.io/kikokuno-hanachigiri/experiments/hizuki-v8-pixel-craft-preview/
+          ok=0
+          for i in $(seq 1 25); do
+            if curl -fsSL --max-time 15 "$url?sha=$GITHUB_SHA" -o /tmp/v8-craft-pages.html &&
+               grep -q 'ドットの仕上げ比較' /tmp/v8-craft-pages.html &&
+               grep -q 'data:image/png;base64,' /tmp/v8-craft-pages.html; then
+              ok=1;echo 'Pages published and verified';break
+            fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-v8-pixel-craft-mobile-desktop-screenshots
+          path: /tmp/v8-craft-qa/
+          if-no-files-found: ignore
