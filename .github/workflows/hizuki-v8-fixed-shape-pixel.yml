@@ -1,0 +1,90 @@
+name: Verify Hizuki fixed-shape pixel finish B versus F
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/hizuki-v8-eternia-right-walk/**'
+      - '.github/workflows/hizuki-v8-fixed-shape-pixel.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-and-pages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser test dependencies
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify mobile and desktop playback
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory . >/tmp/hizuki-BF-http.log 2>&1 &
+          mkdir -p /tmp/hizuki-BF-qa
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {chromium,webkit} from 'playwright';
+          const url='http://127.0.0.1:8765/experiments/hizuki-v8-eternia-right-walk/';
+          for (const [name,engine] of [['chromium',chromium],['webkit',webkit]]) {
+            const browser=await engine.launch({headless:true});
+            try{
+              for(const mobile of [false,true]){
+                const ctx=await browser.newContext({
+                  viewport:mobile?{width:390,height:844}:{width:1200,height:820},
+                  deviceScaleFactor:mobile?3:1,
+                  isMobile:mobile,hasTouch:mobile
+                });
+                const page=await ctx.newPage();
+                const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+                const r=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});
+                assert.equal(r.status(),200);
+                await page.waitForFunction(()=>loaded===2,null,{timeout:30000});
+                assert.deepEqual(await page.evaluate(()=>({BW:im.B.naturalWidth,BH:im.B.naturalHeight,FW:im.F.naturalWidth,FH:im.F.naturalHeight})),{BW:512,BH:96,FW:512,FH:96});
+                assert.equal(await page.locator('#frames button').count(),8);
+                await page.locator('#zoom').selectOption('1.2');
+                await page.waitForTimeout(200);
+                await page.locator('#toggle').click();
+                const cur=await page.evaluate(()=>frame);
+                await page.waitForTimeout(260);
+                assert.equal(await page.evaluate(()=>frame),cur,'Pause frame fixed');
+                await page.locator('#step').click();
+                assert.equal(await page.evaluate(()=>frame),(cur+1)%8,'Step once');
+                await page.locator('#frames button').nth(6).click();
+                assert.equal(await page.evaluate(()=>frame),6,'Direct frame select');
+                await page.locator('#toggle').click();
+                await page.waitForTimeout(240);
+                assert.notEqual(await page.evaluate(()=>frame),6,'Resume frame advances');
+                assert.deepEqual(errors,[]);
+                await page.screenshot({path:'/tmp/hizuki-BF-qa/'+name+'-'+(mobile?'mobile':'desktop')+'.png',fullPage:true});
+                console.log('PASS',name,mobile?'mobile':'desktop','two independent 512x96 sprite strips, 8-frame controls');
+                await ctx.close();
+              }
+            }finally{await browser.close()}
+          }
+          JS
+      - name: Verify current published Pages
+        run: |
+          set -euo pipefail
+          url=https://hihosir.github.io/kikokuno-hanachigiri/experiments/hizuki-v8-eternia-right-walk/
+          ok=0
+          for i in $(seq 1 25); do
+            if curl -fsSL --max-time 15 "$url?sha=$GITHUB_SHA" -o /tmp/hizuki-pixel-BF-public.html &&
+               grep -q '緋月・ドット仕上げ比較' /tmp/hizuki-pixel-BF-public.html &&
+               grep -q '形状固定' /tmp/hizuki-pixel-BF-public.html &&
+               grep -q 'data:image/png;base64,' /tmp/hizuki-pixel-BF-public.html; then
+              ok=1;echo 'Public Pages B vs F verified';break
+            fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-BF-pixel-qa
+          path: /tmp/hizuki-BF-qa/
+          if-no-files-found: ignore
