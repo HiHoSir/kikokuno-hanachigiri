@@ -53,11 +53,27 @@ jobs:
                 assert.deepEqual(image,{width:512,height:96});
                 const pos=async()=>Number((await page.locator('#positionLabel').textContent()).match(/-?[0-9]+(?:\.[0-9]+)?/)[0]);
                 const before=await pos();
-                await page.keyboard.down('ArrowRight');
-                await page.waitForTimeout(400);
-                await page.keyboard.up('ArrowRight');
+                // Test user-visible D-pad via pointer; works in both Safari/WebKit and Chromium.
+                // Use the real control, not synthetic key events which can be blocked by focus.
+                const dpad=page.locator('#dpad button[data-dir="2"]');
+                await dpad.scrollIntoViewIfNeeded();
+                const box=await dpad.boundingBox();
+                assert(box,'D-pad right button is visible');
+                await page.mouse.move(box.x+box.width/2,box.y+box.height/2);
+                await page.mouse.down();
+                try {
+                  await page.waitForFunction(() => {
+                    const v=Number((document.querySelector('#positionLabel').textContent.match(/-?[0-9]+(?:\\.[0-9]+)?/))[0]);
+                    return v>5;
+                  },{timeout:4500});
+                } catch (e) {
+                  console.log('MOVEMENT DIAGNOSTICS',engineName,mobile,await page.evaluate(()=>({visibility:document.visibilityState,ready,px,py,last,frame,keys:[...keys],pointerDir})));
+                  throw e;
+                } finally {
+                  await page.mouse.up();
+                }
                 const after=await pos();
-                assert(after>before+5,'Continuous rightward travel must change pixel coordinates');
+                assert(after>before+5,'D-pad hold must cause continuous movement');
                 assert(!Number.isInteger(after),'Position must support fractional pixels');
                 assert.match(await page.locator('#directionLabel').textContent(),/右向き/);
                 await page.locator('#grid').click();
