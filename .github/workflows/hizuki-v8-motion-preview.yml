@@ -1,0 +1,102 @@
+name: Verify Hizuki V8 toon walk-run Pages preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/hizuki-v8-toon-motion-preview/**'
+      - '.github/workflows/hizuki-v8-motion-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-and-pages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browsers
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify walk/run on mobile and desktop browsers
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory . >/tmp/v8-toon-http.log 2>&1 &
+          mkdir -p /tmp/v8-toon-qa
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {chromium,webkit} from 'playwright';
+          const uri='http://127.0.0.1:8765/experiments/hizuki-v8-toon-motion-preview/';
+          for(const [engineName,engine] of [['chromium',chromium],['webkit',webkit]]){
+            const browser=await engine.launch({headless:true});
+            try{
+              for(const mobile of [false,true]){
+                const context=await browser.newContext({
+                  viewport:mobile?{width:390,height:844}:{width:1280,height:850},
+                  isMobile:mobile,hasTouch:mobile,deviceScaleFactor:mobile?3:1
+                });
+                const page=await context.newPage();
+                const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+                const response=await page.goto(uri,{waitUntil:'domcontentloaded',timeout:30000});
+                assert.equal(response.status(),200);
+                await page.waitForFunction(()=>loaded===26,null,{timeout:30000});
+                assert.equal(await page.locator('#dirs button').count(),8);
+                assert.equal(await page.evaluate(()=>imgOf('walk',2).naturalWidth),512);
+                assert.equal(await page.evaluate(()=>imgOf('run',4).naturalHeight),96);
+                assert.equal(await page.evaluate(()=>imgOf('idle',0).naturalWidth),64);
+                await page.locator('#motion').selectOption('run');
+                await page.locator('#zoom').selectOption('1.2');
+                await page.locator('#speed').selectOption('1.5');
+                await page.waitForTimeout(180);
+                const dpad=page.locator('#dpad button[data-dir="2"]');
+                await dpad.scrollIntoViewIfNeeded();
+                const rect=await dpad.boundingBox();assert(rect);
+                await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
+                await page.mouse.down();
+                try{
+                  await page.waitForFunction(()=>wx>6,null,{timeout:6000});
+                }finally{await page.mouse.up();}
+                assert(await page.evaluate(()=>wx>6));
+                await page.locator('#motion').selectOption('walk');
+                await page.locator('#dirs button[data-dir="7"]').click();
+                await page.waitForTimeout(100);
+                assert.match(await page.locator('#info').innerText(),/左斜め前/);
+                await page.locator('#toggle').click();
+                const frozen=await page.evaluate(()=>frame);
+                await page.waitForTimeout(160);
+                assert.equal(await page.evaluate(()=>frame),frozen,'Paused frame must remain fixed');
+                await page.locator('#step').click();
+                await page.waitForTimeout(100);
+                assert.notEqual(await page.evaluate(()=>frame),frozen,'Frame stepping changes the frame');
+                await page.screenshot({path:'/tmp/v8-toon-qa/'+engineName+'-'+(mobile?'mobile':'desktop')+'.png',fullPage:true});
+                assert.deepEqual(errors,[],'No runtime JS errors');
+                console.log('PASS',engineName,mobile?'mobile':'desktop','26 sheets, movement, step, direction');
+                await context.close();
+              }
+            }finally{await browser.close();}
+          }
+          JS
+      - name: Confirm public GitHub Pages has current preview
+        run: |
+          set -euo pipefail
+          url=https://hihosir.github.io/kikokuno-hanachigiri/experiments/hizuki-v8-toon-motion-preview/
+          ok=0
+          for i in $(seq 1 25); do
+            if curl --fail --location --silent --show-error --max-time 15 "$url?sha=$GITHUB_SHA" -o /tmp/v8-toon-public.html &&
+              grep -q 'V8' /tmp/v8-toon-public.html &&
+              grep -q 'data:image/png;base64,' /tmp/v8-toon-public.html &&
+              grep -q '歩行' /tmp/v8-toon-public.html; then
+              echo 'Pages published and verified'; ok=1; break
+            fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-v8-toon-mobile-desktop-qa
+          path: /tmp/v8-toon-qa/
+          if-no-files-found: ignore
