@@ -54,7 +54,7 @@ jobs:
                 try{await page.waitForFunction(()=>wx>6,null,{timeout:5000});}finally{await page.mouse.up();}
                 await page.locator('#motion').selectOption('walk');
                 await page.locator('#dirs button[data-dir="7"]').click();
-                assert.match(await page.locator('#info').textContent(),/左斜め前/);
+                await page.waitForFunction(()=>document.querySelector('#info').textContent.includes('左斜め前'),null,{timeout:4000});
                 await page.locator('#toggle').click();
                 const f=await page.evaluate(()=>frame);
                 await page.waitForTimeout(160);
