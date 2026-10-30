@@ -1,0 +1,90 @@
+name: Verify Hizuki V8 pixel style B C D preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/hizuki-v8-pixel-style-preview/**'
+      - '.github/workflows/hizuki-v8-pixel-style-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  browser-and-pages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install Playwright
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Verify exact 74 sheets, selector, playback and movement
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory . >/tmp/hizuki-style-preview.log 2>&1 &
+          mkdir -p /tmp/hizuki-style-qa
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {chromium,webkit} from 'playwright';
+          const url='http://127.0.0.1:8765/experiments/hizuki-v8-pixel-style-preview/';
+          for(const [name,engine] of [['chromium',chromium],['webkit',webkit]]){
+            const browser=await engine.launch({headless:true});
+            try {
+              for(const mobile of [false,true]){
+                const context=await browser.newContext({viewport:mobile?{width:390,height:844}:{width:1200,height:850},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:mobile?3:1});
+                const page=await context.newPage();
+                const errors=[];page.on('pageerror',e=>errors.push(String(e)));
+                const response=await page.goto(url,{waitUntil:'domcontentloaded',timeout:30000});assert.equal(response.status(),200);
+                await page.waitForFunction(()=>loaded===74,null,{timeout:30000});
+                assert.equal(await page.locator('#dirs button').count(),8);
+                for(const style of ['B','C','D']){
+                  await page.locator('#style').selectOption(style);
+                  const meta=await page.evaluate(() => ({m:$('style').value, width:imgOf('walk',2).naturalWidth, height:imgOf('walk',2).naturalHeight}));
+                  assert.deepEqual(meta,{m:style,width:512,height:96});
+                }
+                await page.locator('#motion').selectOption('run');
+                await page.locator('#zoom').selectOption('1.2');
+                const dpad=page.locator('#dpad button[data-dir="2"]');
+                await dpad.scrollIntoViewIfNeeded();
+                const rect=await dpad.boundingBox();assert(rect);
+                await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);await page.mouse.down();
+                try{await page.waitForFunction(()=>wx>6,null,{timeout:5000});}finally{await page.mouse.up();}
+                await page.locator('#motion').selectOption('walk');
+                await page.locator('#dirs button[data-dir="7"]').click();
+                assert.match(await page.locator('#info').textContent(),/左斜め前/);
+                await page.locator('#toggle').click();
+                const f=await page.evaluate(()=>frame);
+                await page.waitForTimeout(160);
+                assert.equal(await page.evaluate(()=>frame),f);
+                await page.locator('#step').click();
+                await page.waitForTimeout(120);
+                assert.notEqual(await page.evaluate(()=>frame),f);
+                assert.deepEqual(errors,[]);
+                await page.screenshot({path:'/tmp/hizuki-style-qa/'+name+'-'+(mobile?'mobile':'desktop')+'.png',fullPage:true});
+                console.log('PASS',name,mobile?'mobile':'desktop');
+                await context.close();
+              }
+            }finally{await browser.close();}
+          }
+          JS
+      - name: Verify published Pages URL
+        run: |
+          set -euo pipefail
+          ok=0
+          url=https://hihosir.github.io/kikokuno-hanachigiri/experiments/hizuki-v8-pixel-style-preview/
+          for i in $(seq 1 25); do
+            if curl -fsSL --max-time 15 "$url?sha=$GITHUB_SHA" -o /tmp/published-style.html &&
+               grep -q 'ドット絵強調 B/C/D' /tmp/published-style.html &&
+               grep -q 'data:image/png;base64,' /tmp/published-style.html; then ok=1;echo 'Pages published and verified'; break; fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-v8-pixel-style-mobile-and-desktop
+          path: /tmp/hizuki-style-qa/
+          if-no-files-found: ignore
