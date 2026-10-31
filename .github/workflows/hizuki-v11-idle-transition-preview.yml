@@ -1,0 +1,80 @@
+name: Verify V11 idle pose and transition preview
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'experiments/hizuki-v11-idle-transition-preview/**'
+      - '.github/workflows/hizuki-v11-idle-transition-preview.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  chrome-webkit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install test browsers
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium webkit
+      - name: Test V11 controls, sprites and animations
+        run: |
+          set -euo pipefail
+          python3 -m http.server 8765 --directory . >/tmp/hizuki-v11.log 2>&1 &
+          mkdir -p /tmp/hizuki-v11-qa
+          node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import {chromium,webkit} from 'playwright';
+          const url='http://127.0.0.1:8765/experiments/hizuki-v11-idle-transition-preview/';
+          for(const [name,engine] of [['chromium',chromium],['webkit',webkit]]){
+            const b=await engine.launch({headless:true});
+            try{
+              for(const mobile of [false,true]){
+                const c=await b.newContext({viewport:mobile?{width:390,height:844}:{width:1280,height:850},isMobile:mobile,hasTouch:mobile,deviceScaleFactor:mobile?3:1});
+                const p=await c.newPage();const errors=[];p.on('pageerror',e=>errors.push(String(e)));
+                const r=await p.goto(url,{waitUntil:'domcontentloaded',timeout:30000});assert.equal(r.status(),200);
+                await p.waitForFunction(()=>loaded===12,null,{timeout:25000});
+                assert.equal(await p.locator('#dir option').count(),3);
+                assert.equal(await p.locator('#action option').count(),4);
+                assert.deepEqual(await p.evaluate(()=>Object.keys(imageMap).length),12);
+                await p.locator('#dir').selectOption('front_right');
+                await p.locator('#action').selectOption('run');
+                await p.waitForTimeout(140);
+                assert.equal(await p.evaluate(()=>imageMap['front_right/run'].naturalWidth),640);
+                await p.locator('#action').selectOption('transition');
+                await p.locator('#zoom').selectOption('1.2');
+                await p.locator('#play').click();
+                const before=await p.evaluate(()=>time);
+                await p.locator('#step').click();
+                assert((await p.evaluate(()=>time))>before);
+                await p.locator('#reset').click();assert.equal(await p.evaluate(()=>time),0);
+                assert.deepEqual(errors,[]);
+                await p.screenshot({path:'/tmp/hizuki-v11-qa/'+name+'-'+(mobile?'mobile':'desktop')+'.png',fullPage:true});
+                console.log('PASS',name,mobile?'mobile':'desktop','12 sprites and motion UI');
+                await c.close();
+              }
+            }finally{await b.close();}
+          }
+          JS
+      - name: Confirm GitHub Pages published
+        run: |
+          set -euo pipefail
+          url=https://hihosir.github.io/kikokuno-hanachigiri/experiments/hizuki-v11-idle-transition-preview/
+          ok=0
+          for i in $(seq 1 25); do
+            if curl -fsSL --max-time 15 "$url?sha=$GITHUB_SHA" -o /tmp/v11-public.html &&
+               grep -q '緋月V11' /tmp/v11-public.html &&
+               grep -q 'data:image/png;base64,' /tmp/v11-public.html; then ok=1;echo 'Pages published and verified';break;fi
+            sleep 6
+          done
+          test "$ok" -eq 1
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hizuki-v11-idle-transition-browser-qa
+          path: /tmp/hizuki-v11-qa/
+          if-no-files-found: ignore
