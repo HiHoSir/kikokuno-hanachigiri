@@ -1,0 +1,102 @@
+{
+  "type": "unapproved_draft",
+  "source": "examples/synthetic_reference.png",
+  "target": [
+    64,
+    96
+  ],
+  "alpha_threshold": 128,
+  "source_coverage": 0.4089,
+  "source_bbox": [
+    30,
+    9,
+    147,
+    249
+  ],
+  "placement": [
+    9,
+    1,
+    46,
+    94
+  ],
+  "palette_kind": "provided",
+  "palette_rgb": [
+    [
+      37,
+      48,
+      72
+    ],
+    [
+      65,
+      105,
+      156
+    ],
+    [
+      128,
+      177,
+      220
+    ],
+    [
+      164,
+      206,
+      240
+    ],
+    [
+      228,
+      244,
+      250
+    ],
+    [
+      248,
+      244,
+      237
+    ],
+    [
+      243,
+      195,
+      162
+    ],
+    [
+      219,
+      156,
+      134
+    ],
+    [
+      173,
+      48,
+      72
+    ],
+    [
+      217,
+      55,
+      85
+    ],
+    [
+      250,
+      110,
+      123
+    ],
+    [
+      42,
+      60,
+      108
+    ],
+    [
+      96,
+      119,
+      156
+    ],
+    [
+      231,
+      167,
+      65
+    ],
+    [
+      255,
+      212,
+      113
+    ]
+  ],
+  "rgba_sha256": "1f55e5f0670c34383130883a1eb42434078f2e316a386130ac382952b93bcae3",
+  "warning": "Color guide uses area averaging; this is not hand-finished pixel art"
+}
