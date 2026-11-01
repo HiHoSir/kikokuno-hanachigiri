@@ -1,0 +1,79 @@
+{
+  "schema": "generic-pixel-multiview-v1",
+  "materials": {
+    "upper_sprite_colors": {}
+  },
+  "views": [
+    {
+      "id": "front",
+      "file": "example-64x96.png",
+      "parts": {
+        "upper_sprite": {
+          "material": "upper_sprite_colors",
+          "regions": [
+            {
+              "rect": [
+                8,
+                1,
+                56,
+                40
+              ]
+            }
+          ]
+        }
+      },
+      "landmarks": {
+        "bottom_of_sprite": [
+          32,
+          94
+        ]
+      },
+      "features": {
+        "flower": {
+          "visibility": "unreviewed"
+        }
+      }
+    },
+    {
+      "id": "rear",
+      "file": "example-64x96.png",
+      "parts": {
+        "upper_sprite": {
+          "material": "upper_sprite_colors",
+          "regions": [
+            {
+              "rect": [
+                8,
+                1,
+                56,
+                40
+              ]
+            }
+          ]
+        }
+      },
+      "landmarks": {
+        "bottom_of_sprite": [
+          32,
+          94
+        ]
+      },
+      "features": {
+        "flower": {
+          "visibility": "unreviewed"
+        }
+      }
+    }
+  ],
+  "checks": [
+    {
+      "kind": "landmark_y",
+      "name": "bottom_of_sprite",
+      "views": [
+        "front",
+        "rear"
+      ],
+      "tolerance": 0
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "columns": 2,
+  "views": [
+    {
+      "id": "front",
+      "file": "example-64x96.png"
+    },
+    {
+      "id": "alternate-example",
+      "file": "example-64x96.png"
+    }
+  ]
+}

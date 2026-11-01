@@ -1,0 +1,21 @@
+{
+  "schema": "generic-pixel-guard-v1",
+  "width": 64,
+  "height": 96,
+  "views": {
+    "front": {
+      "editable_parts": {
+        "hair": [{"rect": [8, 1, 56, 40]}],
+        "outfit": [{"polygon": [[11, 41], [52, 41], [57, 64], [7, 64]]}]
+      },
+      "protected": [{"rect": [20, 22, 44, 32]}]
+    },
+    "back": {
+      "editable_parts": {
+        "hair": [{"rect": [8, 1, 56, 40]}],
+        "outfit": [{"rect": [8, 40, 56, 64]}]
+      },
+      "protected": [{"rect": [0, 80, 64, 96]}]
+    }
+  }
+}

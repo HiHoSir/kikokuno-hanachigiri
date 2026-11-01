@@ -10,6 +10,8 @@ Web向けの新作RPGを **2Dキャラクター × 3D背景** で構築する独
 
 ## 制作ルールと旧資料
 
+- [ドット絵化スキル v2.1](skills/silhouette-first-pixel-art/SKILL.md)：承認原画のシルエット、画素修正、保護領域と複数方向の検査。[スキル一覧](skills/README.md)。
+
 - [淡彩レイヤーマップ制作](docs/MAP_ART_RULES.md)：独立背景素材、3D由来の緋月、投影・尺度・歩行確認。
 - [素材・配置・検査契約](docs/MAP_ASSET_CONTRACT.md)：アンカー、判定、歩行面、出入口、検査証拠。
 - [旧情報の隔離](docs/LEGACY_INFORMATION.md)：第1作『鬼哭の花結び』由来の資料と新作資料を区別。

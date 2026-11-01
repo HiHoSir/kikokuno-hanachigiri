@@ -1,0 +1,86 @@
+{
+  "schema": "generic-pixel-audit-report-v1",
+  "pass": true,
+  "view_count": 4,
+  "cell": [
+    64,
+    96
+  ],
+  "views": {
+    "back": {
+      "size": [
+        64,
+        96
+      ],
+      "nontransparent_pixels": 2117,
+      "color_count": 40,
+      "parts": {},
+      "landmarks": {
+        "bottom_of_alpha": [
+          31,
+          94
+        ]
+      },
+      "features": {}
+    },
+    "side_left": {
+      "size": [
+        64,
+        96
+      ],
+      "nontransparent_pixels": 1603,
+      "color_count": 37,
+      "parts": {},
+      "landmarks": {
+        "bottom_of_alpha": [
+          31,
+          94
+        ]
+      },
+      "features": {}
+    },
+    "front_three_quarter": {
+      "size": [
+        64,
+        96
+      ],
+      "nontransparent_pixels": 2185,
+      "color_count": 40,
+      "parts": {},
+      "landmarks": {
+        "bottom_of_alpha": [
+          32,
+          94
+        ]
+      },
+      "features": {}
+    },
+    "back_three_quarter": {
+      "size": [
+        64,
+        96
+      ],
+      "nontransparent_pixels": 1947,
+      "color_count": 38,
+      "parts": {},
+      "landmarks": {
+        "bottom_of_alpha": [
+          32,
+          94
+        ]
+      },
+      "features": {}
+    }
+  },
+  "palette": {
+    "union_colors": 42,
+    "intersection_colors": 34,
+    "material_comparison": {}
+  },
+  "issues": [],
+  "review_required": [
+    "semantic part masks and feature labels are human-supplied; they are not visually verified",
+    "front/back/side limb ordering, hand orientation, decorations, face and pose require visual review",
+    "do not maximize shared color count; inspect per-material consistency"
+  ]
+}

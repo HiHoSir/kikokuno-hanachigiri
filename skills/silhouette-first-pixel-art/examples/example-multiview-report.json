@@ -1,0 +1,132 @@
+{
+  "schema": "generic-pixel-audit-report-v1",
+  "pass": true,
+  "view_count": 2,
+  "cell": [
+    64,
+    96
+  ],
+  "views": {
+    "front": {
+      "size": [
+        64,
+        96
+      ],
+      "nontransparent_pixels": 2940,
+      "color_count": 7,
+      "parts": {
+        "upper_sprite": {
+          "material": "upper_sprite_colors",
+          "pixels": 1153,
+          "color_count": 5,
+          "off_palette_count": 0,
+          "off_palette_hex": [],
+          "top_colors": [
+            {
+              "hex": "#A4CEF0",
+              "pixels": 827
+            },
+            {
+              "hex": "#D93755",
+              "pixels": 143
+            },
+            {
+              "hex": "#253048",
+              "pixels": 97
+            },
+            {
+              "hex": "#F3C3A2",
+              "pixels": 68
+            },
+            {
+              "hex": "#DB9C86",
+              "pixels": 18
+            }
+          ]
+        }
+      },
+      "landmarks": {
+        "bottom_of_sprite": [
+          32,
+          94
+        ]
+      },
+      "features": {
+        "flower": {
+          "visibility": "unreviewed"
+        }
+      }
+    },
+    "rear": {
+      "size": [
+        64,
+        96
+      ],
+      "nontransparent_pixels": 2940,
+      "color_count": 7,
+      "parts": {
+        "upper_sprite": {
+          "material": "upper_sprite_colors",
+          "pixels": 1153,
+          "color_count": 5,
+          "off_palette_count": 0,
+          "off_palette_hex": [],
+          "top_colors": [
+            {
+              "hex": "#A4CEF0",
+              "pixels": 827
+            },
+            {
+              "hex": "#D93755",
+              "pixels": 143
+            },
+            {
+              "hex": "#253048",
+              "pixels": 97
+            },
+            {
+              "hex": "#F3C3A2",
+              "pixels": 68
+            },
+            {
+              "hex": "#DB9C86",
+              "pixels": 18
+            }
+          ]
+        }
+      },
+      "landmarks": {
+        "bottom_of_sprite": [
+          32,
+          94
+        ]
+      },
+      "features": {
+        "flower": {
+          "visibility": "unreviewed"
+        }
+      }
+    }
+  },
+  "palette": {
+    "union_colors": 7,
+    "intersection_colors": 7,
+    "material_comparison": {
+      "upper_sprite_colors": {
+        "views_with_annotations": [
+          "front",
+          "rear"
+        ],
+        "shared_colors_in_annotated_regions": 5,
+        "total_colors_in_annotated_regions": 5,
+        "important": "not a target to maximize; orientation-dependent shading is valid"
+      }
+    }
+  },
+  "issues": [],
+  "review_required": [
+    "semantic part masks and feature labels are human-supplied; they are not visually verified",
+    "front/back/side limb ordering, hand orientation, decorations, face and pose require visual review",
+    "do not maximize shared color count; inspect per-material consistency"
+  ]
+}

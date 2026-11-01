@@ -1,0 +1,13 @@
+{
+  "project":"Example project; replace this entire profile",
+  "status":"example_not_approved",
+  "target_width":64,
+  "target_height":96,
+  "alpha_threshold":128,
+  "margin":{"left_right":2,"top":1,"bottom":1},
+  "palette_file":"examples/sample_palette.json",
+  "source_map":{"front":"examples/synthetic_reference.png"},
+  "protected_regions":[{"name":"face","box_xyxy":[15,15,49,38]}],
+  "directions_are_symmetric":false,
+  "frames_are_approved":false
+}
