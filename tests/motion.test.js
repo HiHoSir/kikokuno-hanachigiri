@@ -37,3 +37,15 @@ test('motion frame uses correct sheet row and its own padded cell',async()=>{
   const c=structuredClone(config);change(c);assert.throws(()=>validateCharacter(c));
  }
 });
+
+test('tap routing keeps run cycle advancing across intermediate waypoints',async()=>{
+ const {followRoute}=await import('../src/map/logic.js');const {MotionPlayer}=await import('../src/map/motion.js');
+ const {findPath}=await import('../src/map/logic.js');const map=JSON.parse(fs.readFileSync('maps/village/map.json'));
+ let player={...map.spawn},route=findPath(map,player,{x:14.7,z:10.65},.16);const m=new MotionPlayer(config),frames=new Set();
+ for(let n=0;n<300&&route.length;n++){
+  const result=followRoute(map,player,route,.05,3.4,.16);player=result.player;route=result.route;
+  m.update(50,{moving:result.moving,running:true,facing:'right'});if(result.moving)frames.add(m.current.frame);
+ }
+ assert.deepEqual([...frames].sort(),[0,1,2,3,4,5,6,7]);assert.equal(route.length,0);
+ assert.ok(Math.hypot(player.x-14.7,player.z-10.65)<.08);
+});

@@ -116,3 +116,13 @@ export function approachTarget(map,player,target,dt,speed=2,radius=.16){
  if(distance<1e-9)return {...player};
  return move(map,player,dx,dz,Math.min(dt,distance/speed),speed,radius);
 }
+
+// Consume reached waypoints in this tick, so each waypoint does not restart idle.
+export function followRoute(map,player,route,dt,speed=2,radius=.16){
+ let index=0;while(index<route.length&&Math.hypot(route[index].x-player.x,route[index].z-player.z)<.07)index++;
+ const remaining=route.slice(index),target=remaining[0];
+ if(!target)return {player,route:[],moving:false,dx:0,dz:0};
+ const next=approachTarget(map,player,target,dt,speed,radius),moving=Math.hypot(next.x-player.x,next.z-player.z)>.00001;
+ const distance=Math.hypot(target.x-player.x,target.z-player.z);
+ return {player:next,route:moving?remaining:[],moving,dx:(target.x-player.x)/distance,dz:(target.z-player.z)/distance};
+}

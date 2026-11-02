@@ -1,5 +1,5 @@
 import {MotionPlayer} from './motion.js';
-import {validateMap,canStand,move,findPath,approachTarget} from './logic.js';
+import {validateMap,canStand,move,findPath,followRoute} from './logic.js';
 import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js';
 import {createInput} from './input.js';
 
@@ -47,13 +47,16 @@ function update(dt,direction){
  let {x,y}=direction;moving=false;
  if(motions?.busy){if(Math.hypot(x,y)>.05)motions.cancel();else return;}
  if(Math.hypot(x,y)>.05)route=[];
- else if(route.length){const target=route[0],d=Math.hypot(target.x-player.x,target.z-player.z);if(d<.07){route.shift();}else{x=(target.x-player.x)/d;y=(target.z-player.z)/d;}}
+ else if(route.length){
+  const step=followRoute(map,player,route,dt,running?hero.config.runSpeed:hero.config.speed,hero.config.radius);
+  player=step.player;route=step.route;moving=step.moving;if(moving)facing=face(step.dx,step.dz);return;
+ }
  if(Math.hypot(x,y)>.05){
   // Undo ground foreshortening for screen-direction input; route vectors already
   // use world metres, so only manual input is converted here.
   if(direction.x||direction.y)y/=Math.sin(map.projection.elevation*Math.PI/180);
   const speed=running?hero.config.runSpeed:hero.config.speed;
-  const next=route.length?approachTarget(map,player,route[0],dt,speed,hero.config.radius):move(map,player,x,y,dt,speed,hero.config.radius);
+  const next=move(map,player,x,y,dt,speed,hero.config.radius);
   moving=Math.hypot(next.x-player.x,next.z-player.z)>.00001;facing=face(x,y);player=next;if(!moving&&route.length)route=[];
  }
 }
