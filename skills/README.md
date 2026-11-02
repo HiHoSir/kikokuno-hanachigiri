@@ -1,17 +1,18 @@
 # 制作スキル
 
-## シルエット優先・ドット絵化 v2.1
+## シルエット優先・ドット絵化 v2.1.1
 
 - 入口: [SKILL.md](silhouette-first-pixel-art/SKILL.md)
 - 使い方: [README](silhouette-first-pixel-art/README.md)、[制作手順](silhouette-first-pixel-art/docs/PROCEDURE.md)
 - 変更点: [v2.1変更履歴](silhouette-first-pixel-art/docs/V2_1_CHANGELOG.md)
 - 保護領域: [ガード付き部位修正](silhouette-first-pixel-art/docs/SEMANTIC_EDIT_GUARDS.md)
 - 複数方向: [照合手順](silhouette-first-pixel-art/docs/MULTIVIEW_PROTOCOL.md)
+- 角落とし: [丸い部位の1px角落とし](silhouette-first-pixel-art/docs/CORNER_TRIMMING.md)。座標を選んだ別候補で実施。既存パッチ機能を利用し、自動削除は行わない。
 
 保存元は `generic_silhouette_pixel_skill_v2_1.zip`（内部版2.1.0、作成日2026-10-30）。2026-11-02に原本29ファイルをバイト変更なしで収録。
 
 元ZIPのSHA-256: `8bf3f5e4b9aab82dcc90689d61a100cd6657fd1bce76a02bb286dfcac37964f3`。
-同梱 `MANIFEST.sha256.json` の28件を照合し、原本との差がないことを確認。
+収録時は同梱 `MANIFEST.sha256.json` の28件を照合し、原本との差がないことを確認。現在はv2.1.1の制作手順拡張を含み、同manifestは拡張後のファイルを照合する。実行スクリプトと原本サンプルは変更していない。
 
 ### 検査
 
@@ -34,3 +35,4 @@ PillowとNumPyが必要。両テストは収録時に通過。テストはデー
 ## 歩行アセットの監査
 
 - [hizuki-walk-audit](hizuki-walk-audit/SKILL.md)：既存の左右関節・ポーズ検査用。参照画像に関する古い指定は、利用者の最新指定と現行の実アセットを照合して読む。
+

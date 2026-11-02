@@ -1,16 +1,16 @@
 {
-  "version": "2.1.0",
+  "version": "2.1.1",
   "hash_algorithm": "SHA256",
   "files": {
-    "README.md": "3d2cdbd717ed7c9c86a6741638be21e1e2bd4bc2630e60dfdcf3eb10769539d8",
-    "SKILL.md": "162b7ad625182544a6fb9e1f3ac14c0beee5336f3cc2b202999935d9a3f88372",
+    "README.md": "1dd67bfe7d365237240d10d102a70a212975d2081be708a768323c9a889f50be",
+    "SKILL.md": "444380fda51d2aa7d088d03a66c74da4184fcc05aa013a253b69fa7263427700",
     "docs/FAILURE_MODES.md": "b5ad8d131ffb891a55427c5e4406c8d7a0acb9a4f19a10c18983989fb63608db",
     "docs/HANDOFF_PROMPT.md": "a8b1faa6cdfa034245b0022d09419c03d58d9a5a807223ca8c460adb028e3342",
     "docs/HIZUKI_CASE_STUDY.md": "7b797f4e6c7f287e6ddbde081df2005fe05d6b88d340b8641ec56ea01e675b83",
     "docs/MULTIVIEW_PROTOCOL.md": "61769155c87c2803bb4ea5f993ab319ab19e1fc91405c2c4f7433e4de4052e75",
-    "docs/PROCEDURE.md": "3282620e9242e239c3743872030317f28e5b6eea9d0bcff04c73bbb996eb53b8",
+    "docs/PROCEDURE.md": "5116a610205d7b53327b8ae245e9b7524bff131c0eb7de56c6656ee5bc78c22f",
     "docs/PROFILES.md": "73cff2da4da4d28ead73fe6689d80b661c3786a35624935715acc730902e630c",
-    "docs/QUALITY_GATES.md": "9a6398cce25d9f2b702f450d2b8b41113f0465a32471dbcd9579f5fbc2029c2b",
+    "docs/QUALITY_GATES.md": "089edb2563508182a68783c2bc0fc91197a11e2cf6be4faa652889ab74a16816",
     "docs/SEMANTIC_EDIT_GUARDS.md": "91348422c80342a475d241aa80fa1dea764013b68d0d26ce72eecda604276062",
     "docs/V2_1_CHANGELOG.md": "e3e8622b9b655df438ab57d638cb472680973f40073d3c4cb184011501c46f9d",
     "examples/edit-guard-example.json": "f58f084d4c6bb6566d0bae356810172b0c55d1bee5df8dc0a906ce494aa184e7",
@@ -29,6 +29,7 @@
     "scripts/pixel_pipeline.py": "420d0f5f8828c45eb9cdb03e63601d05b9b2536c17c5a65c7c4fad207228652f",
     "scripts/semantic_quality.py": "51f2162a5e08ab4f66ee0f16e8fdcfe5d0e204a2ac9ce2fa19c664bad4c99cce",
     "scripts/test_pipeline.py": "da74c907a5eaa6053618b7fea38f84fea2ae68e7f5b3e9d8122ce5c1c45b0970",
-    "scripts/test_semantic_quality.py": "e139a908723c4655bc0a33311e85942263b1f400b95f7d3fd0b123e4802a6e8c"
+    "scripts/test_semantic_quality.py": "e139a908723c4655bc0a33311e85942263b1f400b95f7d3fd0b123e4802a6e8c",
+    "docs/CORNER_TRIMMING.md": "978e0e93f8558b1f8da99d9f0735fc1d520b601b258a895508d583a89d0ffcd1"
   }
 }
