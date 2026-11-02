@@ -82,6 +82,25 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
    await page.evaluate(()=>window.__mapLab.stop());
    await page.getByRole('button',{name:'走行切替'}).click();
    await page.screenshot({path:`test-results/${name}-${orientation}-motions.png`});
+   // Cross the new ground seam in both directions and follow the negative-Z district.
+   await page.getByRole('button',{name:'走行切替'}).click();
+   const north=await page.evaluate(()=>{
+    const lab=window.__mapLab;lab.stop();lab.setPosition({x:6.1,z:.5});
+    const p=lab.exportMap().landmarks.find(p=>p.id==='exit-north');
+    if(!lab.routeTo(p))throw new Error('Northern road unreachable');return {x:p.x,z:p.z};
+   });
+   await page.waitForFunction(p=>{const q=window.__mapLab.getState().player;return Math.hypot(q.x-p.x,q.z-p.z)<.12;},north,{timeout:30000});
+   assert.ok(await page.evaluate(()=>window.__mapLab.getState().camera.y)<0);
+   await page.screenshot({path:`test-results/${name}-${orientation}-north.png`});
+   assert.equal(await page.evaluate(()=>window.__mapLab.routeTo({x:12.6,z:-6})),false);
+   await page.evaluate(()=>window.__mapLab.routeTo({x:6.1,z:.5}));
+   await page.waitForFunction(()=>window.__mapLab.getState().player.z>.4,null,{timeout:30000});
+   await page.evaluate(()=>window.__mapLab.stop());
+   // Failed loading of a new tile must leave the working layout intact.
+   assert.equal(await page.evaluate(async()=>{
+    const lab=window.__mapLab,before=JSON.stringify(lab.exportMap()),bad=lab.exportMap();bad.ground.tiles[0].image='assets/missing-test-ground.png';
+    try{await lab.importMap(bad);return false;}catch{return JSON.stringify(lab.exportMap())===before;}
+   }),true);
    assert.equal((await page.request.get(new URL('old/README.md',base).href)).status(),404);
    assert.equal((await page.request.get(new URL('assets/characters/hizuki/v35-expanded-cells/old/walking_8dir.png',base).href)).status(),404);
    assert.deepEqual(errors,[]);results.push({browser:name,orientation,pass:true});

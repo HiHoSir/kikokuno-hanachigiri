@@ -1,3 +1,4 @@
+export function groundTiles(map){return [{image:map.ground.image,size:map.ground.size,offset:[0,0]},...(map.ground.tiles||[])];}
 // Pure world-space rules; bitmap dimensions never define physical occupancy.
 export function project(p,profile){
  const s=profile.pixelsPerMetre,k=Math.sin(profile.elevation*Math.PI/180);
@@ -96,6 +97,13 @@ export function validateMap(map){
  if(!map.projection||!finite(map.projection.pixelsPerMetre)||map.projection.pixelsPerMetre<=0||!finite(map.projection.elevation)||map.projection.elevation<=0||map.projection.elevation>=90)throw new Error('投影設定が不正です');
  if(!Array.isArray(map.bounds)||map.bounds.length!==4||!map.bounds.every(finite)||map.bounds[2]<=map.bounds[0]||map.bounds[3]<=map.bounds[1]||map.bounds[2]-map.bounds[0]>100||map.bounds[3]-map.bounds[1]>100)throw new Error('マップ範囲が不正です');
  if(!map.ground||!imagePath(map.ground.image)||!Array.isArray(map.ground.size)||map.ground.size.length!==2||!map.ground.size.every(v=>finite(v)&&v>0))throw new Error('地面画像が不正です');
+ if(map.ground.tiles!==undefined&&(!Array.isArray(map.ground.tiles)||map.ground.tiles.length>16))throw new Error('追加地面の一覧が不正です');
+ let groundPixels=0;
+ for(const tile of groundTiles(map)){
+  if(!imagePath(tile.image)||tile.image.split('/').includes('old')||!Array.isArray(tile.size)||tile.size.length!==2||!tile.size.every(v=>Number.isInteger(v)&&v>0&&v<=8192)||!Array.isArray(tile.offset)||tile.offset.length!==2||!tile.offset.every(v=>finite(v)&&Math.abs(v)<=10000))throw new Error('追加地面の画像・寸法・原点が不正です');
+  groundPixels+=tile.size[0]*tile.size[1];
+ }
+ if(groundPixels>32000000)throw new Error('地面画像の総面積が大きすぎます');
  if(!Array.isArray(map.surfaces)||!map.surfaces.length||!map.surfaces.every(s=>polygon(s.polygon)))throw new Error('歩行面が不正です');
  if(!map.assets||typeof map.assets!=='object'||Array.isArray(map.assets))throw new Error('素材台帳がありません');
  for(const a of Object.values(map.assets)){

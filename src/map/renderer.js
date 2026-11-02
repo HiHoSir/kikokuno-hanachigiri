@@ -1,10 +1,10 @@
-import {validateMotions} from './motion.js?v=scale-stride-4';
-import {project,unproject,depthOrder,collidersFor,surfacesFor} from './logic.js?v=scale-stride-4';
+import {validateMotions} from './motion.js?v=village-north-2';
+import {project,unproject,depthOrder,collidersFor,surfacesFor,groundTiles} from './logic.js?v=village-north-2';
 export async function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(`画像を読み込めません: ${new URL(url).pathname}`));image.src=url;});}
 export async function loadMapImages(map,url){
- const assets=new Map(),keys=[map.ground.image,...Object.values(map.assets).map(a=>a.image)];
+ const assets=new Map(),grounds=groundTiles(map),keys=[...grounds.map(a=>a.image),...Object.values(map.assets).map(a=>a.image)];
  await Promise.all([...new Set(keys)].map(async key=>assets.set(key,await loadImage(new URL(key,url)))));
- for(const a of [map.ground,...Object.values(map.assets)]){const image=assets.get(a.image);if(image.width!==a.size[0]||image.height!==a.size[1])throw new Error(`素材寸法が台帳と一致しません: ${a.image}`);}
+ for(const a of [...grounds,...Object.values(map.assets)]){const image=assets.get(a.image);if(image.width!==a.size[0]||image.height!==a.size[1])throw new Error(`素材寸法が台帳と一致しません: ${a.image}`);}
  return assets;
 }
 export function validateCharacter(config){
@@ -44,11 +44,11 @@ export class MapRenderer{
  constructor(canvas){this.canvas=canvas;this.ctx=canvas.getContext('2d');this.camera={x:0,y:0,zoom:1};this.width=0;this.height=0;this.dpr=1;}
  resize(){const r=this.canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);if(r.width!==this.width||r.height!==this.height||dpr!==this.dpr){this.width=r.width;this.height=r.height;this.dpr=dpr;this.canvas.width=Math.round(r.width*dpr);this.canvas.height=Math.round(r.height*dpr);}}
  updateCamera(map,player,hero,overview){
-  this.resize();const [gw,gh]=map.ground.size,p=project(player,map.projection);
+  this.resize();const start=project({x:map.bounds[0],z:map.bounds[1]},map.projection),end=project({x:map.bounds[2],z:map.bounds[3]},map.projection),gw=end.x-start.x,gh=end.y-start.y,p=project(player,map.projection);
   let zoom=overview?Math.min((this.width-24)/gw,(this.height-130)/gh):Math.min(110,this.height*.18)/(hero.cameraReferenceHeight??hero.size[1]*hero.scale);
   zoom=Math.max(.1,zoom);const vw=this.width/zoom,vh=this.height/zoom;
-  const clamp=(v,max,span)=>span>=max?(max-span)/2:Math.max(0,Math.min(max-span,v));
-  this.camera={x:overview?(gw-vw)/2:clamp(p.x-vw/2,gw,vw),y:overview?(gh-vh)/2:clamp(p.y-vh*.57,gh,vh),zoom};
+  const clamp=(v,min,max,span)=>span>=max-min?(min+max-span)/2:Math.max(min,Math.min(max-span,v));
+  this.camera={x:overview?start.x+(gw-vw)/2:clamp(p.x-vw/2,start.x,end.x,vw),y:overview?start.y+(gh-vh)/2:clamp(p.y-vh*.57,start.y,end.y,vh),zoom};
  }
  toWorld(screen,map){return unproject({x:screen.x/this.camera.zoom+this.camera.x,y:screen.y/this.camera.zoom+this.camera.y},map.projection);}
  toScreen(world,map){const p=project(world,map.projection),c=this.camera;return {x:(p.x-c.x)*c.zoom,y:(p.y-c.y)*c.zoom};}
@@ -57,7 +57,7 @@ export class MapRenderer{
   const c=this.ctx,cam=this.camera,k=this.dpr*cam.zoom;
   c.setTransform(this.dpr,0,0,this.dpr,0,0);c.fillStyle='#26382f';c.fillRect(0,0,this.width,this.height);
   c.setTransform(k,0,0,k,-cam.x*k,-cam.y*k);c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
-  c.drawImage(images.get(map.ground.image),0,0);
+  for(const tile of groundTiles(map))c.drawImage(images.get(tile.image),...tile.offset);
   const drawAsset=i=>{const a=map.assets[i.asset],p=project(i,map.projection);c.imageSmoothingEnabled=true;c.drawImage(images.get(a.image),p.x-a.anchor[0]*a.scale,p.y-a.anchor[1]*a.scale,a.size[0]*a.scale,a.size[1]*a.scale);};
   for(const i of map.instances)if(map.assets[i.asset].layer==='ground')drawAsset(i);
   function shadow(x,y,rx,ry,alpha){c.save();c.translate(x,y);c.scale(rx,ry);const g=c.createRadialGradient(0,0,0,0,0,1);g.addColorStop(0,`rgba(41,45,26,${alpha})`);g.addColorStop(1,'rgba(41,45,26,0)');c.fillStyle=g;c.beginPath();c.arc(0,0,1,0,Math.PI*2);c.fill();c.restore();}

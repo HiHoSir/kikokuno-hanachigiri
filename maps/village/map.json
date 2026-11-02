@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "painted-village-01",
   "title": "木漏れ日の村",
-  "revision": 1,
+  "revision": 2,
   "projection": {
     "pixelsPerMetre": 100,
     "elevation": 40,
@@ -11,7 +11,7 @@
   },
   "bounds": [
     0,
-    0,
+    -15.930611987050623,
     15.36,
     15.930611987050623
   ],
@@ -20,6 +20,20 @@
     "size": [
       1536,
       1024
+    ],
+    "tiles": [
+      {
+        "id": "north-district",
+        "image": "assets/ground-north-v2.png",
+        "size": [
+          1536,
+          1024
+        ],
+        "offset": [
+          0,
+          -1024
+        ]
+      }
     ]
   },
   "spawn": {
@@ -122,6 +136,72 @@
         [
           13.5,
           0.0
+        ]
+      ]
+    },
+    {
+      "id": "north-west-bank",
+      "polygon": [
+        [
+          0,
+          -15.930611987050623
+        ],
+        [
+          11.1,
+          -15.930611987050623
+        ],
+        [
+          11.1,
+          -12
+        ],
+        [
+          11.2,
+          -10
+        ],
+        [
+          11.3,
+          -8
+        ],
+        [
+          11.4,
+          -6
+        ],
+        [
+          11.5,
+          -4
+        ],
+        [
+          11.5,
+          -2
+        ],
+        [
+          11.1,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "id": "north-east-bank",
+      "polygon": [
+        [
+          14.8,
+          -15.930611987050623
+        ],
+        [
+          15.36,
+          -15.930611987050623
+        ],
+        [
+          15.36,
+          0
+        ],
+        [
+          14.8,
+          0
         ]
       ]
     }
@@ -259,6 +339,40 @@
         ]
       ],
       "layer": "ground"
+    },
+    "tree_small": {
+      "image": "assets/tree.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "anchor": [
+        780,
+        978
+      ],
+      "scale": 0.22,
+      "footprint": [
+        [
+          -0.22,
+          -0.16
+        ],
+        [
+          0.22,
+          -0.16
+        ],
+        [
+          0.22,
+          0.16
+        ],
+        [
+          -0.22,
+          0.16
+        ]
+      ],
+      "shadow": [
+        1.17,
+        0.44
+      ]
     }
   },
   "instances": [
@@ -297,6 +411,66 @@
       "asset": "bridge",
       "x": 12.3,
       "z": 10.65
+    },
+    {
+      "id": "house-north-west",
+      "asset": "house_small",
+      "x": 2.9,
+      "z": -3
+    },
+    {
+      "id": "house-north-east",
+      "asset": "house_small",
+      "x": 8.7,
+      "z": -3.4
+    },
+    {
+      "id": "house-upper-west",
+      "asset": "house_small",
+      "x": 2.9,
+      "z": -9.5
+    },
+    {
+      "id": "house-upper-east",
+      "asset": "house_small",
+      "x": 8.7,
+      "z": -9.8
+    },
+    {
+      "id": "tree-north-plaza",
+      "asset": "tree_small",
+      "x": 1.8,
+      "z": -0.6
+    },
+    {
+      "id": "tree-north-river",
+      "asset": "tree",
+      "x": 10.7,
+      "z": -0.9
+    },
+    {
+      "id": "tree-north-west",
+      "asset": "tree_small",
+      "x": 1.8,
+      "z": -7
+    },
+    {
+      "id": "tree-upper-river",
+      "asset": "tree",
+      "x": 10.8,
+      "z": -7.3
+    },
+    {
+      "id": "tree-north-edge-west",
+      "asset": "tree_small",
+      "x": 1.8,
+      "z": -12.1
+    },
+    {
+      "id": "tree-north-edge-east",
+      "asset": "tree_small",
+      "x": 10.1,
+      "z": -12.1
     }
   ],
   "landmarks": [
@@ -323,11 +497,60 @@
       "z": 8.2,
       "radius": 0.55,
       "message": "村の東端です。次のマップへの接続地点として予約しています。"
+    },
+    {
+      "id": "door-north-west",
+      "label": "北通りの家",
+      "x": 2.9,
+      "z": -2.35,
+      "radius": 0.7,
+      "message": "陽のあたる静かな民家。戸口には人の暮らしの気配がある。"
+    },
+    {
+      "id": "door-north-east",
+      "label": "北通りの家",
+      "x": 8.7,
+      "z": -2.75,
+      "radius": 0.7,
+      "message": "陽のあたる静かな民家。戸口には人の暮らしの気配がある。"
+    },
+    {
+      "id": "door-upper-west",
+      "label": "北通りの家",
+      "x": 2.9,
+      "z": -8.85,
+      "radius": 0.7,
+      "message": "陽のあたる静かな民家。戸口には人の暮らしの気配がある。"
+    },
+    {
+      "id": "door-upper-east",
+      "label": "北通りの家",
+      "x": 8.7,
+      "z": -9.15,
+      "radius": 0.7,
+      "message": "陽のあたる静かな民家。戸口には人の暮らしの気配がある。"
+    },
+    {
+      "id": "plaza-north",
+      "label": "北の広場",
+      "x": 6,
+      "z": -2.6,
+      "radius": 1.3,
+      "message": "村の広場。北には家並みが、南には川へ続く道が延びている。"
+    },
+    {
+      "id": "exit-north",
+      "label": "北の道",
+      "x": 6,
+      "z": -14.6,
+      "radius": 0.8,
+      "message": "村の北端。木々の間に、村外れへ続く道が見える。"
     }
   ],
   "notes": {
-    "scope": "Outdoor walkability prototype. No interiors or map transitions yet.",
+    "scope": "Expanded outdoor village: original southern quarter plus northern square and four houses. No interiors or map transitions yet.",
     "banks": "Hand-annotated, conservative positive walk polygons; trees/buildings use separate footprints.",
-    "bridge": "One ground-level walk plane. No underpass. Bridge walk polygon moves with the asset."
+    "bridge": "One ground-level walk plane. No underpass. Bridge walk polygon moves with the asset.",
+    "expansion": "Revision 2. Original source ground and all southern object/world coordinates retained. New ground tile offset (0,-1024px); independent conservative bank polygons."
   }
 }

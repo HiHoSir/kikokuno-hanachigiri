@@ -1,9 +1,9 @@
-import {MotionPlayer} from './motion.js?v=scale-stride-4';
-import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=scale-stride-4';
-import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=scale-stride-4';
-import {createInput} from './input.js?v=scale-stride-4';
+import {MotionPlayer} from './motion.js?v=village-north-2';
+import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=village-north-2';
+import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=village-north-2';
+import {createInput} from './input.js?v=village-north-2';
 
-const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json',import.meta.url);
+const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json?v=village-north-2',import.meta.url);
 const storageKey='hanachigiri.layered.village.v1',positionKey=storageKey+'.feet';
 let motions,running=false;
 let map,original,images,hero,player,route=[],overview=false,debug=false,moving=false,facing='front_right',last=performance.now(),elapsed=0,toastTimer,saveTimer=0,ready=false;
@@ -12,7 +12,7 @@ function tell(message){$('toast').textContent=message;$('toast').classList.add('
 function save(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch{tell('端末への保存ができません。JSONの保存をご利用ください。');}}
 function restore(key){try{return JSON.parse(localStorage.getItem(key));}catch{return null;}}
 function goTo(target){if(!ready)return false;motions?.cancel();route=findPath(map,player,target,hero.config.radius);if(!route.length){tell('その場所へは歩いて行けません。道や橋を選んでください。');return false;}return true;}
-function inspectNearby(){if(!ready)return;const point=(map.landmarks||[]).filter(p=>Math.hypot(player.x-p.x,player.z-p.z)<p.radius).sort((a,b)=>Math.hypot(player.x-a.x,player.z-a.z)-Math.hypot(player.x-b.x,player.z-b.z))[0];tell(point?.message||'家の入口や村の東端の近くで調べられます。');}
+function inspectNearby(){if(!ready)return;const point=(map.landmarks||[]).filter(p=>Math.hypot(player.x-p.x,player.z-p.z)<p.radius).sort((a,b)=>Math.hypot(player.x-a.x,player.z-a.z)-Math.hypot(player.x-b.x,player.z-b.z))[0];tell(point?.message||'家の入口や北の広場、村の端の近くで調べられます。');}
 const input=createInput(canvas,p=>{const r=canvas.getBoundingClientRect();goTo(renderer.toWorld({x:p.x-r.left,y:p.y-r.top},map));},inspectNearby);
 function refreshObjects(){
  const select=$('object-select'),current=select.value;select.replaceChildren();

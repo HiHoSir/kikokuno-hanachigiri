@@ -18,6 +18,22 @@
     "bridge.png": {
       "source": "exec-a43079cc-3db4-485d-9376-412a81391fa1.png",
       "sha256": "951b6ba558a054289601bd089c4e5b0d90aa578b77ef4596bfda713cdf5812fd"
+    },
+    "ground-north-v2.png": {
+      "source": "exec-637b9fd8-4451-4edc-b686-f334950ec8d3.png",
+      "sha256": "515ab54688f613b7d7ab5723877088d0caacf8752e8dc42218e904feba12e311",
+      "role": "New northern ground tile; existing southern ground retained unchanged",
+      "generated": "built-in image_gen; style/edge reference: existing ground.png",
+      "model_version": "not exposed",
+      "pixel_size": [
+        1536,
+        1024
+      ],
+      "placement_offset_px": [
+        0,
+        -1024
+      ],
+      "prompt_summary": "Empty northern village continuation, watercolor ground only, same light/palette/texture; river along right edge, centre lane, lower village square and house-front branch lanes. No buildings/trees/bridge/characters."
     }
   },
   "inspection": "Source RGBA alpha retained without manual extraction. Fully transparent pixels may contain RGB; inspect rendered composites, not RGB-only viewers.",
