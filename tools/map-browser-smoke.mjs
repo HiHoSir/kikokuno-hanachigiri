@@ -10,12 +10,25 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   try{
    await page.goto(base);await page.waitForFunction(()=>window.__mapLab?.getState().ready);
+   assert.equal(await page.locator('#motion-buttons button').count(),8);
+   const initial=await page.evaluate(()=>window.__mapLab.getState());
+   assert.equal(initial.character.scale,.85);assert.equal(initial.character.cameraReferenceHeight,145.04);
+   await page.screenshot({path:`test-results/${name}-${orientation}-scale.png`});
+   await page.locator('#motion-buttons [data-motion="attack_katana"]').click();
+   await page.waitForFunction(()=>{const m=window.__mapLab.getState().motion;return m.id==='attack_katana'&&m.frame>0;});
+   await page.locator('#quick-stop-motion').click();
+   await page.locator('#motion-buttons [data-motion="walking"]').click();
+   await page.waitForFunction(()=>{const m=window.__mapLab.getState().motion;return m.id==='walking'&&m.frame>0;});
+   assert.deepEqual(await page.evaluate(()=>window.__mapLab.getState().player),initial.player);
+   await page.locator('#quick-stop-motion').click();
+   await page.locator('#motion-pad-toggle').click();
+   assert.equal(await page.locator('#motion-buttons').isHidden(),true);
    await page.getByRole('button',{name:'全景',exact:true}).click();
    await page.screenshot({path:`test-results/${name}-${orientation}-overview.png`});
    assert.equal(await page.evaluate(()=>window.innerWidth>=document.documentElement.scrollWidth),true);
    const target={x:14.7,z:10.65};const screen=await page.evaluate(p=>window.__mapLab.toScreen(p),target);
    await page.touchscreen.tap(screen.x,screen.y);
-   await page.waitForFunction(p=>{const s=window.__mapLab.getState();return Math.hypot(s.player.x-p.x,s.player.z-p.z)<.12;},target,{timeout:15000});
+   await page.waitForFunction(p=>{const s=window.__mapLab.getState();return Math.hypot(s.player.x-p.x,s.player.z-p.z)<.12;},target,{timeout:30000});
    await page.screenshot({path:`test-results/${name}-${orientation}-bridge.png`});
    const previous=await page.evaluate(()=>window.__mapLab.getState().player);
    const river=await page.evaluate(()=>window.__mapLab.toScreen({x:13,z:6}));await page.touchscreen.tap(river.x,river.y);
@@ -70,6 +83,7 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
    await page.getByRole('button',{name:'走行切替'}).click();
    await page.screenshot({path:`test-results/${name}-${orientation}-motions.png`});
    assert.equal((await page.request.get(new URL('old/README.md',base).href)).status(),404);
+   assert.equal((await page.request.get(new URL('assets/characters/hizuki/v35-expanded-cells/old/walking_8dir.png',base).href)).status(),404);
    assert.deepEqual(errors,[]);results.push({browser:name,orientation,pass:true});
   }catch(error){fs.writeFileSync(`test-results/${name}-${orientation}-state.json`,JSON.stringify(await page.evaluate(()=>window.__mapLab?.getState()),null,2));await page.screenshot({path:`test-results/${name}-${orientation}-failure.png`});throw error;}
   finally{await context.close();}

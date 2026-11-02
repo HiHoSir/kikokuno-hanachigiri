@@ -2,3 +2,7 @@
 
 #run{position:absolute;right:calc(27px + env(safe-area-inset-right));bottom:calc(130px + env(safe-area-inset-bottom));font-size:12px;min-width:80px}#run[aria-pressed=true]{background:#6b6536e8;border-color:#f1da8d}#motion-controls{margin:12px 0}#motion-controls summary{font-weight:600}
 @media(max-height:500px){#run{bottom:100px;right:calc(23px + env(safe-area-inset-right))}}
+
+#motion-pad{position:absolute;top:calc(140px + env(safe-area-inset-top));left:16px;width:min(360px,calc(100vw - 32px));padding:8px;border-radius:12px;background:#23392edb;backdrop-filter:blur(8px)}
+.motion-pad-head{display:flex;gap:8px;margin-bottom:4px;justify-content:space-between}.motion-pad-head button{padding:8px 12px;font-size:12px}.motion-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.motion-buttons[hidden]{display:none}.motion-buttons button{padding:8px 3px;font-size:12px;min-width:0;white-space:nowrap}
+@media(max-height:500px){#motion-pad{top:calc(74px + env(safe-area-inset-top));right:calc(16px + env(safe-area-inset-right));left:auto;width:300px}.motion-buttons button{font-size:11px}}

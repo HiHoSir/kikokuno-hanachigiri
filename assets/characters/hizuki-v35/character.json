@@ -10,9 +10,9 @@
     43.6993006993007,
     97.52129729729731
   ],
-  "scale": 1.295,
+  "scale": 0.85,
   "radius": 0.16,
-  "speed": 2.0,
+  "speed": 0.85,
   "pixelArt": true,
   "animations": {
     "idle": {
@@ -31,7 +31,7 @@
     }
   },
   "notes": "Original still preserved. Registered V35 Ortho40 motions use original-scale cells plus audited padding. Idle not supplied: first fall frame is a temporary directional standing pose; no new art or mirrors.",
-  "runSpeed": 3.4,
+  "runSpeed": 1.6,
   "motions": {
     "walking": {
       "label": "歩行",
@@ -63,7 +63,8 @@
       "frames": 8,
       "durationMs": 1000,
       "loop": true,
-      "holdLast": false
+      "holdLast": false,
+      "strideMetres": 0.56
     },
     "fall": {
       "label": "倒れる",
@@ -287,7 +288,9 @@
       "frames": 8,
       "durationMs": 600,
       "loop": true,
-      "holdLast": false
+      "holdLast": false,
+      "strideMetres": 0.76
     }
-  }
+  },
+  "cameraReferenceHeight": 145.04
 }

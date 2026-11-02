@@ -1,6 +1,6 @@
 {
   "walking": {
-    "sheet_sha256": "e568f5e9005bad34b08ae643c3eaeb84a805738c9070724717199a9a9660c416",
+    "sheet_sha256": "1aab81c702def1775ebea9d072be616a3eb954606c2ac61d94cdd319de1cae65",
     "source_frames": [
       0,
       4,
@@ -11,7 +11,6 @@
       25,
       29
     ],
-    "matched_cells": 64,
     "cell": [
       80,
       118
@@ -21,10 +20,14 @@
       1,
       0,
       5
-    ]
+    ],
+    "original_sheet_sha256": "e568f5e9005bad34b08ae643c3eaeb84a805738c9070724717199a9a9660c416",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "fall": {
-    "sheet_sha256": "673a5b4da0986efb2b26cc0e5b0e4fc117080d209abc5b8dfaa41fd22367b807",
+    "sheet_sha256": "3faa1b3f32ca5e387d30ef6f10aaa0138d7c40a9913ba6b54d0d0234600923c6",
     "source_frames": [
       0,
       7,
@@ -35,7 +38,6 @@
       40,
       47
     ],
-    "matched_cells": 64,
     "cell": [
       118,
       128
@@ -45,10 +47,14 @@
       1,
       23,
       15
-    ]
+    ],
+    "original_sheet_sha256": "673a5b4da0986efb2b26cc0e5b0e4fc117080d209abc5b8dfaa41fd22367b807",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "attack_katana": {
-    "sheet_sha256": "2db3d8d998061098455ff4be637b9803df0849ac579cf58746ebe3dd22987707",
+    "sheet_sha256": "ccd814bc6d67a7b67791b5b52be5291458d8f6f80e394846f8a3c2e9d4647c6a",
     "source_frames": [
       0,
       4,
@@ -59,7 +65,6 @@
       25,
       29
     ],
-    "matched_cells": 64,
     "cell": [
       137,
       146
@@ -69,10 +74,14 @@
       30,
       32,
       4
-    ]
+    ],
+    "original_sheet_sha256": "2db3d8d998061098455ff4be637b9803df0849ac579cf58746ebe3dd22987707",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "attack_wakizashi": {
-    "sheet_sha256": "55bd246fed08e28ecbc6c6750890d08857c3eaffe5f2f923182a27cc7cb9bc98",
+    "sheet_sha256": "c73d65e93ccf2e498d7b1e23deef428bc87c2fdc81a830f22b4d8f96d0dcb962",
     "source_frames": [
       0,
       3,
@@ -83,7 +92,6 @@
       18,
       21
     ],
-    "matched_cells": 64,
     "cell": [
       99,
       127
@@ -93,10 +101,14 @@
       11,
       13,
       4
-    ]
+    ],
+    "original_sheet_sha256": "55bd246fed08e28ecbc6c6750890d08857c3eaffe5f2f923182a27cc7cb9bc98",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "cast": {
-    "sheet_sha256": "18cd9a9fc739d9f200e5ef694300a85d0680e56b57db4bd798a448d1e6d9b15c",
+    "sheet_sha256": "a7cd98f7529438720548837baeb3848c75df53cb33da6f9d81f6e3d2280a5475",
     "source_frames": [
       0,
       6,
@@ -107,7 +119,6 @@
       37,
       44
     ],
-    "matched_cells": 64,
     "cell": [
       83,
       115
@@ -117,10 +128,14 @@
       2,
       3,
       1
-    ]
+    ],
+    "original_sheet_sha256": "18cd9a9fc739d9f200e5ef694300a85d0680e56b57db4bd798a448d1e6d9b15c",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "hit": {
-    "sheet_sha256": "ada70a5e536868c0790be52f18d9f2dc68677d23565eb121f81af283e3cd43ae",
+    "sheet_sha256": "0f448b1b5cb931e1204fc8d84de772d9a45ed146d3affa4b9c15f5ba76933268",
     "source_frames": [
       0,
       2,
@@ -131,7 +146,6 @@
       15,
       17
     ],
-    "matched_cells": 64,
     "cell": [
       80,
       115
@@ -141,10 +155,14 @@
       2,
       0,
       1
-    ]
+    ],
+    "original_sheet_sha256": "ada70a5e536868c0790be52f18d9f2dc68677d23565eb121f81af283e3cd43ae",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "victory": {
-    "sheet_sha256": "c3aa95fec97c49c24d3c903f147398a0a3ad3933c48ee2679842c559d2bd66b8",
+    "sheet_sha256": "b37209add613012a202a306714f6d40e11c2cc47646337333740b34402fe013c",
     "source_frames": [
       0,
       7,
@@ -155,7 +173,6 @@
       42,
       50
     ],
-    "matched_cells": 64,
     "cell": [
       80,
       118
@@ -165,10 +182,14 @@
       5,
       0,
       1
-    ]
+    ],
+    "original_sheet_sha256": "c3aa95fec97c49c24d3c903f147398a0a3ad3933c48ee2679842c559d2bd66b8",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "running": {
-    "sheet_sha256": "41595f4c2f460b4670f97b2d19a45dca586738a8243073094b8593962086e5a7",
+    "sheet_sha256": "1029cabf130b9764875d1cedd9a50371870242d848379edf576a5535123964d6",
     "source_frames": [
       0,
       2,
@@ -179,7 +200,6 @@
       15,
       17
     ],
-    "matched_cells": 64,
     "cell": [
       80,
       121
@@ -189,6 +209,10 @@
       3,
       0,
       6
-    ]
+    ],
+    "original_sheet_sha256": "41595f4c2f460b4670f97b2d19a45dca586738a8243073094b8593962086e5a7",
+    "original_source_matched_cells": 64,
+    "current_alpha_matched_cells": 64,
+    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   }
 }

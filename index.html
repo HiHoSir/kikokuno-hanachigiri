@@ -1,14 +1,18 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#26382f"><title>鬼哭の花契り — 淡彩マップ歩行試作</title><link rel="stylesheet" href="src/map/style.css"></head>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#26382f"><title>鬼哭の花契り — 淡彩マップ歩行試作</title><link rel="stylesheet" href="src/map/style.css?v=scale-stride-3"></head>
 <body>
 <main id="game"><canvas id="scene" aria-label="村の歩行マップ"></canvas>
- <header><div><span class="eyebrow">鬼哭の花契り · 歩行試作 02</span><h1 id="map-title">木漏れ日の村</h1></div><nav aria-label="表示"><button id="overview">全景</button><button id="inspect" aria-expanded="false">配置・検査</button></nav></header>
+ <header><div><span class="eyebrow">鬼哭の花契り · 歩行試作 03</span><h1 id="map-title">木漏れ日の村</h1></div><nav aria-label="表示"><button id="overview">全景</button><button id="inspect" aria-expanded="false">配置・検査</button></nav></header>
  <p id="hint">道をタップ、または左下のスティックで移動</p>
  <div id="toast" role="status" aria-live="polite"></div>
  <div id="loading" role="status"><span class="spinner"></span><p>村の風景を読み込んでいます</p><button id="retry" hidden>再読み込み</button></div>
  <div id="stick" role="group" aria-label="移動スティック"><span class="stick-cross"></span><span id="thumb"></span></div>
  <button id="run" aria-pressed="false" aria-label="走行切替">歩行中</button>
  <button id="action" aria-label="近くを調べる">調べる</button>
+ <section id="motion-pad" aria-label="モーション実験">
+  <div class="motion-pad-head"><button id="motion-pad-toggle" aria-expanded="true" aria-controls="motion-buttons">動作テスト ▾</button><button id="quick-stop-motion">停止</button></div>
+  <div id="motion-buttons" class="motion-buttons"></div>
+ </section>
  <aside id="drawer" hidden aria-label="配置と検査">
   <div class="drawer-head"><h2>配置と歩行の検査</h2><button id="close-drawer" aria-label="閉じる">閉じる</button></div>
   <details id="motion-controls"><summary>緋月のモーション</summary>
@@ -24,4 +28,4 @@
   <div class="buttons"><button id="reset-map">初期配置に戻す</button><button id="reset-player">出発点へ</button></div>
   <details><summary>今回の制作範囲</summary><p class="small">独立した地面・家・木・橋で構成した屋外マップです。緋月はV35の8動作×8方向×8コマを使用しています。停止中は倒れる動作の先頭コマを仮の立ち姿に使用しています。専用の待機動作・室内・次のマップは準備中です。</p><p class="small">雲上ブラウザでの検査とiPhone Safari実機での検査は別に記録します。</p></details>
  </aside>
-</main><script type="module" src="src/map/app.js"></script></body></html>
+</main><script type="module" src="src/map/app.js?v=scale-stride-3"></script></body></html>

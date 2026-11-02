@@ -1,5 +1,5 @@
-import {validateMotions} from './motion.js';
-import {project,unproject,depthOrder,collidersFor,surfacesFor} from './logic.js';
+import {validateMotions} from './motion.js?v=scale-stride-3';
+import {project,unproject,depthOrder,collidersFor,surfacesFor} from './logic.js?v=scale-stride-3';
 export async function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(`画像を読み込めません: ${new URL(url).pathname}`));image.src=url;});}
 export async function loadMapImages(map,url){
  const assets=new Map(),keys=[map.ground.image,...Object.values(map.assets).map(a=>a.image)];
@@ -21,6 +21,7 @@ export function validateCharacter(config){
    }
   }
  }
+ if(config.cameraReferenceHeight!==undefined&&(!Number.isFinite(config.cameraReferenceHeight)||config.cameraReferenceHeight<=0))throw new Error('カメラの基準表示高が不正です');
  validateMotions(config);
  return config;
 }
@@ -43,7 +44,7 @@ export class MapRenderer{
  resize(){const r=this.canvas.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);if(r.width!==this.width||r.height!==this.height||dpr!==this.dpr){this.width=r.width;this.height=r.height;this.dpr=dpr;this.canvas.width=Math.round(r.width*dpr);this.canvas.height=Math.round(r.height*dpr);}}
  updateCamera(map,player,hero,overview){
   this.resize();const [gw,gh]=map.ground.size,p=project(player,map.projection);
-  let zoom=overview?Math.min((this.width-24)/gw,(this.height-130)/gh):Math.min(110,this.height*.18)/(hero.size[1]*hero.scale);
+  let zoom=overview?Math.min((this.width-24)/gw,(this.height-130)/gh):Math.min(110,this.height*.18)/(hero.cameraReferenceHeight??hero.size[1]*hero.scale);
   zoom=Math.max(.1,zoom);const vw=this.width/zoom,vh=this.height/zoom;
   const clamp=(v,max,span)=>span>=max?(max-span)/2:Math.max(0,Math.min(max-span,v));
   this.camera={x:overview?(gw-vw)/2:clamp(p.x-vw/2,gw,vw),y:overview?(gh-vh)/2:clamp(p.y-vh*.57,gh,vh),zoom};
@@ -60,7 +61,7 @@ export class MapRenderer{
   for(const i of map.instances)if(map.assets[i.asset].layer==='ground')drawAsset(i);
   function shadow(x,y,rx,ry,alpha){c.save();c.translate(x,y);c.scale(rx,ry);const g=c.createRadialGradient(0,0,0,0,0,1);g.addColorStop(0,`rgba(41,45,26,${alpha})`);g.addColorStop(1,'rgba(41,45,26,0)');c.fillStyle=g;c.beginPath();c.arc(0,0,1,0,Math.PI*2);c.fill();c.restore();}
   for(const i of map.instances){const a=map.assets[i.asset];if(a.shadow){const p=project(i,map.projection);shadow(p.x-10,p.y+4,a.shadow[0]*100,a.shadow[1]*100,.21);}}
-  const foot=project(player,map.projection);shadow(foot.x,foot.y+3,22,6,.22);
+  const foot=project(player,map.projection),shadowScale=hero.config.scale/1.295;shadow(foot.x,foot.y+3*shadowScale,22*shadowScale,6*shadowScale,.22);
   if(route.length){c.beginPath();c.moveTo(foot.x,foot.y);for(const q of route){const p=project(q,map.projection);c.lineTo(p.x,p.y);}c.strokeStyle='#fff3bc99';c.lineWidth=2/cam.zoom;c.setLineDash([4/cam.zoom,7/cam.zoom]);c.stroke();c.setLineDash([]);}
   for(const entity of depthOrder([...map.instances.filter(i=>map.assets[i.asset].layer!=='ground'),{...player,id:'~hero'}])){
    if(entity.id!=='~hero'){drawAsset(entity);continue;}

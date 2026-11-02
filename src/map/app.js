@@ -1,7 +1,7 @@
-import {MotionPlayer} from './motion.js';
-import {validateMap,canStand,move,findPath,followRoute} from './logic.js';
-import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js';
-import {createInput} from './input.js';
+import {MotionPlayer} from './motion.js?v=scale-stride-3';
+import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=scale-stride-3';
+import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=scale-stride-3';
+import {createInput} from './input.js?v=scale-stride-3';
 
 const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json',import.meta.url);
 const storageKey='hanachigiri.layered.village.v1',positionKey=storageKey+'.feet';
@@ -41,6 +41,8 @@ $('run').addEventListener('click',()=>{running=!running;$('run').setAttribute('a
 function playMotion(id,direction){if(!ready)return;motions.play(id,direction);facing=direction;route=[];input.clear();drawer(false);}
 $('play-motion').addEventListener('click',()=>playMotion($('motion-select').value,$('motion-direction').value));
 $('stop-motion').addEventListener('click',()=>{motions?.cancel();route=[];input.clear();drawer(false);});
+$('motion-pad-toggle').addEventListener('click',()=>{const open=$('motion-buttons').hidden;$('motion-buttons').hidden=!open;$('motion-pad-toggle').setAttribute('aria-expanded',String(open));});
+$('quick-stop-motion').addEventListener('click',()=>{motions?.cancel();route=[];input.clear();});
 $('retry').addEventListener('click',()=>location.reload());
 function face(dx,dz){const horizontal=Math.abs(dx)>.3,vertical=Math.abs(dz)>.3;if(horizontal&&vertical)return `${dz>0?'front':'back'}_${dx>0?'right':'left'}`;return horizontal?(dx>0?'right':'left'):(dz>0?'front':'back');}
 function update(dt,direction){
@@ -64,7 +66,7 @@ function loop(now){
  const dt=Math.min(.05,Math.max(0,(now-last)/1000));last=now;
  if(ready){
   const active=!document.hidden&&$('drawer').hidden;
-  if(active){update(dt,input.direction());elapsed+=dt*1000;motions.update(dt*1000,{moving,running,facing});}else moving=false;
+  if(active){const before={...player};update(dt,input.direction());elapsed+=dt*1000;motions.update(dt*1000,{moving,running,facing,distance:Math.hypot(player.x-before.x,player.z-before.z)});}else moving=false;
   renderer.draw(map,images,hero,player,{overview,debug,route,time:elapsed,moving,facing,motion:motions.current});
   saveTimer+=dt;if(saveTimer>1){saveTimer=0;save(positionKey,{id:map.id,revision:map.revision,...player});}
  }
@@ -73,9 +75,12 @@ function loop(now){
 async function boot(){
  try{
   const response=await fetch(MAP_URL);if(!response.ok)throw new Error('マップを取得できません');original=validateMap(await response.json());
-  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json',import.meta.url));
+  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json?v=scale-stride-3',import.meta.url));
   motions=new MotionPlayer(hero.config);
   for(const [id,m]of Object.entries(hero.config.motions)){const option=document.createElement('option');option.value=id;option.textContent=m.label;$('motion-select').append(option);}
+  for(const [id,m]of Object.entries(hero.config.motions)){
+   const button=document.createElement('button');button.type='button';button.dataset.motion=id;button.textContent=m.label;button.addEventListener('click',()=>playMotion(id,facing));$('motion-buttons').append(button);
+  }
   let restored=restore(storageKey);try{validateMap(restored);}catch{restored=null;}
   if(restored?.id!==original.id||restored?.revision!==original.revision)restored=null;
   map=restored||structuredClone(original);
