@@ -35,6 +35,8 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
    await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.mouse.up();
    const before=await page.evaluate(()=>window.__mapLab.getState().player);await page.waitForTimeout(120);
    const after=await page.evaluate(()=>window.__mapLab.getState().player);assert.ok(Math.hypot(before.x-after.x,before.z-after.z)<.02);
+   // Start locomotion from a known point: reload may restore the previously saved bridge position.
+   await page.evaluate(()=>{const lab=window.__mapLab;lab.stop();lab.setPosition(lab.exportMap().spawn);});
    // Locomotion, action UI, all eight direction rows, and held-fall recovery.
    await page.getByRole('button',{name:'走行切替'}).click();
    assert.equal(await page.evaluate(()=>window.__mapLab.getState().running),true);
