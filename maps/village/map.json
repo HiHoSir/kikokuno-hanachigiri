@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "painted-village-01",
   "title": "木漏れ日の村",
-  "revision": 3,
+  "revision": 4,
   "projection": {
     "pixelsPerMetre": 100,
     "elevation": 40,
@@ -137,28 +137,28 @@
         770,
         986
       ],
-      "scale": 0.43,
+      "scale": 0.35,
       "footprint": [
         [
-          -2.8,
-          -2.45
+          -2.27907,
+          -1.994186
         ],
         [
-          2.5,
-          -2.45
+          2.034884,
+          -1.994186
         ],
         [
-          2.5,
-          0
+          2.034884,
+          0.0
         ],
         [
-          -2.8,
-          0
+          -2.27907,
+          0.0
         ]
       ],
       "shadow": [
-        2.6,
-        0.45
+        2.116279,
+        0.366279
       ]
     },
     "house_small": {
@@ -171,28 +171,28 @@
         770,
         986
       ],
-      "scale": 0.34,
+      "scale": 0.35,
       "footprint": [
         [
-          -2.2,
-          -1.95
+          -2.27907,
+          -1.994186
         ],
         [
-          2.0,
-          -1.95
+          2.034884,
+          -1.994186
         ],
         [
-          2.0,
-          0
+          2.034884,
+          0.0
         ],
         [
-          -2.2,
-          0
+          -2.27907,
+          0.0
         ]
       ],
       "shadow": [
-        2,
-        0.35
+        2.116279,
+        0.366279
       ]
     },
     "tree": {
@@ -205,28 +205,28 @@
         780,
         978
       ],
-      "scale": 0.3,
+      "scale": 0.36,
       "footprint": [
         [
-          -0.3,
-          -0.22
+          -0.36,
+          -0.264
         ],
         [
-          0.3,
-          -0.22
+          0.36,
+          -0.264
         ],
         [
-          0.3,
-          0.22
+          0.36,
+          0.264
         ],
         [
-          -0.3,
-          0.22
+          -0.36,
+          0.264
         ]
       ],
       "shadow": [
-        1.6,
-        0.6
+        1.92,
+        0.72
       ]
     },
     "bridge": {
@@ -391,8 +391,8 @@
     {
       "id": "tree-river",
       "asset": "tree",
-      "x": 14.7,
-      "z": 14.1
+      "x": 14.9,
+      "z": 13.0
     },
     {
       "id": "bridge-east",
@@ -479,6 +479,6 @@
     "scope": "Original outdoor village only; northern area removed at user request. Visual polish pass 1 with independent garden and bank props.",
     "banks": "Hand-annotated, conservative positive walk polygons; trees/buildings use separate footprints.",
     "bridge": "One ground-level walk plane. No underpass. Bridge walk polygon moves with the asset.",
-    "polish": "Revision 3. Original ground/house/tree/bridge pixels and movement baseline unchanged. Source reference, prompts and inspection recorded in docs/VILLAGE_POLISH.md."
+    "polish": "Revision 4. Hizuki remains the approved scale 0.85. Both houses scale 0.35 (hero about 84% of doorway); trees scale 0.36. Camera, speed and stride unchanged. See docs/VILLAGE_POLISH.md."
   }
 }

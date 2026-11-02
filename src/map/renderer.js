@@ -1,5 +1,5 @@
-import {validateMotions} from './motion.js?v=village-polish-3';
-import {project,unproject,depthOrder,collidersFor,surfacesFor,groundTiles} from './logic.js?v=village-polish-3';
+import {validateMotions} from './motion.js?v=village-scale-4';
+import {project,unproject,depthOrder,collidersFor,surfacesFor,groundTiles} from './logic.js?v=village-scale-4';
 export async function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(`画像を読み込めません: ${new URL(url).pathname}`));image.src=url;});}
 export async function loadMapImages(map,url){
  const assets=new Map(),grounds=groundTiles(map),keys=[...grounds.map(a=>a.image),...Object.values(map.assets).map(a=>a.image)];
