@@ -1,9 +1,9 @@
-import {MotionPlayer} from './motion.js?v=village-north-2';
-import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=village-north-2';
-import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=village-north-2';
-import {createInput} from './input.js?v=village-north-2';
+import {MotionPlayer} from './motion.js?v=village-polish-3';
+import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=village-polish-3';
+import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=village-polish-3';
+import {createInput} from './input.js?v=village-polish-3';
 
-const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json?v=village-north-2',import.meta.url);
+const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json?v=village-polish-3',import.meta.url);
 const storageKey='hanachigiri.layered.village.v1',positionKey=storageKey+'.feet';
 let motions,running=false;
 let map,original,images,hero,player,route=[],overview=false,debug=false,moving=false,facing='front_right',last=performance.now(),elapsed=0,toastTimer,saveTimer=0,ready=false;

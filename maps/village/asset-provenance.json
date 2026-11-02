@@ -19,21 +19,44 @@
       "source": "exec-a43079cc-3db4-485d-9376-412a81391fa1.png",
       "sha256": "951b6ba558a054289601bd089c4e5b0d90aa578b77ef4596bfda713cdf5812fd"
     },
-    "ground-north-v2.png": {
-      "source": "exec-637b9fd8-4451-4edc-b686-f334950ec8d3.png",
-      "sha256": "515ab54688f613b7d7ab5723877088d0caacf8752e8dc42218e904feba12e311",
-      "role": "New northern ground tile; existing southern ground retained unchanged",
-      "generated": "built-in image_gen; style/edge reference: existing ground.png",
+    "rock-flowers.png": {
+      "source": "exec-d0f2150a-e1e8-41f0-91b0-e247105b0cff.png",
+      "sha256": "15c613420da33fc05f3b7ae3d9e53dc57a188092f39d934fcc6783d85a13cda7",
+      "pixel_size": [
+        1774,
+        887
+      ],
+      "generated": "built-in image_gen",
       "model_version": "not exposed",
+      "status": "trial",
+      "alpha": "original generated RGBA; inspected on neutral ground",
+      "reference": "User supplied A6D0F2BE-2B91-40BE-B343-4E08011C2AD4.jpeg; libfile_f01b09be7c1c8191b48e79e8e6f2da43; visual goal, not a cutout source"
+    },
+    "doorstep-garden.png": {
+      "source": "exec-c20638b6-c9e7-4ab7-8a09-38df425752c1.png",
+      "sha256": "67c947e33f8d9b6f107046e6d75756ed7f917f958261ef225bf9188558bd6847",
       "pixel_size": [
         1536,
         1024
       ],
-      "placement_offset_px": [
-        0,
-        -1024
+      "generated": "built-in image_gen",
+      "model_version": "not exposed",
+      "status": "trial",
+      "alpha": "original generated RGBA; inspected on neutral ground",
+      "reference": "User supplied A6D0F2BE-2B91-40BE-B343-4E08011C2AD4.jpeg; libfile_f01b09be7c1c8191b48e79e8e6f2da43; visual goal, not a cutout source"
+    },
+    "bamboo-garden.png": {
+      "source": "exec-bba2914a-c92f-4e69-8edd-bfea1245c0b2.png",
+      "sha256": "cda8827f15cac391fcd86c68904afd8227b932270bffa938e8736580f4a3157f",
+      "pixel_size": [
+        1774,
+        887
       ],
-      "prompt_summary": "Empty northern village continuation, watercolor ground only, same light/palette/texture; river along right edge, centre lane, lower village square and house-front branch lanes. No buildings/trees/bridge/characters."
+      "generated": "built-in image_gen",
+      "model_version": "not exposed",
+      "status": "trial",
+      "alpha": "original generated RGBA; inspected on neutral ground",
+      "reference": "User supplied A6D0F2BE-2B91-40BE-B343-4E08011C2AD4.jpeg; libfile_f01b09be7c1c8191b48e79e8e6f2da43; visual goal, not a cutout source"
     }
   },
   "inspection": "Source RGBA alpha retained without manual extraction. Fully transparent pixels may contain RGB; inspect rendered composites, not RGB-only viewers.",

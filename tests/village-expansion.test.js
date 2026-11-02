@@ -5,20 +5,15 @@ import crypto from 'node:crypto';
 import {validateMap,canStand,findPath,groundTiles} from '../src/map/logic.js';
 import {MapRenderer} from '../src/map/renderer.js';
 const map=JSON.parse(fs.readFileSync('maps/village/map.json'));
-test('north expansion preserves the original ground and coordinate references',()=>{
+// Synthetic extended map keeps generic multi-ground support tested without shipping a northern district.
+const original=structuredClone(map);
+map.bounds[1]=-15.930611987050623;
+map.ground.tiles=[{image:map.ground.image,size:map.ground.size,offset:[0,-1024]}];
+map.surfaces.push({id:'test-north',polygon:[[0,-15.93],[11,-15.93],[11,0],[0,0]]});
+test('single original ground stays unchanged and optional multi-ground layout validates',()=>{
  assert.equal(crypto.createHash('sha256').update(fs.readFileSync('maps/village/assets/ground.png')).digest('hex'),'2d1cc92f86d7a64c1d3b063773e1bf9785a6febb1f38930b661fd5c7dfef5259');
- assert.ok(map.bounds[1]<-15);assert.equal(map.instances.find(i=>i.id==='bridge-east').z,10.65);
- assert.equal(map.ground.tiles.length,1);assert.deepEqual(map.ground.tiles[0].offset,[0,-1024]);
- validateMap(structuredClone(map));
-});
-test('old village, plaza, four new doors and northern road are connected while river stays blocked',()=>{
- for(const id of ['plaza-north','door-north-west','door-north-east','door-upper-west','door-upper-east','exit-north']){
-  const point=map.landmarks.find(p=>p.id===id);assert.ok(point,id);
-  assert.ok(canStand(map,point.x,point.z,.16),id);assert.ok(findPath(map,map.spawn,point,.16).length,id);
- }
- assert.ok(findPath(map,{x:6,z:-13},{x:14.7,z:10.65},.16).length);
- for(const z of [-.01,0,.01])assert.ok(canStand(map,6.1,z,.16));
- assert.equal(canStand(map,12.6,-6,.16),false);
+ assert.equal(groundTiles(original).length,1);
+ validateMap(map);
 });
 test('extra ground metadata rejects missing offsets, unsafe paths and oversized decoded images',()=>{
  for(const change of [m=>delete m.ground.tiles[0].offset,m=>m.ground.tiles[0].image='../old/ground.png',m=>m.ground.tiles[0].size=[50000,50000]]){

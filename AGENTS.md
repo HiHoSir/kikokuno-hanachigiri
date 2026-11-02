@@ -7,6 +7,10 @@
 - 旧実装・素材・モデル・実験・ワークフローは利用者の指示で `old/pre-layered-map-2026-11-02/` に隔離した。通常の作業で `old/` のソースを探索・読込・実行しない。隔離確認には `old/README.md` と移動台帳を使う。明示的な再利用依頼がある場合だけ出典・範囲・適合を確認する。
 - ルートの `src/`・`maps/`・`assets/` が現行。旧アーキテクチャ、旧公開ページ、旧テストの合格を現行の事実にしない。配信に `old/` を含めない。
 
+## 利用者による方向修正（2026-11-02）
+
+- 「拡張」は範囲追加ではなく見た目のブラッシュアップ。北側追加は不要という明示指定で撤去。元の範囲と提示された村参考画像を基準に、草花・石組み・生活小物・光と重なりを磨く。面積や家の数を勝手に増やさない。現行記録は `docs/VILLAGE_POLISH.md`。
+
 ## マップ基盤
 
 - `skills/build-layered-rpg-maps/SKILL.md`、`docs/PLAYABLE_MAP_WORKFLOW.md`、`docs/CURRENT_ARCHITECTURE.md`、`docs/MAP_ART_RULES.md`、`docs/MAP_ASSET_CONTRACT.md` を読む。
