@@ -1,0 +1,110 @@
+{
+  "status": "experimental-review-candidate",
+  "source_library_file_id": "libfile_a651ae5af2d8819182b2f0287f0dc5be",
+  "source_pose": "V35 / ortho40 / Idle / front_right / src0000",
+  "canvas": [
+    80,
+    112
+  ],
+  "palette": {
+    "outline": "#344052",
+    "hair_outline": "#4a6c88",
+    "hair_deep": "#547e9e",
+    "hair_shadow": "#6898b5",
+    "hair_mid": "#80b1c9",
+    "hair_light": "#9cc5d5",
+    "hair_glint": "#b6d6de",
+    "skin_edge": "#94715d",
+    "skin_shadow": "#b68b72",
+    "skin_mid": "#cfa58a",
+    "skin_light": "#e6bea0",
+    "skin_glint": "#f0ceb0",
+    "red_edge": "#743e47",
+    "red_deep": "#90444b",
+    "red_shadow": "#a94b50",
+    "red_mid": "#bd5657",
+    "red_light": "#ce6e66",
+    "navy_deep": "#293448",
+    "navy_mid": "#3b485e",
+    "navy_light": "#526075",
+    "navy_glint": "#6c7889",
+    "ivory_shadow": "#adafa9",
+    "ivory_mid": "#c9c7ba",
+    "ivory_light": "#e1dbcb",
+    "ivory_glint": "#efe6d5",
+    "gold_shadow": "#a8854d",
+    "gold_mid": "#c6a45d",
+    "gold_light": "#ddc581",
+    "warm_crease": "#715e59",
+    "cool_crease": "#697e89"
+  },
+  "colors_used": 30,
+  "new_colors_added": 0,
+  "art_direction": "Serrated 1–2px light/shadow boundaries along hair bundles and one fabric fold; no uniform checkerboard dithering.",
+  "reference": "User-provided Eternia screenshot; image is inspiration, not an exact sprite reconstruction.",
+  "annotation_method": "Manually declared polygons for this pose, intersected with existing named palette materials; no automatic semantic recognition.",
+  "steps": [
+    {
+      "part": "hair_shadow",
+      "replay_exact": true,
+      "guard": {
+        "view": "front_right",
+        "part": "hair_shadow",
+        "pass": true,
+        "counts": {
+          "changed_pixels": 285,
+          "outside_editable_part": 0,
+          "protected_changed": 0,
+          "alpha_changed": 0,
+          "transparent_pixel_changed": 0
+        },
+        "note": "geometric/pixel rules only; aesthetic and anatomical quality require visual review"
+      },
+      "changed_records": 285,
+      "source_sha256": "7a9305eaf771c7e0fa2e6824e796971a4bbd30af5c624a2c092b65359580aa14",
+      "result_sha256": "0acc46ea0e4d16d460567bdef67c2009c2ebf9c2901137b18750484a0c471fa0",
+      "alpha_changed": false
+    },
+    {
+      "part": "cloth_shadow",
+      "replay_exact": true,
+      "guard": {
+        "view": "front_right",
+        "part": "cloth_shadow",
+        "pass": true,
+        "counts": {
+          "changed_pixels": 21,
+          "outside_editable_part": 0,
+          "protected_changed": 0,
+          "alpha_changed": 0,
+          "transparent_pixel_changed": 0
+        },
+        "note": "geometric/pixel rules only; aesthetic and anatomical quality require visual review"
+      },
+      "changed_records": 21,
+      "source_sha256": "0acc46ea0e4d16d460567bdef67c2009c2ebf9c2901137b18750484a0c471fa0",
+      "result_sha256": "2b35dc21b529345dad7724d754b2c85d280a94e6a1c864fc8dae2a68d4d7ce34",
+      "alpha_changed": false
+    }
+  ],
+  "overall": {
+    "size": [
+      80,
+      112
+    ],
+    "rgba_changed_pixels": 306,
+    "alpha_changed_pixels": 0,
+    "bottom_changed_pixels": 0,
+    "before_sha256": "7a9305eaf771c7e0fa2e6824e796971a4bbd30af5c624a2c092b65359580aa14",
+    "after_sha256": "2b35dc21b529345dad7724d754b2c85d280a94e6a1c864fc8dae2a68d4d7ce34"
+  },
+  "same_alpha": true,
+  "protected_rgba_unchanged": true,
+  "same_anchor": [
+    43.6993006993007,
+    97.52129729729731
+  ],
+  "same_pose": true,
+  "same_palette": true,
+  "scope": "One still pose; animation not evaluated."
+}
