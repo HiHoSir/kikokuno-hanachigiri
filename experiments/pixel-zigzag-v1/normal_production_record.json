@@ -1,0 +1,422 @@
+{
+  "status": "review-candidate",
+  "purpose": "Normal-shading base before zigzag-shadow experiments",
+  "skill_version": "2.1.1",
+  "source_pose": "V35 / ortho40 / Idle / front_right / src0000",
+  "base_library_file_id": "libfile_3ff847ce8944819185ad48c64c0dcfbc",
+  "original_model_package_library_file_id": "libfile_38833c57ddc081919a750c1541ab9287",
+  "original_render_sha256": "3b3f3aa6cd1fb043b1194217269aa7a5238327350b80dd9cbcbd303081a62361",
+  "canvas": [
+    80,
+    112
+  ],
+  "visible_bbox": [
+    17,
+    2,
+    63,
+    110
+  ],
+  "colors_used": 30,
+  "palette": {
+    "outline": "#344052",
+    "hair_outline": "#4a6c88",
+    "hair_deep": "#547e9e",
+    "hair_shadow": "#6898b5",
+    "hair_mid": "#80b1c9",
+    "hair_light": "#9cc5d5",
+    "hair_glint": "#b6d6de",
+    "skin_edge": "#94715d",
+    "skin_shadow": "#b68b72",
+    "skin_mid": "#cfa58a",
+    "skin_light": "#e6bea0",
+    "skin_glint": "#f0ceb0",
+    "red_edge": "#743e47",
+    "red_deep": "#90444b",
+    "red_shadow": "#a94b50",
+    "red_mid": "#bd5657",
+    "red_light": "#ce6e66",
+    "navy_deep": "#293448",
+    "navy_mid": "#3b485e",
+    "navy_light": "#526075",
+    "navy_glint": "#6c7889",
+    "ivory_shadow": "#adafa9",
+    "ivory_mid": "#c9c7ba",
+    "ivory_light": "#e1dbcb",
+    "ivory_glint": "#efe6d5",
+    "gold_shadow": "#a8854d",
+    "gold_mid": "#c6a45d",
+    "gold_light": "#ddc581",
+    "warm_crease": "#715e59",
+    "cool_crease": "#697e89"
+  },
+  "corner_cut_coordinates": [
+    [
+      36,
+      2
+    ],
+    [
+      42,
+      2
+    ],
+    [
+      17,
+      20
+    ],
+    [
+      17,
+      22
+    ]
+  ],
+  "contour_repair_coordinates": [
+    [
+      36,
+      3
+    ],
+    [
+      42,
+      3
+    ],
+    [
+      18,
+      20
+    ]
+  ],
+  "patches": [
+    {
+      "format": "generic-pixel-patch-v1",
+      "width": 80,
+      "height": 112,
+      "baseSha256": "a535e00d85728273cb157987a5e5e23cbeafa51a5b456625966c033c4fa6545e",
+      "resultSha256": "45237e2d78f889562e72b81a26aa677a08e0f2514e7b1d23bd830eae1925b101",
+      "pixels": [
+        {
+          "x": 36,
+          "y": 2,
+          "before": [
+            52,
+            64,
+            82,
+            255
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "x": 42,
+          "y": 2,
+          "before": [
+            74,
+            108,
+            136,
+            255
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "x": 17,
+          "y": 20,
+          "before": [
+            52,
+            64,
+            82,
+            255
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "x": 17,
+          "y": 22,
+          "before": [
+            74,
+            108,
+            136,
+            255
+          ],
+          "rgba": [
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      ],
+      "viewId": "front_right",
+      "partId": "corner_trim"
+    },
+    {
+      "format": "generic-pixel-patch-v1",
+      "width": 80,
+      "height": 112,
+      "baseSha256": "45237e2d78f889562e72b81a26aa677a08e0f2514e7b1d23bd830eae1925b101",
+      "resultSha256": "7a9305eaf771c7e0fa2e6824e796971a4bbd30af5c624a2c092b65359580aa14",
+      "pixels": [
+        {
+          "x": 36,
+          "y": 3,
+          "before": [
+            128,
+            177,
+            201,
+            255
+          ],
+          "rgba": [
+            74,
+            108,
+            136,
+            255
+          ]
+        },
+        {
+          "x": 42,
+          "y": 3,
+          "before": [
+            128,
+            177,
+            201,
+            255
+          ],
+          "rgba": [
+            74,
+            108,
+            136,
+            255
+          ]
+        },
+        {
+          "x": 18,
+          "y": 20,
+          "before": [
+            128,
+            177,
+            201,
+            255
+          ],
+          "rgba": [
+            74,
+            108,
+            136,
+            255
+          ]
+        }
+      ],
+      "viewId": "front_right",
+      "partId": "contour_repair"
+    }
+  ],
+  "guard": {
+    "schema": "generic-pixel-guard-v1",
+    "width": 80,
+    "height": 112,
+    "views": {
+      "front_right": {
+        "editable_parts": {
+          "corner_trim": [
+            {
+              "rect": [
+                36,
+                2,
+                37,
+                3
+              ]
+            },
+            {
+              "rect": [
+                42,
+                2,
+                43,
+                3
+              ]
+            },
+            {
+              "rect": [
+                17,
+                20,
+                18,
+                21
+              ]
+            },
+            {
+              "rect": [
+                17,
+                22,
+                18,
+                23
+              ]
+            }
+          ],
+          "contour_repair": [
+            {
+              "rect": [
+                36,
+                3,
+                37,
+                4
+              ]
+            },
+            {
+              "rect": [
+                42,
+                3,
+                43,
+                4
+              ]
+            },
+            {
+              "rect": [
+                18,
+                20,
+                19,
+                21
+              ]
+            },
+            {
+              "rect": [
+                18,
+                22,
+                19,
+                23
+              ]
+            }
+          ]
+        },
+        "protected": [
+          {
+            "rect": [
+              0,
+              40,
+              80,
+              112
+            ]
+          },
+          {
+            "rect": [
+              37,
+              25,
+              45,
+              33
+            ]
+          },
+          {
+            "rect": [
+              50,
+              21,
+              56,
+              29
+            ]
+          },
+          {
+            "rect": [
+              60,
+              15,
+              65,
+              29
+            ]
+          },
+          {
+            "rect": [
+              44,
+              32,
+              54,
+              40
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "verification": {
+    "corner": {
+      "view": "front_right",
+      "part": "corner_trim",
+      "pass": true,
+      "counts": {
+        "changed_pixels": 4,
+        "outside_editable_part": 0,
+        "protected_changed": 0,
+        "alpha_changed": 4,
+        "transparent_pixel_changed": 0
+      },
+      "note": "geometric/pixel rules only; aesthetic and anatomical quality require visual review"
+    },
+    "contour_repair": {
+      "view": "front_right",
+      "part": "contour_repair",
+      "pass": true,
+      "counts": {
+        "changed_pixels": 3,
+        "outside_editable_part": 0,
+        "protected_changed": 0,
+        "alpha_changed": 0,
+        "transparent_pixel_changed": 0
+      },
+      "note": "geometric/pixel rules only; aesthetic and anatomical quality require visual review"
+    },
+    "overall": {
+      "size": [
+        80,
+        112
+      ],
+      "rgba_changed_pixels": 7,
+      "alpha_changed_pixels": 4,
+      "bottom_changed_pixels": 0,
+      "before_sha256": "a535e00d85728273cb157987a5e5e23cbeafa51a5b456625966c033c4fa6545e",
+      "after_sha256": "7a9305eaf771c7e0fa2e6824e796971a4bbd30af5c624a2c092b65359580aa14"
+    },
+    "exact_replay": true,
+    "same_palette": true,
+    "same_bbox": true,
+    "same_8connected_component_count": true,
+    "base_rgba_sha256": "a535e00d85728273cb157987a5e5e23cbeafa51a5b456625966c033c4fa6545e",
+    "final_rgba_sha256": "7a9305eaf771c7e0fa2e6824e796971a4bbd30af5c624a2c092b65359580aa14"
+  },
+  "scene": {
+    "source": "V35 ortho40 Idle/front_right src0000",
+    "root": [
+      875,
+      585
+    ],
+    "sourceScale": 0.42,
+    "sourcePivot": [
+      256,
+      411.524
+    ],
+    "pixelCanvas": [
+      80,
+      112
+    ],
+    "pixelVisible": [
+      46,
+      108
+    ],
+    "pixelPivot": [
+      43.6993006993007,
+      97.52129729729731
+    ],
+    "pixelDisplayScale": 1.295,
+    "filter": "nearest for pixel sprite; original source rendered with smoothing",
+    "sameShadow": true,
+    "scope": "One still frame, no other directions or animation generated",
+    "candidates": {
+      "64x96": "automatic palette draft",
+      "80x112": "region-guarded retouch candidate",
+      "96x128": "automatic palette draft"
+    }
+  },
+  "scope": "One still pose. Other directions and animation are not made.",
+  "zigzag_shadow_applied": false,
+  "note": "Reuse the approved source-derived 115px retouch; add 4 explicit corner cuts and separate alpha-locked edge repair. No replacement character generated."
+}

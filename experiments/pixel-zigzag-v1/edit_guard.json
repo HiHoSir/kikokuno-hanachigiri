@@ -1,0 +1,26 @@
+{
+  "schema": "generic-pixel-guard-v1",
+  "width": 80,
+  "height": 112,
+  "views": {
+    "front_right": {
+      "editable_parts": {
+        "hair_shadow": [
+          {
+            "mask": "hair_mask.png"
+          }
+        ],
+        "cloth_shadow": [
+          {
+            "mask": "cloth_mask.png"
+          }
+        ]
+      },
+      "protected": [
+        {
+          "mask": "protected_mask.png"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "pixel-zigzag-replay-v1",
+  "canvas": [
+    80,
+    112
+  ],
+  "colors": 30,
+  "view": "front_right",
+  "input": "normal.png",
+  "reference": "reference.png",
+  "input_rgba_sha256": "7a9305eaf771c7e0fa2e6824e796971a4bbd30af5c624a2c092b65359580aa14",
+  "result_rgba_sha256": "2b35dc21b529345dad7724d754b2c85d280a94e6a1c864fc8dae2a68d4d7ce34",
+  "guard": "edit_guard.json",
+  "pixel_pivot": [
+    43.6993006993007,
+    97.52129729729731
+  ],
+  "steps": [
+    {
+      "patch": "hair_patch.json",
+      "part": "hair_shadow",
+      "output": "01_hair.png"
+    },
+    {
+      "patch": "cloth_patch.json",
+      "part": "cloth_shadow",
+      "output": "02_cloth.png"
+    }
+  ]
+}
