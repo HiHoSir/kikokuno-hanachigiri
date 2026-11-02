@@ -19,8 +19,15 @@ function edgeDistance(x,z,a,b){
  return Math.hypot(x-a[0]-t*dx,z-a[1]-t*dz);
 }
 const translate=(poly,i)=>poly.map(([x,z])=>[x+i.x,z+i.z]);
-export function collidersFor(map){return map.instances.filter(i=>map.assets[i.asset].footprint).map(i=>({id:i.id,polygon:translate(map.assets[i.asset].footprint,i)}));}
-export function surfacesFor(map){return [...map.surfaces,...map.instances.filter(i=>map.assets[i.asset].surface).map(i=>({id:i.id,polygon:translate(map.assets[i.asset].surface,i)}))];}
+// Contact polygons are hand-annotated in the source artwork, then transformed
+// with the exact same anchor/scale used by drawImage. Alpha is never collision.
+function assetPolygon(asset,key,profile){
+ const pixels=asset[key+'Px'];if(!pixels)return asset[key];
+ const s=profile.pixelsPerMetre,k=Math.sin(profile.elevation*Math.PI/180);
+ return pixels.map(([x,y])=>[(x-asset.anchor[0])*asset.scale/s,(y-asset.anchor[1])*asset.scale/(s*k)]);
+}
+export function collidersFor(map){return map.instances.filter(i=>map.assets[i.asset].footprint||map.assets[i.asset].footprintPx).map(i=>({id:i.id,polygon:translate(assetPolygon(map.assets[i.asset],'footprint',map.projection),i)}));}
+export function surfacesFor(map){return [...map.surfaces,...map.instances.filter(i=>map.assets[i.asset].surface||map.assets[i.asset].surfacePx).map(i=>({id:i.id,polygon:translate(assetPolygon(map.assets[i.asset],'surface',map.projection),i)}))];}
 export function canStand(map,x,z,radius=.16){
  if(!Number.isFinite(x)||!Number.isFinite(z)||!Number.isFinite(radius)||radius<0)return false;
  const [x0,z0,x1,z1]=map.bounds;
@@ -87,7 +94,10 @@ export function findPath(map,start,target,radius=.16,cell=.25){
  }
  return [];
 }
-export const depthOrder=items=>[...items].sort((a,b)=>a.z-b.z||String(a.id).localeCompare(String(b.id)));
+export function depthOrder(items,map){
+ const depth=i=>{const a=map?.assets[i.asset];return i.z+(a?.sortY===undefined?0:(a.sortY-a.anchor[1])*a.scale/(map.projection.pixelsPerMetre*Math.sin(map.projection.elevation*Math.PI/180)));};
+ return [...items].sort((a,b)=>depth(a)-depth(b)||String(a.id).localeCompare(String(b.id)));
+}
 const finite=(x)=>typeof x==='number'&&Number.isFinite(x);
 function polygon(p){return Array.isArray(p)&&p.length>=3&&p.length<=200&&p.every(v=>Array.isArray(v)&&v.length===2&&v.every(finite));}
 function imagePath(p){return typeof p==='string'&&p.length<300&&!p.includes('..')&&!/^(?:\/|[a-z]+:)/i.test(p)&&!p.includes('\\');}
@@ -108,7 +118,9 @@ export function validateMap(map){
  if(!map.assets||typeof map.assets!=='object'||Array.isArray(map.assets))throw new Error('素材台帳がありません');
  for(const a of Object.values(map.assets)){
   if(!imagePath(a.image)||!Array.isArray(a.size)||a.size.length!==2||!a.size.every(v=>finite(v)&&v>0)||!Array.isArray(a.anchor)||a.anchor.length!==2||!a.anchor.every(finite)||!finite(a.scale)||a.scale<=0)throw new Error('素材の寸法・原点が不正です');
-  if((a.footprint&&!polygon(a.footprint))||(a.surface&&!polygon(a.surface)))throw new Error('素材の判定が不正です');
+  if((a.footprint&&!polygon(a.footprint))||(a.surface&&!polygon(a.surface))||(a.footprintPx&&!polygon(a.footprintPx))||(a.surfacePx&&!polygon(a.surfacePx)))throw new Error('素材の判定が不正です');
+  if(a.sortY!==undefined&&(!finite(a.sortY)||a.sortY<0||a.sortY>a.size[1]))throw new Error('描画の接地位置が不正です');
+  for(const key of ['footprint','surface'])if(a[key]&&a[key+'Px'])throw new Error('判定の元データは一つにしてください');
  }
  if(!Array.isArray(map.instances)||map.instances.length>200)throw new Error('配置数が不正です');
  const ids=new Set();

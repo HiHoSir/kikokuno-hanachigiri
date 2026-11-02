@@ -6,3 +6,5 @@
 #motion-pad{position:absolute;top:calc(140px + env(safe-area-inset-top));left:16px;width:min(360px,calc(100vw - 32px));padding:8px;border-radius:12px;background:#23392edb;backdrop-filter:blur(8px)}
 .motion-pad-head{display:flex;gap:8px;margin-bottom:4px;justify-content:space-between}.motion-pad-head button{padding:8px 12px;font-size:12px}.motion-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.motion-buttons[hidden]{display:none}.motion-buttons button{padding:8px 3px;font-size:12px;min-width:0;white-space:nowrap}
 @media(max-height:500px){#motion-pad{top:calc(74px + env(safe-area-inset-top));right:calc(16px + env(safe-area-inset-right));left:auto;width:300px}.motion-buttons button{font-size:11px}}
+
+#motion-pad:has(#motion-buttons[hidden]){width:auto;max-width:calc(100vw - 32px)}#motion-pad:has(#motion-buttons[hidden]) .motion-pad-head{margin-bottom:0;gap:8px}

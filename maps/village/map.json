@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "painted-village-01",
   "title": "木漏れ日の村",
-  "revision": 5,
+  "revision": 6,
   "projection": {
     "pixelsPerMetre": 100,
     "elevation": 40,
@@ -138,28 +138,29 @@
         986
       ],
       "scale": 0.3,
-      "footprint": [
+      "shadow": [
+        1.81395,
+        0.31395
+      ],
+      "footprintPx": [
         [
-          -1.953489,
-          -1.709302
+          90,
+          650
         ],
         [
-          1.744186,
-          -1.709302
+          1390,
+          650
         ],
         [
-          1.744186,
-          -0.21469
+          1390,
+          940
         ],
         [
-          -1.953489,
-          -0.21469
+          90,
+          940
         ]
       ],
-      "shadow": [
-        1.813953,
-        0.313953
-      ]
+      "sortY": 940
     },
     "house_small": {
       "image": "assets/house.png",
@@ -172,28 +173,29 @@
         986
       ],
       "scale": 0.3,
-      "footprint": [
+      "shadow": [
+        1.81395,
+        0.31395
+      ],
+      "footprintPx": [
         [
-          -1.953489,
-          -1.709302
+          90,
+          650
         ],
         [
-          1.744186,
-          -1.709302
+          1390,
+          650
         ],
         [
-          1.744186,
-          -0.21469
+          1390,
+          940
         ],
         [
-          -1.953489,
-          -0.21469
+          90,
+          940
         ]
       ],
-      "shadow": [
-        1.813953,
-        0.313953
-      ]
+      "sortY": 940
     },
     "tree": {
       "image": "assets/tree.png",
@@ -206,28 +208,33 @@
         978
       ],
       "scale": 0.33,
-      "footprint": [
-        [
-          -0.33,
-          -0.242
-        ],
-        [
-          0.33,
-          -0.242
-        ],
-        [
-          0.33,
-          0.242
-        ],
-        [
-          -0.33,
-          0.242
-        ]
-      ],
       "shadow": [
         1.76,
         0.66
-      ]
+      ],
+      "footprintPx": [
+        [
+          690,
+          915
+        ],
+        [
+          850,
+          915
+        ],
+        [
+          910,
+          970
+        ],
+        [
+          810,
+          990
+        ],
+        [
+          670,
+          970
+        ]
+      ],
+      "sortY": 978
     },
     "bridge": {
       "image": "assets/bridge.png",
@@ -240,25 +247,25 @@
         390
       ],
       "scale": 0.22,
-      "surface": [
+      "layer": "ground",
+      "surfacePx": [
         [
-          -2.1,
-          -0.43
+          100,
+          245
         ],
         [
-          2.1,
-          -0.43
+          2070,
+          245
         ],
         [
-          2.1,
-          0.33
+          2070,
+          475
         ],
         [
-          -2.1,
-          0.33
+          100,
+          475
         ]
-      ],
-      "layer": "ground"
+      ]
     },
     "rock_flowers": {
       "image": "assets/rock-flowers.png",
@@ -268,31 +275,32 @@
       ],
       "anchor": [
         887,
-        755
+        750
       ],
-      "scale": 0.16,
-      "footprint": [
+      "scale": 0.065,
+      "shadow": [
+        0.44688,
+        0.08937
+      ],
+      "footprintPx": [
         [
-          -1.05,
-          -0.25
+          180,
+          600
         ],
         [
-          1.05,
-          -0.25
+          1450,
+          600
         ],
         [
-          1.05,
-          0.12
+          1510,
+          750
         ],
         [
-          -1.05,
-          0.12
+          180,
+          750
         ]
       ],
-      "shadow": [
-        1.1,
-        0.22
-      ]
+      "sortY": 750
     },
     "doorstep_garden": {
       "image": "assets/doorstep-garden.png",
@@ -302,31 +310,32 @@
       ],
       "anchor": [
         768,
-        900
+        880
       ],
-      "scale": 0.13,
-      "footprint": [
+      "scale": 0.065,
+      "shadow": [
+        0.325,
+        0.125
+      ],
+      "footprintPx": [
         [
-          -0.53,
-          -0.37
+          310,
+          690
         ],
         [
-          0.53,
-          -0.37
+          1060,
+          690
         ],
         [
-          0.53,
-          0.08
+          1120,
+          895
         ],
         [
-          -0.53,
-          0.08
+          430,
+          895
         ]
       ],
-      "shadow": [
-        0.65,
-        0.25
-      ]
+      "sortY": 895
     },
     "bamboo_garden": {
       "image": "assets/bamboo-garden.png",
@@ -336,31 +345,32 @@
       ],
       "anchor": [
         887,
-        710
+        620
       ],
-      "scale": 0.18,
-      "footprint": [
+      "scale": 0.085,
+      "shadow": [
+        0.66111,
+        0.07083
+      ],
+      "footprintPx": [
         [
-          -1.45,
-          -0.12
+          110,
+          575
         ],
         [
-          1.45,
-          -0.12
+          1670,
+          575
         ],
         [
-          1.45,
-          0.12
+          1670,
+          640
         ],
         [
-          -1.45,
-          0.12
+          110,
+          640
         ]
       ],
-      "shadow": [
-        1.4,
-        0.15
-      ]
+      "sortY": 620
     }
   },
   "instances": [
@@ -479,6 +489,6 @@
     "scope": "Original outdoor village only; northern area removed at user request. Visual polish pass 1 with independent garden and bank props.",
     "banks": "Hand-annotated, conservative positive walk polygons; trees/buildings use separate footprints.",
     "bridge": "One ground-level walk plane. No underpass. Bridge walk polygon moves with the asset.",
-    "polish": "Revision 5. Approved Hizuki scale 0.85 retained. Door clear height ~310 source px; rear standing sprite 98px. House scale 0.30 gives hero/door ~90% from the rear. Front collision aligned to the door threshold at source y940 rather than the porch-bottom anchor y986. Trees scale 0.33. See docs/VILLAGE_POLISH.md."
+    "polish": "Revision 6. Whole-scene scale audit from unchanged Hizuki 0.85. Doorway, lanterns, buckets, jars, fences, rocks and trees calibrated together. Hand-annotated source-pixel contact polygons drive collision; source contact lines drive occlusion. Bridge deck uses the same image transform. See docs/SCENE_ALIGNMENT.md."
   }
 }

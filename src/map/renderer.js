@@ -1,5 +1,5 @@
-import {validateMotions} from './motion.js?v=village-scale-5';
-import {project,unproject,depthOrder,collidersFor,surfacesFor,groundTiles} from './logic.js?v=village-scale-5';
+import {validateMotions} from './motion.js?v=scene-alignment-6';
+import {project,unproject,depthOrder,collidersFor,surfacesFor,groundTiles} from './logic.js?v=scene-alignment-6';
 export async function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(`画像を読み込めません: ${new URL(url).pathname}`));image.src=url;});}
 export async function loadMapImages(map,url){
  const assets=new Map(),grounds=groundTiles(map),keys=[...grounds.map(a=>a.image),...Object.values(map.assets).map(a=>a.image)];
@@ -64,7 +64,7 @@ export class MapRenderer{
   for(const i of map.instances){const a=map.assets[i.asset];if(a.shadow){const p=project(i,map.projection);shadow(p.x-10,p.y+4,a.shadow[0]*100,a.shadow[1]*100,.21);}}
   const foot=project(player,map.projection),shadowScale=hero.config.scale/1.295;shadow(foot.x,foot.y+3*shadowScale,22*shadowScale,6*shadowScale,.22);
   if(route.length){c.beginPath();c.moveTo(foot.x,foot.y);for(const q of route){const p=project(q,map.projection);c.lineTo(p.x,p.y);}c.strokeStyle='#fff3bc99';c.lineWidth=2/cam.zoom;c.setLineDash([4/cam.zoom,7/cam.zoom]);c.stroke();c.setLineDash([]);}
-  for(const entity of depthOrder([...map.instances.filter(i=>map.assets[i.asset].layer!=='ground'),{...player,id:'~hero'}])){
+  for(const entity of depthOrder([...map.instances.filter(i=>map.assets[i.asset].layer!=='ground'),{...player,id:'~hero'}],map)){
    if(entity.id!=='~hero'){drawAsset(entity);continue;}
    const config=hero.config,frames=(moving&&config.animations.walk?.[facing])||config.animations.idle[facing]||config.animations.idle.default;
    const total=frames.reduce((sum,f)=>sum+f.durationMs,0);let t=time%total,frame=frames[0];for(const f of frames){if(t<f.durationMs){frame=f;break;}t-=f.durationMs;}

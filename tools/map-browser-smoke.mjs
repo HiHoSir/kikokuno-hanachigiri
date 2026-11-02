@@ -86,6 +86,21 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
    assert.equal(await page.evaluate(()=>window.__mapLab.exportMap().bounds[1]),0);
    assert.equal(await page.evaluate(()=>window.__mapLab.routeTo({x:6,z:-1})),false);
    await page.screenshot({path:`test-results/${name}-${orientation}-polish.png`});
+   // Reproduce the reported door bug through real movement, then verify hair
+   // remains visible over the doorway (the old anchor sort hid the hero).
+   await page.evaluate(()=>{const lab=window.__mapLab;lab.stop();lab.setPosition({x:3.35,z:7.5});lab.routeTo({x:3.35,z:6.85});});
+   await page.waitForFunction(()=>{const s=window.__mapLab.getState();return !s.route.length&&Math.abs(s.player.z-6.85)<.08;});
+   await page.evaluate(()=>window.__mapLab.stop());
+   await page.evaluate(()=>{window.__mapLab.setPosition({x:3.35,z:6.85});return new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));});
+   const hair=await page.evaluate(()=>{
+    const s=window.__mapLab.getState(),p=window.__mapLab.toScreen(s.player),canvas=document.querySelector('#scene'),d=canvas.width/canvas.getBoundingClientRect().width,k=s.character.scale*s.camera.zoom;
+    const x=Math.max(0,Math.floor((p.x-18*k)*d)),y=Math.max(0,Math.floor((p.y-95*k)*d)),w=Math.ceil(36*k*d),h=Math.ceil(45*k*d);
+    const data=canvas.getContext('2d').getImageData(x,y,w,h).data;let count=0;
+    for(let i=0;i<data.length;i+=4)if(data[i]>65&&data[i]<180&&data[i+1]>120&&data[i+2]>150&&data[i+2]>data[i]*1.1)count++;
+    return count;
+   });
+   assert.ok(hair>5,'Hizuki must stay visible in front of the door');
+   await page.screenshot({path:`test-results/${name}-${orientation}-door-alignment.png`});
    // Failed loading of a new tile must leave the working layout intact.
    assert.equal(await page.evaluate(async()=>{
     const lab=window.__mapLab,before=JSON.stringify(lab.exportMap()),bad=lab.exportMap();bad.ground.image='assets/missing-test-ground.png';
