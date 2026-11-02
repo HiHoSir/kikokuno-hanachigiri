@@ -2,7 +2,7 @@
   "schema": 1,
   "id": "painted-village-01",
   "title": "木漏れ日の村",
-  "revision": 4,
+  "revision": 5,
   "projection": {
     "pixelsPerMetre": 100,
     "elevation": 40,
@@ -137,28 +137,28 @@
         770,
         986
       ],
-      "scale": 0.35,
+      "scale": 0.3,
       "footprint": [
         [
-          -2.27907,
-          -1.994186
+          -1.953489,
+          -1.709302
         ],
         [
-          2.034884,
-          -1.994186
+          1.744186,
+          -1.709302
         ],
         [
-          2.034884,
-          0.0
+          1.744186,
+          -0.21469
         ],
         [
-          -2.27907,
-          0.0
+          -1.953489,
+          -0.21469
         ]
       ],
       "shadow": [
-        2.116279,
-        0.366279
+        1.813953,
+        0.313953
       ]
     },
     "house_small": {
@@ -171,28 +171,28 @@
         770,
         986
       ],
-      "scale": 0.35,
+      "scale": 0.3,
       "footprint": [
         [
-          -2.27907,
-          -1.994186
+          -1.953489,
+          -1.709302
         ],
         [
-          2.034884,
-          -1.994186
+          1.744186,
+          -1.709302
         ],
         [
-          2.034884,
-          0.0
+          1.744186,
+          -0.21469
         ],
         [
-          -2.27907,
-          0.0
+          -1.953489,
+          -0.21469
         ]
       ],
       "shadow": [
-        2.116279,
-        0.366279
+        1.813953,
+        0.313953
       ]
     },
     "tree": {
@@ -205,28 +205,28 @@
         780,
         978
       ],
-      "scale": 0.36,
+      "scale": 0.33,
       "footprint": [
         [
-          -0.36,
-          -0.264
+          -0.33,
+          -0.242
         ],
         [
-          0.36,
-          -0.264
+          0.33,
+          -0.242
         ],
         [
-          0.36,
-          0.264
+          0.33,
+          0.242
         ],
         [
-          -0.36,
-          0.264
+          -0.33,
+          0.242
         ]
       ],
       "shadow": [
-        1.92,
-        0.72
+        1.76,
+        0.66
       ]
     },
     "bridge": {
@@ -479,6 +479,6 @@
     "scope": "Original outdoor village only; northern area removed at user request. Visual polish pass 1 with independent garden and bank props.",
     "banks": "Hand-annotated, conservative positive walk polygons; trees/buildings use separate footprints.",
     "bridge": "One ground-level walk plane. No underpass. Bridge walk polygon moves with the asset.",
-    "polish": "Revision 4. Hizuki remains the approved scale 0.85. Both houses scale 0.35 (hero about 84% of doorway); trees scale 0.36. Camera, speed and stride unchanged. See docs/VILLAGE_POLISH.md."
+    "polish": "Revision 5. Approved Hizuki scale 0.85 retained. Door clear height ~310 source px; rear standing sprite 98px. House scale 0.30 gives hero/door ~90% from the rear. Front collision aligned to the door threshold at source y940 rather than the porch-bottom anchor y986. Trees scale 0.33. See docs/VILLAGE_POLISH.md."
   }
 }

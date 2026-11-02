@@ -1,9 +1,9 @@
-import {MotionPlayer} from './motion.js?v=village-scale-4';
-import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=village-scale-4';
-import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=village-scale-4';
-import {createInput} from './input.js?v=village-scale-4';
+import {MotionPlayer} from './motion.js?v=village-scale-5';
+import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=village-scale-5';
+import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=village-scale-5';
+import {createInput} from './input.js?v=village-scale-5';
 
-const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json?v=village-scale-4',import.meta.url);
+const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json?v=village-scale-5',import.meta.url);
 const storageKey='hanachigiri.layered.village.v1',positionKey=storageKey+'.feet';
 let motions,running=false;
 let map,original,images,hero,player,route=[],overview=false,debug=false,moving=false,facing='front_right',last=performance.now(),elapsed=0,toastTimer,saveTimer=0,ready=false;
@@ -75,7 +75,7 @@ function loop(now){
 async function boot(){
  try{
   const response=await fetch(MAP_URL);if(!response.ok)throw new Error('マップを取得できません');original=validateMap(await response.json());
-  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json?v=village-scale-4',import.meta.url));
+  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json?v=village-scale-5',import.meta.url));
   motions=new MotionPlayer(hero.config);
   for(const [id,m]of Object.entries(hero.config.motions)){const option=document.createElement('option');option.value=id;option.textContent=m.label;$('motion-select').append(option);}
   for(const [id,m]of Object.entries(hero.config.motions)){
