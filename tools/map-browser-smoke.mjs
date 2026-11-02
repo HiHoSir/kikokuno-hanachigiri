@@ -38,10 +38,9 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
    // Locomotion, action UI, all eight direction rows, and held-fall recovery.
    await page.getByRole('button',{name:'走行切替'}).click();
    assert.equal(await page.evaluate(()=>window.__mapLab.getState().running),true);
-   await page.evaluate(()=>window.__mapLab.routeTo({x:7.8,z:12.5}));
-   await page.waitForFunction(()=>window.__mapLab.getState().motion.id==='running');
-   await page.waitForFunction(()=>window.__mapLab.getState().motion.frame>0);
-   await page.waitForFunction(()=>{const s=window.__mapLab.getState();return !s.route.length&&Math.hypot(s.player.x-7.8,s.player.z-12.5)<.08;});
+   await page.evaluate(()=>window.__mapLab.routeTo({x:14.7,z:10.65}));
+   await page.waitForFunction(()=>{const m=window.__mapLab.getState().motion;return m.id==='running'&&m.frame>0;});
+   await page.waitForFunction(()=>{const s=window.__mapLab.getState();return !s.route.length&&Math.hypot(s.player.x-14.7,s.player.z-10.65)<.08;});
    await page.evaluate(()=>window.__mapLab.stop());
    await page.getByRole('button',{name:'配置・検査',exact:true}).click();
    await page.locator('#motion-controls summary').click();
@@ -70,7 +69,7 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
    await page.screenshot({path:`test-results/${name}-${orientation}-motions.png`});
    assert.equal((await page.request.get(new URL('old/README.md',base).href)).status(),404);
    assert.deepEqual(errors,[]);results.push({browser:name,orientation,pass:true});
-  }catch(error){await page.screenshot({path:`test-results/${name}-${orientation}-failure.png`});throw error;}
+  }catch(error){fs.writeFileSync(`test-results/${name}-${orientation}-state.json`,JSON.stringify(await page.evaluate(()=>window.__mapLab?.getState()),null,2));await page.screenshot({path:`test-results/${name}-${orientation}-failure.png`});throw error;}
   finally{await context.close();}
  }
  await browser.close();
