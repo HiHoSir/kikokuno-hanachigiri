@@ -1,73 +1,21 @@
 <!doctype html>
-<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>新生 鬼哭の花契り v0.25.0 | 技術検証</title>
-<style>
-*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#192a27;color:#fff;font:14px system-ui,sans-serif;touch-action:none}canvas{display:block;width:100vw;height:100dvh}
-#info{position:fixed;top:max(8px,env(safe-area-inset-top));left:8px;padding:10px;background:#182927df;border:1px solid #bca579;border-radius:10px;max-width:80%;pointer-events:none}#info b{color:#ffe09c}#info small{display:block;margin-top:4px}
-#controls{position:fixed;bottom:max(12px,env(safe-area-inset-bottom));left:14px;right:14px;display:flex;justify-content:space-between;align-items:end;pointer-events:none}#dpad{width:168px;height:168px;position:relative;pointer-events:auto;touch-action:none;user-select:none;border-radius:22px;background:#14251dc9;border:1px solid #ffffff5c}
-#dpad::before,#dpad::after{content:'';position:absolute;background:#52675ee8;border:1px solid #f2e5c04a;border-radius:12px}
-#dpad::before{width:56px;height:148px;left:55px;top:9px}
-#dpad::after{height:56px;width:148px;left:9px;top:55px}
-#dpad.active{background:#324b3fe8}
-#dpad span{position:absolute;z-index:1;color:white;font-size:21px;font-weight:700;pointer-events:none}
-#dpad .up{top:14px;left:74px}#dpad .down{bottom:13px;left:74px}#dpad .left{top:68px;left:19px}#dpad .right{top:68px;right:19px}
-#dpad .center{top:66px;left:67px;width:32px;height:32px;border-radius:50%;background:#26392e}button{pointer-events:auto;touch-action:none;user-select:none;color:#fff;background:#182624df;border:1px solid #ffffff66;border-radius:12px;font-size:21px;min-height:52px}button:active{background:#936d38}#talk{height:68px;width:68px;border-radius:50%}#msg{position:fixed;bottom:170px;left:50%;transform:translateX(-50%);background:#192b29ef;border:1px solid #ffe1a0;padding:12px 15px;border-radius:12px;display:none;width:min(90vw,490px);white-space:pre-line}#gestures{position:fixed;right:10px;bottom:118px;display:flex;gap:4px;flex-wrap:wrap;max-width:210px;justify-content:flex-end}#gestures button{font-size:12px;min-height:37px;padding:6px 9px}#error{position:fixed;top:40%;left:10%;right:10%;background:#641c1c;padding:12px;display:none} @media(max-height:600px){ #dpad{transform:scale(.78);transform-origin:bottom left;margin-right:-37px;margin-top:-37px}button{min-height:42px}#msg{bottom:110px}}
-
-/* Safe-area aware HUD: top strip is distinct from controls at the bottom. */
-#info{top:calc(env(safe-area-inset-top) + 7px);left:8px;right:8px;max-width:none;padding:8px 10px;line-height:1.35}
-#info small{font-size:10px;line-height:1.35}
-#area-status{position:fixed;top:calc(env(safe-area-inset-top) + 75px);left:8px;right:8px;z-index:3;padding:7px 10px;font-size:11px;background:#182927df;border:1px solid #bca579;border-radius:8px;pointer-events:none;white-space:normal}
-#go-hill{position:fixed;right:10px;top:calc(env(safe-area-inset-top) + 121px);z-index:5;background:#5c4731ef;color:#fff0c8;border:1px solid #f0ce83;padding:7px 11px;font-size:12px;min-height:40px}
-#gestures{right:10px;left:auto;bottom:calc(env(safe-area-inset-bottom) + 190px);width:186px;max-width:calc(100vw - 185px);display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
-#gestures button{width:100%;font-size:12px;min-height:35px;padding:4px 2px}
-#msg{bottom:calc(env(safe-area-inset-bottom) + 282px);z-index:6;max-height:28vh;overflow-y:auto;pointer-events:none}
-#controls{z-index:4}
-@media(max-width:390px){
- #info small{display:none}
- #area-status{top:calc(env(safe-area-inset-top) + 48px);font-size:10px}
- #go-hill{top:calc(env(safe-area-inset-top) + 89px)}
- #gestures{width:164px;max-width:calc(100vw - 174px)}
-}
-@media(max-height:620px){
- #info small{display:none}
- #area-status{top:calc(env(safe-area-inset-top) + 44px);font-size:10px}
- #go-hill{top:calc(env(safe-area-inset-top) + 85px)}
- #gestures{bottom:calc(env(safe-area-inset-bottom) + 139px)}
- #msg{bottom:calc(env(safe-area-inset-bottom) + 215px)}
-}
-
-/* Screenshot-driven compact layout: top HUD stays within ~80 CSS px. */
-#info{top:calc(env(safe-area-inset-top) + 5px);left:8px;right:8px;padding:7px 9px;max-width:none}
-#info b{font-size:12px}
-#info small{display:none}
-#area-status{top:calc(env(safe-area-inset-top) + 42px);left:8px;right:8px;padding:5px 8px;font-size:10px;max-height:33px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
-#go-hill{top:calc(env(safe-area-inset-top) + 84px);right:8px;min-height:35px;font-size:11px;padding:5px 9px}
-#gestures{bottom:calc(env(safe-area-inset-bottom) + 187px);right:8px;width:165px;max-width:calc(100vw - 175px);gap:5px}
-#gestures button{min-height:32px;font-size:11px}
-#msg{bottom:calc(env(safe-area-inset-bottom) + 270px)}
-@media(max-height:620px){#gestures{bottom:calc(env(safe-area-inset-bottom) + 145px)}#msg{bottom:calc(env(safe-area-inset-bottom) + 212px)}}
-#audio-toggle{position:fixed;top:calc(env(safe-area-inset-top) + 84px);left:8px;z-index:8;min-height:35px;padding:5px 11px;font-size:12px;background:#32463aef;border:1px solid #d5bc8b}
-@media(max-height:620px){#audio-toggle{top:calc(env(safe-area-inset-top) + 84px)}}
-</style><script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js"}}</script>
-</head><body><canvas id="game"></canvas><div id="info"><b>新生 鬼哭の花契り — 2.5D技術検証 v0.25.1</b><small><span id="area-name">鬼灯の里 — 散策実験</span> ／ 8方向主人公＋小川・橋・兵具屋・宿屋・茶店<br>移動：スライドD-pad／WASD　調べる：A／Enter　壺・井戸・野菜　自動保存</small></div><div id="area-status">現在地：鬼灯の里 — 散策実験</div><button id="audio-toggle" data-muted="false" aria-label="音楽と効果音の切り替え">♪ ON</button><button id="go-hill">高台の入口へ</button><div id="gestures"><button id="surprise">驚き</button><button id="wave">手振り</button><button id="bow">おじぎ</button><button id="cheer">喜ぶ</button></div><div id="msg"></div><div id="error"></div><div id="controls"><div id="dpad" role="group" aria-label="8方向移動D-pad"><span class="up">▲</span><span class="down">▼</span><span class="left">◀</span><span class="right">▶</span><span class="center"></span></div><button id="talk">A</button></div><script>
-(function(){
- const panel=document.querySelector('#error');
- let opaqueError=false;
- function show(message){panel.style.display='block';panel.textContent='起動エラー: '+message;}
- window.addEventListener('error',event=>{
-   // Cross-origin CDN errors can be reported as "Script error." without useful details.
-   // Do not mistake one of those for a game startup failure when frames are rendering.
-   const message=event.message||'';
-   if(message==='Script error.'||message==='Script error'){opaqueError=true;return}
-   show(message||'リソースの読み込みに失敗しました');
- });
- window.addEventListener('unhandledrejection',event=>show(String(event.reason?.message||event.reason||'モジュールの読み込みに失敗しました')));
- window.addEventListener('load',()=>{setTimeout(()=>{
-   const canvas=document.querySelector('#game');
-   if(!window.__kikokuRendered){
-     if(opaqueError)show('外部スクリプトで詳細不明のエラーが発生しました');
-     else if(!canvas||canvas.width===300&&canvas.height===150)show('3D描画の初期化を確認できません');
-   }
- },3000)});
-
-})();
-</script><script type="module" src="./src/main.js?v=0.25.1-audio"></script></body></html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#26382f"><title>鬼哭の花契り — 淡彩マップ歩行試作</title><link rel="stylesheet" href="src/map/style.css"></head>
+<body>
+<main id="game"><canvas id="scene" aria-label="村の歩行マップ"></canvas>
+ <header><div><span class="eyebrow">鬼哭の花契り · 歩行試作 01</span><h1 id="map-title">木漏れ日の村</h1></div><nav aria-label="表示"><button id="overview">全景</button><button id="inspect" aria-expanded="false">配置・検査</button></nav></header>
+ <p id="hint">道をタップ、または左下のスティックで移動</p>
+ <div id="toast" role="status" aria-live="polite"></div>
+ <div id="loading" role="status"><span class="spinner"></span><p>村の風景を読み込んでいます</p><button id="retry" hidden>再読み込み</button></div>
+ <div id="stick" role="group" aria-label="移動スティック"><span class="stick-cross"></span><span id="thumb"></span></div>
+ <button id="action" aria-label="近くを調べる">調べる</button>
+ <aside id="drawer" hidden aria-label="配置と検査">
+  <div class="drawer-head"><h2>配置と歩行の検査</h2><button id="close-drawer" aria-label="閉じる">閉じる</button></div>
+  <label class="check"><input id="debug" type="checkbox"> 歩行面・当たり判定・足元を表示</label>
+  <label>景物<select id="object-select"></select></label>
+  <div class="coordinates"><label>X（m）<input id="object-x" type="number" step="0.05"></label><label>Z（m）<input id="object-z" type="number" step="0.05"></label><button id="apply-position">配置を更新</button></div>
+  <p class="small">配置を動かすと、足元・判定・橋の歩行面も一緒に動きます。変更はこの端末に保存されます。</p>
+  <div class="buttons"><button id="export-map">マップJSONを保存</button><label class="file-button">JSONを読み込む<input id="import-map" type="file" accept="application/json,.json"></label></div>
+  <div class="buttons"><button id="reset-map">初期配置に戻す</button><button id="reset-player">出発点へ</button></div>
+  <details><summary>今回の制作範囲</summary><p class="small">独立した地面・家・木・橋で構成した屋外マップです。緋月は採用済みの立ち姿1枚を仮表示しています。方向別の歩行素材・室内・次のマップは準備中です。</p><p class="small">雲上ブラウザでの検査とiPhone Safari実機での検査は別に記録します。</p></details>
+ </aside>
+</main><script type="module" src="src/map/app.js"></script></body></html>

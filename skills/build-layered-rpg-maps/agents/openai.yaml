@@ -1,0 +1,4 @@
+interface:
+  display_name: "歩けるレイヤーマップ制作"
+  short_description: "独立した背景素材を通行・遮蔽・足元データと合わせ、実際に歩けるRPGマップへ組み上げる"
+  default_prompt: "Use $build-layered-rpg-maps to turn independent painted scenery into a walkable RPG map with tested collision and occlusion."

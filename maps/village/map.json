@@ -1,0 +1,333 @@
+{
+  "schema": 1,
+  "id": "painted-village-01",
+  "title": "木漏れ日の村",
+  "revision": 1,
+  "projection": {
+    "pixelsPerMetre": 100,
+    "elevation": 40,
+    "azimuth": 0,
+    "status": "trial"
+  },
+  "bounds": [
+    0,
+    0,
+    15.36,
+    15.930611987050623
+  ],
+  "ground": {
+    "image": "assets/ground.png",
+    "size": [
+      1536,
+      1024
+    ]
+  },
+  "spawn": {
+    "x": 8.5,
+    "z": 12.2
+  },
+  "surfaces": [
+    {
+      "id": "west-bank",
+      "polygon": [
+        [
+          0,
+          0
+        ],
+        [
+          11.1,
+          0.0
+        ],
+        [
+          11.45,
+          1.991326498381328
+        ],
+        [
+          12.1,
+          3.982652996762656
+        ],
+        [
+          12.2,
+          5.9739794951439835
+        ],
+        [
+          11.7,
+          7.965305993525312
+        ],
+        [
+          10.9,
+          9.956632491906639
+        ],
+        [
+          10.5,
+          11.947958990287967
+        ],
+        [
+          11.0,
+          13.939285488669295
+        ],
+        [
+          11.8,
+          15.930611987050623
+        ],
+        [
+          0,
+          15.930611987050623
+        ]
+      ]
+    },
+    {
+      "id": "east-bank",
+      "polygon": [
+        [
+          15.36,
+          0
+        ],
+        [
+          15.36,
+          15.930611987050623
+        ],
+        [
+          14.9,
+          15.930611987050623
+        ],
+        [
+          14.1,
+          13.939285488669295
+        ],
+        [
+          13.7,
+          11.947958990287967
+        ],
+        [
+          13.9,
+          9.956632491906639
+        ],
+        [
+          14.3,
+          7.965305993525312
+        ],
+        [
+          14.6,
+          5.9739794951439835
+        ],
+        [
+          14.15,
+          3.982652996762656
+        ],
+        [
+          13.65,
+          1.991326498381328
+        ],
+        [
+          13.5,
+          0.0
+        ]
+      ]
+    }
+  ],
+  "assets": {
+    "house": {
+      "image": "assets/house.png",
+      "size": [
+        1448,
+        1086
+      ],
+      "anchor": [
+        770,
+        986
+      ],
+      "scale": 0.43,
+      "footprint": [
+        [
+          -2.8,
+          -2.45
+        ],
+        [
+          2.5,
+          -2.45
+        ],
+        [
+          2.5,
+          0
+        ],
+        [
+          -2.8,
+          0
+        ]
+      ],
+      "shadow": [
+        2.6,
+        0.45
+      ]
+    },
+    "house_small": {
+      "image": "assets/house.png",
+      "size": [
+        1448,
+        1086
+      ],
+      "anchor": [
+        770,
+        986
+      ],
+      "scale": 0.34,
+      "footprint": [
+        [
+          -2.2,
+          -1.95
+        ],
+        [
+          2.0,
+          -1.95
+        ],
+        [
+          2.0,
+          0
+        ],
+        [
+          -2.2,
+          0
+        ]
+      ],
+      "shadow": [
+        2,
+        0.35
+      ]
+    },
+    "tree": {
+      "image": "assets/tree.png",
+      "size": [
+        1536,
+        1024
+      ],
+      "anchor": [
+        780,
+        978
+      ],
+      "scale": 0.3,
+      "footprint": [
+        [
+          -0.3,
+          -0.22
+        ],
+        [
+          0.3,
+          -0.22
+        ],
+        [
+          0.3,
+          0.22
+        ],
+        [
+          -0.3,
+          0.22
+        ]
+      ],
+      "shadow": [
+        1.6,
+        0.6
+      ]
+    },
+    "bridge": {
+      "image": "assets/bridge.png",
+      "size": [
+        2172,
+        724
+      ],
+      "anchor": [
+        1086,
+        390
+      ],
+      "scale": 0.22,
+      "surface": [
+        [
+          -2.1,
+          -0.43
+        ],
+        [
+          2.1,
+          -0.43
+        ],
+        [
+          2.1,
+          0.33
+        ],
+        [
+          -2.1,
+          0.33
+        ]
+      ],
+      "layer": "ground"
+    }
+  },
+  "instances": [
+    {
+      "id": "house-west",
+      "asset": "house",
+      "x": 3.35,
+      "z": 6.9
+    },
+    {
+      "id": "house-east",
+      "asset": "house_small",
+      "x": 9.2,
+      "z": 6.3
+    },
+    {
+      "id": "tree-front",
+      "asset": "tree",
+      "x": 2.8,
+      "z": 14.0
+    },
+    {
+      "id": "tree-centre",
+      "asset": "tree",
+      "x": 6.6,
+      "z": 10.5
+    },
+    {
+      "id": "tree-river",
+      "asset": "tree",
+      "x": 10.0,
+      "z": 14.7
+    },
+    {
+      "id": "bridge-east",
+      "asset": "bridge",
+      "x": 12.3,
+      "z": 10.65
+    }
+  ],
+  "landmarks": [
+    {
+      "id": "door-west",
+      "label": "西の家",
+      "x": 3.35,
+      "z": 7.5,
+      "radius": 0.65,
+      "message": "家の入口です。室内は次の制作工程で接続します。"
+    },
+    {
+      "id": "door-east",
+      "label": "東の家",
+      "x": 9.2,
+      "z": 6.9,
+      "radius": 0.65,
+      "message": "家の入口です。室内は次の制作工程で接続します。"
+    },
+    {
+      "id": "exit-east",
+      "label": "村の東端",
+      "x": 14.9,
+      "z": 8.2,
+      "radius": 0.55,
+      "message": "村の東端です。次のマップへの接続地点として予約しています。"
+    }
+  ],
+  "notes": {
+    "scope": "Outdoor walkability prototype. No interiors or map transitions yet.",
+    "banks": "Hand-annotated, conservative positive walk polygons; trees/buildings use separate footprints.",
+    "bridge": "One ground-level walk plane. No underpass. Bridge walk polygon moves with the asset."
+  }
+}

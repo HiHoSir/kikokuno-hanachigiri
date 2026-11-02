@@ -1,0 +1,34 @@
+{
+  "id": "hizuki-v35-normal",
+  "status": "approved-still-placeholder",
+  "source": "V35 / ortho40 / Idle / front_right / src0000",
+  "size": [
+    80,
+    112
+  ],
+  "anchor": [
+    43.6993006993007,
+    97.52129729729731
+  ],
+  "scale": 1.295,
+  "radius": 0.16,
+  "speed": 2.0,
+  "pixelArt": true,
+  "animations": {
+    "idle": {
+      "default": [
+        {
+          "image": "normal.png",
+          "rect": [
+            0,
+            0,
+            80,
+            112
+          ],
+          "durationMs": 1000
+        }
+      ]
+    }
+  },
+  "notes": "One approved still only. Direction and walking animation assets will be supplied separately; do not invent frames or mirror the image."
+}

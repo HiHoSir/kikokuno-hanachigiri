@@ -5,9 +5,9 @@
 ## 適用範囲と正本
 
 - 対象は続編『鬼哭の花契り』、`HiHoSir/kikokuno-hanachigiri`。『鬼哭の花結び』の `yaksha-hanamusubi` と混同しない。
-- 着手前に対象ブランチの `AGENTS.md`、`docs/MAP_ART_RULES.md`、`docs/LEGACY_INFORMATION.md`、`docs/FOUNDATION.md`、`docs/ARCHITECTURE.md`、`docs/ASSET_POLICY.md` と実素材を読む。存在しない資料は未取得と記す。
-- `docs/legacy-yaksha/` は『花結び』由来の旧情報。通常の新作制作で正本として読み込まない。再利用依頼がある場合だけ出典・採用範囲を確認し、新作用資料へ独立して記録する。旧資料中の作品名や「確定・実装」は新作の承認・実装を意味しない。
-- 現行レポジトリは2Dキャラ×3D背景の検証を含む。この制作ルールは淡彩レイヤーマップの制作方針であり、ゲームの描画エンジン変更を実装済み・承認済みと扱わない。
+- 着手前に対象ブランチの `AGENTS.md`、`docs/MAP_ART_RULES.md`、`docs/LEGACY_INFORMATION.md`、`docs/CURRENT_ARCHITECTURE.md`、`docs/PLAYABLE_MAP_WORKFLOW.md`、`docs/ASSET_POLICY.md` と実素材を読む。存在しない資料は未取得と記す。
+- `old/` は『花結び』由来の旧情報。通常の新作制作で正本として読み込まない。再利用依頼がある場合だけ出典・採用範囲を確認し、新作用資料へ独立して記録する。旧資料中の作品名や「確定・実装」は新作の承認・実装を意味しない。
+- 旧2Dキャラ×3D背景の検証は `old/` に隔離済み。現行の初回歩行試作は独立画像を使うCanvas2Dで、契約と検査状況は CURRENT_ARCHITECTURE / PLAYABLE_MAP_WORKFLOW を正本にする。
 - 既存の32pxグリッド、28pxキャラ、4方向移動、最近傍拡縮、固定マップ寸法を新作へ自動適用しない。画像px・世界座標・画面表示サイズを分ける。既存コードの寸法を流用するときは、その根拠と変換を明示する。
 - 読み取れた利用者の最新指定を優先する。提案・承認・実装・実機合格を区別する。既に依頼された範囲の通常作業は重ねて許可を求めず進める。
 

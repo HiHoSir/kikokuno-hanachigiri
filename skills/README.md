@@ -1,40 +1,7 @@
-# 制作スキル
+# 現行制作スキル
 
-## シルエット優先・ドット絵化 v2.1.2
+- [歩けるレイヤーマップ](build-layered-rpg-maps/SKILL.md)：独立素材・足元・歩行面・判定・遮蔽・JSON往復・検証。[実制作手順](../docs/PLAYABLE_MAP_WORKFLOW.md)。
+- [シルエット優先ピクセル化](silhouette-first-pixel-art/SKILL.md)：承認原画から下書き、部位限定修正、角落とし、差分再適用。通常版緋月が採用基準。
+- [歩行監査](hizuki-walk-audit/SKILL.md)：関節の左右・歩行位相の検査。保存された旧画像は現行外見の正本ではない。
 
-- 入口: [SKILL.md](silhouette-first-pixel-art/SKILL.md)
-- 使い方: [README](silhouette-first-pixel-art/README.md)、[制作手順](silhouette-first-pixel-art/docs/PROCEDURE.md)
-- 変更点: [v2.1変更履歴](silhouette-first-pixel-art/docs/V2_1_CHANGELOG.md)
-- 保護領域: [ガード付き部位修正](silhouette-first-pixel-art/docs/SEMANTIC_EDIT_GUARDS.md)
-- 複数方向: [照合手順](silhouette-first-pixel-art/docs/MULTIVIEW_PROTOCOL.md)
-- 角落とし: [丸い部位の1px角落とし](silhouette-first-pixel-art/docs/CORNER_TRIMMING.md)。座標を選んだ別候補で実施。既存パッチ機能を利用し、自動削除は行わない。
-
-保存元は `generic_silhouette_pixel_skill_v2_1.zip`（内部版2.1.0、作成日2026-10-30）。2026-11-02に原本29ファイルをバイト変更なしで収録。
-
-元ZIPのSHA-256: `8bf3f5e4b9aab82dcc90689d61a100cd6657fd1bce76a02bb286dfcac37964f3`。
-収録時は同梱 `MANIFEST.sha256.json` の28件を照合し、原本との差がないことを確認。現在はv2.1.2の制作手順拡張を含み、同manifestは拡張後のファイルを照合する。実行スクリプトと原本サンプルは変更していない。
-
-- 陰影比較: [ジグザグ陰影手順](silhouette-first-pixel-art/docs/ZIGZAG_SHADING.md)、[緋月の再現セット](../experiments/pixel-zigzag-v1/README.md)。
-
-### 検査
-
-レポジトリルートから:
-
-```bash
-cd skills/silhouette-first-pixel-art
-python3 scripts/test_pipeline.py
-python3 scripts/test_semantic_quality.py
-```
-
-PillowとNumPyが必要。両テストは収録時に通過。テストはデータ整合・保護規則の検査であり、画像の美術品質や歩行の自然さの承認ではない。
-
-### 花契りで使用するとき
-
-入力は利用者が指定した現行の緋月原画・3Dレンダーを使い、版、方向、カメラ、目的寸法、足元基準を作品別に記録する。同梱の64×96サンプルや過去の緋月事例は、現行アセットの外見・寸法・承認状態の正本ではない。
-
-このフォルダは制作道具の保存場所。既存ゲームへ自動適用する処理や、ChatGPT個人スキルへのインストールは行わない。
-
-## 歩行アセットの監査
-
-- [hizuki-walk-audit](hizuki-walk-audit/SKILL.md)：既存の左右関節・ポーズ検査用。参照画像に関する古い指定は、利用者の最新指定と現行の実アセットを照合して読む。
-
+旧再現実験・旧コードは `old/` に隔離し、通常の制作へ戻さない。スキルに含まれる例示寸法や過去事例は、今回の採用値とは別。

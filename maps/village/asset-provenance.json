@@ -1,0 +1,44 @@
+{
+  "source_background_reference": "libfile_f0862d1ab3988191bc0c759bc01f09cb",
+  "generated": true,
+  "generation_mode": "built-in image_gen; independent ground/house/tree/bridge",
+  "files": {
+    "ground.png": {
+      "source": "exec-16cbe836-be13-40b4-9ae9-ee689ba8775b.png",
+      "sha256": "2d1cc92f86d7a64c1d3b063773e1bf9785a6febb1f38930b661fd5c7dfef5259"
+    },
+    "house.png": {
+      "source": "exec-07976825-c2ed-4eb6-8caf-2a17b165c0e6.png",
+      "sha256": "1a890649f25197a836898ece59d3becf569b94d3a61d60f2c7bb704f52988be7"
+    },
+    "tree.png": {
+      "source": "exec-1c4d859b-adbb-481c-9292-6fcf5fb181f2.png",
+      "sha256": "b2e5b9acdcdb8a38339b8f2d894ce5f1c3a01f5829d2d38ee2e48f8e3dde292d"
+    },
+    "bridge.png": {
+      "source": "exec-a43079cc-3db4-485d-9376-412a81391fa1.png",
+      "sha256": "951b6ba558a054289601bd089c4e5b0d90aa578b77ef4596bfda713cdf5812fd"
+    }
+  },
+  "inspection": "Source RGBA alpha retained without manual extraction. Fully transparent pixels may contain RGB; inspect rendered composites, not RGB-only viewers.",
+  "model_version": "not exposed by built-in image_gen",
+  "reproduction": "Use the saved PNGs and map JSON; regeneration is not pixel-deterministic.",
+  "requests": {
+    "ground": {
+      "transparent_background": false,
+      "intent": "Edit previous village into a complete empty ground layer. Remove buildings, trees, props and bridge. Retain warm painted dirt paths and continuous river along right fifth; no characters/grid/UI."
+    },
+    "house": {
+      "transparent_background": true,
+      "intent": "Independent whole Japanese plaster/wood/grey tiled house, front-facing orthographic 40 degree view, upper-left sunlight, indigo noren. No ground/props/cast shadow."
+    },
+    "tree": {
+      "transparent_background": true,
+      "intent": "One complete mature tree and roots, yellow-green broad canopy, painted village style, orthographic 40 degree view, upper-left light. True transparent gaps; no ground/props/cast shadow."
+    },
+    "bridge": {
+      "transparent_background": true,
+      "intent": "Independent horizontal wide wooden footbridge floor, front-facing orthographic 40 degree view; no tall rail/posts/water/ground. Entire deck and landings visible."
+    }
+  }
+}

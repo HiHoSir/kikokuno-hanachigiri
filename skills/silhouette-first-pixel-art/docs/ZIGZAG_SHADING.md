@@ -20,7 +20,7 @@
 
 ## 今回の具体例
 
-[緋月80×112pxの再現セット](../../../experiments/pixel-zigzag-v1/README.md) を使う。入力と2つのパッチを同梱し、外部生成なしで再現する。
+[緋月80×112pxの再現セット](../../../old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/README.md) を使う。入力と2つのパッチを同梱し、外部生成なしで再現する。
 
 ```bash
 # レポジトリルートから。Pillow / NumPy が必要。

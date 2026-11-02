@@ -1,29 +1,30 @@
-# 鬼哭の花契り — 2.5D RPG 技術検証
+# 鬼哭の花契り — 淡彩レイヤーマップ基盤
 
-Web向けの新作RPGを **2Dキャラクター × 3D背景** で構築する独立プロジェクト。
+独立した地面・家・木・橋と、足元基準・歩行面・当たり判定を組み合わせる新しい屋外マップ試作。旧実装は `old/` に隔離した。
 
-## 確定事項
-- 旧作のシナリオ・キャラクターバイブル・使用可能なスプライトは個別審査して再利用する。
-- 旧作のその他の暗黙の前提や描画ルールを継承しない。
-- **作画解像度、タイル寸法、アトラス、スプライト幅、画面解像度の一律制限はない。**
-- Webブラウザで動作する。
+## 遊ぶ・配置する
 
-## 制作ルールと旧資料
+- 道をタップして経路移動。左下スティック、矢印／WASDでも移動できる。
+- 川は歩行不可、橋の床だけで対岸へ渡れる。木の幹と家にはぶつかり、木の前後で遮蔽が変わる。
+- 「全景」で全体を確認。「配置・検査」で景物のX/Z位置、歩行面・判定・足元を確認できる。
+- 配置を端末に保存し、マップJSONの保存／読み込みで別環境へ引き継げる。
+- キャラは採用した通常版緋月の静止1枚を仮表示。方向別歩行素材・室内・次のマップは未制作。iPhone Safari実機検査は別途必要。
 
-- [ドット絵化スキル v2.1.2](skills/silhouette-first-pixel-art/SKILL.md)：承認原画のシルエット、画素修正、保護領域と複数方向の検査。[スキル一覧](skills/README.md)。
+## 現行の正本
 
-- [淡彩レイヤーマップ制作](docs/MAP_ART_RULES.md)：独立背景素材、3D由来の緋月、投影・尺度・歩行確認。
-- [素材・配置・検査契約](docs/MAP_ASSET_CONTRACT.md)：アンカー、判定、歩行面、出入口、検査証拠。
-- [旧情報の隔離](docs/LEGACY_INFORMATION.md)：第1作『鬼哭の花結び』由来の資料と新作資料を区別。
-- マップ制作方針と、以下の2Dキャラ×3D背景の技術実験は別の段階です。資料追加は描画エンジン変更の実施・採用を意味しません。
+- [制作手順](docs/PLAYABLE_MAP_WORKFLOW.md)
+- [アーキテクチャと素材差し替え](docs/CURRENT_ARCHITECTURE.md)
+- [マップデータ](maps/village/map.json)／[キャラ設定](assets/characters/hizuki-v35/character.json)
+- [汎用スキル](skills/build-layered-rpg-maps/SKILL.md)
+- [淡彩背景ルール](docs/MAP_ART_RULES.md)／[素材契約](docs/MAP_ASSET_CONTRACT.md)
+- [隔離記録](old/README.md)
 
-## 技術検証
-`index.html` をHTTP(S)で配信してください。Three.jsをCDNから読み込みます。3D茶屋・柱・家具と2D仮キャラクターの深度遮蔽・連続座標移動・カメラ追従を実験します。
+## 検証・配信
 
-- `docs/FOUNDATION.md`：確定・仮説・未定義事項
-- `docs/ARCHITECTURE.md`：暫定アーキテクチャ
-- `docs/ASSET_POLICY.md`：素材の受入基準
-- `docs/ACCEPTANCE.md`：実機検査項目
+```bash
+npm test
+node tools/verify-archive.mjs
+npm run build
+```
 
-**注意:** 技術実験段階です。完成版ではなく、iPhone Safari実機での合格判定は未実施です。
-
+`dist/` には現行ランタイムのみを含める。`old/`、スキル、テスト、制作中の文書は配信しない。ローカル表示は `dist/` をHTTP配信する。GitHub ActionsではChromium/WebKitの縦横表示・移動・読込・JSON往復を検査してからPagesへ配信する。
