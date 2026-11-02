@@ -1,5 +1,5 @@
-import {validateMotions} from './motion.js?v=scale-stride-3';
-import {project,unproject,depthOrder,collidersFor,surfacesFor} from './logic.js?v=scale-stride-3';
+import {validateMotions} from './motion.js?v=scale-stride-4';
+import {project,unproject,depthOrder,collidersFor,surfacesFor} from './logic.js?v=scale-stride-4';
 export async function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(`画像を読み込めません: ${new URL(url).pathname}`));image.src=url;});}
 export async function loadMapImages(map,url){
  const assets=new Map(),keys=[map.ground.image,...Object.values(map.assets).map(a=>a.image)];
@@ -28,12 +28,13 @@ export function validateCharacter(config){
 export async function loadCharacter(url){
  const response=await fetch(url);if(!response.ok)throw new Error('キャラクター設定を取得できません');
  const config=validateCharacter(await response.json()),images=new Map();
+ const assetUrl=key=>{const target=new URL(key,url),version=new URL(url).searchParams.get('v');if(version)target.searchParams.set('v',version);return target;};
  for(const dirs of Object.values(config.animations))for(const frames of Object.values(dirs))for(const f of frames){
-  if(!images.has(f.image))images.set(f.image,await loadImage(new URL(f.image,url)));
+  if(!images.has(f.image))images.set(f.image,await loadImage(assetUrl(f.image)));
   const im=images.get(f.image);if(f.rect[0]<0||f.rect[1]<0||f.rect[0]+f.rect[2]>im.width||f.rect[1]+f.rect[3]>im.height)throw new Error('アトラスのコマ範囲が不正です');
  }
  for(const m of Object.values(config.motions||{})){
-  const im=await loadImage(new URL(m.image,url));
+  const im=await loadImage(assetUrl(m.image));
   if(im.width!==m.size[0]*m.frames||im.height!==m.size[1]*m.directions.length)throw new Error('モーション画像の寸法が台帳と一致しません');
   images.set(m.image,im);
  }
