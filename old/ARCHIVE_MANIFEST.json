@@ -1,0 +1,1698 @@
+{
+  "base_commit": "48f3730d649c7f6221b0379feba11d687abd2cdf",
+  "snapshot": "old/pre-layered-map-2026-11-02",
+  "files": [
+    {
+      "original": ".github/workflows/3d-lab-browser-smoke.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/3d-lab-browser-smoke.yml",
+      "git_blob": "42bb496fa79eeafbed2e02c28a1d48c671248a8e",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/3d-lab-syntax.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/3d-lab-syntax.yml",
+      "git_blob": "3cba99195445649e53b7903318112a80c99cc5f0",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/ai-pixel-64x96-browser.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/ai-pixel-64x96-browser.yml",
+      "git_blob": "a5c536d9491b67bb484bd6d5011c41a445bd3257",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/ai-pixel-64x96-publication.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/ai-pixel-64x96-publication.yml",
+      "git_blob": "dbb35c670b6cfd1d71313ace378ac1e2d66985d1",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/ai-pixel-editor-browser.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/ai-pixel-editor-browser.yml",
+      "git_blob": "36c5d333ec6ee04b2a4ec49d02abb0e69b098df6",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/ai-pixel-editor-preview.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/ai-pixel-editor-preview.yml",
+      "git_blob": "8b3077b7d93fdcfc065779d129e348aff5ff0476",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/build-source-reactions.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/build-source-reactions.yml",
+      "git_blob": "3015a399d1e316363fec23627025a153b801be5f",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/field-lab.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/field-lab.yml",
+      "git_blob": "0cb8c9aaa2f0c047d35a855a57b7d6c0d1d729e3",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-3d-quality.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-3d-quality.yml",
+      "git_blob": "572a82e340ce73f3912bf70ef4ec2e400fbd7a9f",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-8direction-preview.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-8direction-preview.yml",
+      "git_blob": "d071abf40e94c2b5c7893bdd80343862d368a473",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-v11-idle-transition-preview.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-v11-idle-transition-preview.yml",
+      "git_blob": "f02c718bcd6ebdad5755164f8ed90c87a9d595bd",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-v8-clothing-polish-s.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-v8-clothing-polish-s.yml",
+      "git_blob": "9877ccb1a60e533e4045b0b8ff50fb0d095b88f6",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-v8-eternia-proportions.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-v8-eternia-proportions.yml",
+      "git_blob": "9d9fb943409267e73c04187780aefec38aa83c68",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-v8-fixed-shape-pixel.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-v8-fixed-shape-pixel.yml",
+      "git_blob": "c5ca7a4a03cb05e86efd81a06daec26d77095624",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-v8-motion-preview.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-v8-motion-preview.yml",
+      "git_blob": "9122008c6341843bb14d7885d2d7cd3b80ddeb0b",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-v8-pixel-craft-preview.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-v8-pixel-craft-preview.yml",
+      "git_blob": "01a74bcf806f76c88358639307f42f8ec40cf880",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-v8-pixel-style-preview.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-v8-pixel-style-preview.yml",
+      "git_blob": "b3960ffe708e9dffde1825f9b516497f53c7bbb0",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/hizuki-walk-audit.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/hizuki-walk-audit.yml",
+      "git_blob": "3b8d679759aced8b6a81236730d230e6c25345bf",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/reaction-art-qa.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/reaction-art-qa.yml",
+      "git_blob": "0de293948429f975c9800e36acc103c918b95433",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/reaction-reference.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/reaction-reference.yml",
+      "git_blob": "d5f68c393e811068c904b5d70a35316eb576e1bc",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/test.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/test.yml",
+      "git_blob": "d9b0c40cc89edc4461086cd6d8b75e9dc5581edd",
+      "archived": true
+    },
+    {
+      "original": ".github/workflows/wave-right-prototype.yml",
+      "path": "old/pre-layered-map-2026-11-02/.github/workflows/wave-right-prototype.yml",
+      "git_blob": "466e9f2ef3f1a7bebad75a2094d6a2fc71748b3d",
+      "archived": true
+    },
+    {
+      "original": "AGENTS.md",
+      "path": "AGENTS.md",
+      "git_blob": "61cf23cb8c03f895764d9237f05e1770f391d211",
+      "archived": false
+    },
+    {
+      "original": "README.md",
+      "path": "old/pre-layered-map-2026-11-02/README.md",
+      "git_blob": "0932a062c1c40bee7e9633ec68eee97e20fb6974",
+      "archived": true
+    },
+    {
+      "original": "animation-demo.html",
+      "path": "old/pre-layered-map-2026-11-02/animation-demo.html",
+      "git_blob": "9a4daf0c5c81bfc0a32b149999e836f73abac2ea",
+      "archived": true
+    },
+    {
+      "original": "assets/audio/field_journey_v10.ogg",
+      "path": "old/pre-layered-map-2026-11-02/assets/audio/field_journey_v10.ogg",
+      "git_blob": "42c60aba9b0e262e171ce001824fad345356de53",
+      "archived": true
+    },
+    {
+      "original": "assets/audio/hozuki_village_v13.ogg",
+      "path": "old/pre-layered-map-2026-11-02/assets/audio/hozuki_village_v13.ogg",
+      "git_blob": "71e05227e02c2cdfcf8ade57ad5096d815412120",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/01_front.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/01_front.png",
+      "git_blob": "527e4994db2ee97e0fd38486c8d91e783037874d",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/02_front_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/02_front_right.png",
+      "git_blob": "79489771d3acad78e89c996ea59d399914c14dba",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/03_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/03_right.png",
+      "git_blob": "5bc7df5cdf64ea8719529dee49918c498fc26efb",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/04_back_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/04_back_right.png",
+      "git_blob": "02720a6bcefe2b976022d37bffc2e67359eb5331",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/05_back.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/05_back.png",
+      "git_blob": "68834f190765156b33a3bf9b269dd9c7d9cd768f",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/06_back_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/06_back_left.png",
+      "git_blob": "03f39d9e61abbf8af3223b2c1668c7d25e4b8ddf",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/07_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/07_left.png",
+      "git_blob": "3d44b2f2f2261cf48d2a3e83d394f2d9e93321f0",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/08_front_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/08_front_left.png",
+      "git_blob": "2d36a62eb11bd38190bee22bb96f254b1c78df97",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8direction/README.md",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8direction/README.md",
+      "git_blob": "cbecdfd9949cbca60990031bfa5ed16e2533651a",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/01_front.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/01_front.png",
+      "git_blob": "527e4994db2ee97e0fd38486c8d91e783037874d",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/02_front_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/02_front_right.png",
+      "git_blob": "79489771d3acad78e89c996ea59d399914c14dba",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/03_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/03_right.png",
+      "git_blob": "5bc7df5cdf64ea8719529dee49918c498fc26efb",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/04_back_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/04_back_right.png",
+      "git_blob": "02720a6bcefe2b976022d37bffc2e67359eb5331",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/05_back.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/05_back.png",
+      "git_blob": "68834f190765156b33a3bf9b269dd9c7d9cd768f",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/06_back_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/06_back_left.png",
+      "git_blob": "63c693294805f2894f0898fc7f66023933bcd9cc",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/07_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/07_left.png",
+      "git_blob": "3d44b2f2f2261cf48d2a3e83d394f2d9e93321f0",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/08_front_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/08_front_left.png",
+      "git_blob": "0a22a89e25f3bf68215af7dab2487dc259c06eae",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/8directions/README.md",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/8directions/README.md",
+      "git_blob": "bc78871247a82acd23bed169cf4ac4498379a2a5",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/01_front.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/01_front.png",
+      "git_blob": "527e4994db2ee97e0fd38486c8d91e783037874d",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/02_front_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/02_front_right.png",
+      "git_blob": "79489771d3acad78e89c996ea59d399914c14dba",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/03_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/03_right.png",
+      "git_blob": "5bc7df5cdf64ea8719529dee49918c498fc26efb",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/04_back_right.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/04_back_right.png",
+      "git_blob": "02720a6bcefe2b976022d37bffc2e67359eb5331",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/05_back.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/05_back.png",
+      "git_blob": "68834f190765156b33a3bf9b269dd9c7d9cd768f",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/06_back_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/06_back_left.png",
+      "git_blob": "03f39d9e61abbf8af3223b2c1668c7d25e4b8ddf",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/07_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/07_left.png",
+      "git_blob": "3d44b2f2f2261cf48d2a3e83d394f2d9e93321f0",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/08_front_left.png",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/08_front_left.png",
+      "git_blob": "2d36a62eb11bd38190bee22bb96f254b1c78df97",
+      "archived": true
+    },
+    {
+      "original": "assets/characters/hizuki/turnaround/README.md",
+      "path": "old/pre-layered-map-2026-11-02/assets/characters/hizuki/turnaround/README.md",
+      "git_blob": "49a14f7b0689fafb72c6ac03ad8220d83ab128ad",
+      "archived": true
+    },
+    {
+      "original": "docs/ACCEPTANCE.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/ACCEPTANCE.md",
+      "git_blob": "1f322776e777417bdc0ffb6206d5d4592fd28fff",
+      "archived": true
+    },
+    {
+      "original": "docs/ARCHITECTURE.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/ARCHITECTURE.md",
+      "git_blob": "befb57b2f1e14679fd5d71c64528939ea9ca26b6",
+      "archived": true
+    },
+    {
+      "original": "docs/ASSET_POLICY.md",
+      "path": "docs/ASSET_POLICY.md",
+      "git_blob": "a71005ceb628606bdb1e685442e8f3dc8d339f2b",
+      "archived": false
+    },
+    {
+      "original": "docs/FOUNDATION.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/FOUNDATION.md",
+      "git_blob": "907789c37ffc2c362d7f873a4dccfe15061ce34e",
+      "archived": true
+    },
+    {
+      "original": "docs/HIZUKI_RIGGED_3D_SPEC.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/HIZUKI_RIGGED_3D_SPEC.md",
+      "git_blob": "8f2879662b2215084425bad0122e0b9827969c69",
+      "archived": true
+    },
+    {
+      "original": "docs/HIZUKI_SCULPT_REVIEW.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/HIZUKI_SCULPT_REVIEW.md",
+      "git_blob": "d96cc7c46e02df539f9b513b8695757d99f89d78",
+      "archived": true
+    },
+    {
+      "original": "docs/HIZUKI_WALK_AUDIT_2026-10-14.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/HIZUKI_WALK_AUDIT_2026-10-14.md",
+      "git_blob": "3ffe9b2a62e57b68f9c161bb1588a14a37da4d6d",
+      "archived": true
+    },
+    {
+      "original": "docs/LEGACY_INFORMATION.md",
+      "path": "docs/LEGACY_INFORMATION.md",
+      "git_blob": "e8ee38674beb083c59591021735926227a39101a",
+      "archived": false
+    },
+    {
+      "original": "docs/MAP_ART_RULES.md",
+      "path": "docs/MAP_ART_RULES.md",
+      "git_blob": "bd2050911020923e80e55a014b090c897bce6efa",
+      "archived": false
+    },
+    {
+      "original": "docs/MAP_ASSET_CONTRACT.md",
+      "path": "docs/MAP_ASSET_CONTRACT.md",
+      "git_blob": "7dfe8279ec1e71cb2da6c8eba1ec4813abb1e93a",
+      "archived": false
+    },
+    {
+      "original": "docs/REACTION_ACCEPTANCE.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/REACTION_ACCEPTANCE.md",
+      "git_blob": "51642dd8b4d519e97ea9339fde417f87a8842db7",
+      "archived": true
+    },
+    {
+      "original": "docs/REACTION_VISUAL_QA.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/REACTION_VISUAL_QA.md",
+      "git_blob": "74474e159a577b79f980029a4aef578e2d2fdcf1",
+      "archived": true
+    },
+    {
+      "original": "docs/legacy-yaksha/AGENTS.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/legacy-yaksha/AGENTS.md",
+      "git_blob": "7a93b319ff11fd034f98c0d54262344012c94ed9",
+      "archived": true
+    },
+    {
+      "original": "docs/legacy-yaksha/PIXEL_EDITOR_32PX_REFERENCE.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/legacy-yaksha/PIXEL_EDITOR_32PX_REFERENCE.md",
+      "git_blob": "b5ba2f3e8c2877a3d42d470f167d2f3298eb38f9",
+      "archived": true
+    },
+    {
+      "original": "docs/legacy-yaksha/README.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/legacy-yaksha/README.md",
+      "git_blob": "5f47eee79040f4530ec3e96119244a02d068dd3c",
+      "archived": true
+    },
+    {
+      "original": "docs/legacy-yaksha/docs/production-bible/CHARACTER_BIBLE.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/legacy-yaksha/docs/production-bible/CHARACTER_BIBLE.md",
+      "git_blob": "2acddf79fb9c391c692d90d69db48f4b8e73a095",
+      "archived": true
+    },
+    {
+      "original": "docs/legacy-yaksha/docs/production-bible/EVENT_DESIGN_RULES.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/legacy-yaksha/docs/production-bible/EVENT_DESIGN_RULES.md",
+      "git_blob": "1793f4250f159a650c73a1a7a2ca762a10bd4655",
+      "archived": true
+    },
+    {
+      "original": "docs/legacy-yaksha/docs/production-bible/SCENARIO_BIBLE.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/legacy-yaksha/docs/production-bible/SCENARIO_BIBLE.md",
+      "git_blob": "c78fdd6228dc352f7797a4b52398cdcc283fbde5",
+      "archived": true
+    },
+    {
+      "original": "docs/legacy-yaksha/docs/production-bible/WORLD_BIBLE.md",
+      "path": "old/pre-layered-map-2026-11-02/docs/legacy-yaksha/docs/production-bible/WORLD_BIBLE.md",
+      "git_blob": "80af0f618b2bd7b18ac5d0873cdba345d9532551",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor-64x96/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor-64x96/README.md",
+      "git_blob": "b812edf3519c47a9d0c2ef74cea6ce15c489794d",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor-64x96/editor.js",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor-64x96/editor.js",
+      "git_blob": "eae15d99a8629d8b596227528e9b924ad460607b",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor-64x96/examples/hizuki-front-handpixel-64x96.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor-64x96/examples/hizuki-front-handpixel-64x96.png",
+      "git_blob": "a7e5c03dac9227fd578943f335915d57cb0c60b1",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor-64x96/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor-64x96/index.html",
+      "git_blob": "6f05c2f31bc0e35eabccf952b91c2fd1f3bc3177",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor/README.md",
+      "git_blob": "7a562bb5034c20ff9503a35094a6fdb41d0180cc",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor/ai-pixel-bridge.js",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor/ai-pixel-bridge.js",
+      "git_blob": "8ea90a9910bbe8fdd2cc8a224d970ad5b85d4467",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor/index.html",
+      "git_blob": "dadc64f07a69342775dc37672e789f67c7a15dee",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor/reference/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor/reference/README.md",
+      "git_blob": "9b656c2d7d394d19188d53100436d82fd7a325cc",
+      "archived": true
+    },
+    {
+      "original": "experiments/ai-pixel-editor/reference/sample-yaksha32.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/ai-pixel-editor/reference/sample-yaksha32.png",
+      "git_blob": "ca625f073cba37b1681a2633220b34f65848772e",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-8direction-preview/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-8direction-preview/README.md",
+      "git_blob": "45ee62f2ba2597e054b195635e7536883e7aecd2",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-8direction-preview/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-8direction-preview/index.html",
+      "git_blob": "f3e02047d0e3692ac717a8303d25662be09b477b",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v11-idle-transition-preview/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v11-idle-transition-preview/README.md",
+      "git_blob": "3a741aebcbde7407e8d47ff0cd7a2411d1a9c8b4",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v11-idle-transition-preview/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v11-idle-transition-preview/index.html",
+      "git_blob": "3dcbe1f2e48c6195fc2b2e2df7a879368c16b06a",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v11-pixel-F2-3dir/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v11-pixel-F2-3dir/index.html",
+      "git_blob": "131f360b3450ef5793556e914a0b6250831ff684",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-clothing-polish-s/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-clothing-polish-s/README.md",
+      "git_blob": "f18ceabc5c14d19d80ef84af32f0054a38702e1a",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-clothing-polish-s/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-clothing-polish-s/index.html",
+      "git_blob": "722486e3feecf1523d03f5879b54becb8f064f50",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-eternia-proportions/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-eternia-proportions/README.md",
+      "git_blob": "91971bc9b0821a1755adaee824d2df138b1a1182",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-eternia-proportions/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-eternia-proportions/index.html",
+      "git_blob": "be7faeb256f854ef87478a2e75763318c1b4796d",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-eternia-right-walk/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-eternia-right-walk/README.md",
+      "git_blob": "a7cd7803f8b1b89f15779a29f1ff71710476fc52",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-eternia-right-walk/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-eternia-right-walk/index.html",
+      "git_blob": "9feeec89662ee82becd2b892fb53bbc979ed62f6",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-front-idle-manual-F1/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-front-idle-manual-F1/README.md",
+      "git_blob": "d30653ee73beaf879f06cb395456493d5e32f951",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-front-idle-manual-F1/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-front-idle-manual-F1/index.html",
+      "git_blob": "662b1a0f2c8438e3019ada97ba5c6c1f19630cd1",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-pixel-craft-preview/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-pixel-craft-preview/README.md",
+      "git_blob": "24dbf3248f216612cbf56e612f856a3c46d1f4bd",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-pixel-craft-preview/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-pixel-craft-preview/index.html",
+      "git_blob": "de3c153dbfdd8fbd0f4e226afc85542e617263dd",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-pixel-style-preview/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-pixel-style-preview/README.md",
+      "git_blob": "617a715da8edf9f5aeda7cdae924370fc969aa76",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-pixel-style-preview/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-pixel-style-preview/index.html",
+      "git_blob": "5ba411e8ee530b98c42c5aff0f18ee019afcfe92",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-right-idle-manual-T/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-right-idle-manual-T/README.md",
+      "git_blob": "474b304a107d0e03d63c164b1ff7434a938f2259",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-right-idle-manual-T/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-right-idle-manual-T/index.html",
+      "git_blob": "0d80eeb36f5e7600a2a48fb810420e55ae56d5c9",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-right-walk-pixel-polish/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-right-walk-pixel-polish/README.md",
+      "git_blob": "9c87efe32fbf5ec22d5eef1aceebcc0cebb79cd9",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-right-walk-pixel-polish/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-right-walk-pixel-polish/index.html",
+      "git_blob": "e6ce7930a3b9b9ff83193ce839f8e9f3089646b1",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-toon-motion-preview/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-toon-motion-preview/README.md",
+      "git_blob": "33dbea5bb48a7c858288d6990410c97fc2ae8d2a",
+      "archived": true
+    },
+    {
+      "original": "experiments/hizuki-v8-toon-motion-preview/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/hizuki-v8-toon-motion-preview/index.html",
+      "git_blob": "b699d7d604d28ea3e4c682b3fa88d2a2707581f4",
+      "archived": true
+    },
+    {
+      "original": "experiments/npc-voice-demo/index.html",
+      "path": "old/pre-layered-map-2026-11-02/experiments/npc-voice-demo/index.html",
+      "git_blob": "315cf5ea9e3f328adea22795f8b9461e32af866d",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/.gitignore",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/.gitignore",
+      "git_blob": "0ec42e8ee854d1a6bde2284cb6ae55b0c83a265b",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/README.md",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/README.md",
+      "git_blob": "865aca9e0264f9cc00fdda16e90682f9496f65e8",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/cloth_mask.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/cloth_mask.png",
+      "git_blob": "0ce6f2be575f783a852d3e35c14d17502dd48f3b",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/cloth_patch.json",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/cloth_patch.json",
+      "git_blob": "c91f3000a0803910a4a981a1d6ada5ea8385de45",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/comparison.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/comparison.png",
+      "git_blob": "cbcddece0ea1276a71d7dd79762058b2fedc6de6",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/edit_guard.json",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/edit_guard.json",
+      "git_blob": "60b9db2dee5864fa77f335525cc0996d20efbfec",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/hair_mask.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/hair_mask.png",
+      "git_blob": "28d497fc4f1ea8a64930e28fa7cbf2df6f6d2329",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/hair_patch.json",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/hair_patch.json",
+      "git_blob": "f300fa10efa0cabf0f5640b0be3938a184717339",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/normal.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/normal.png",
+      "git_blob": "4fc40ed77c461ef5f79c155588b29735f9b7c851",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/normal_production_record.json",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/normal_production_record.json",
+      "git_blob": "025baa65eb8d0a8d2ad590ed2d44688d07b25ffa",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/paint_recipe.py",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/paint_recipe.py",
+      "git_blob": "55c63b9105b157e3f85d54ff2c79353f945f75ac",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/protected_mask.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/protected_mask.png",
+      "git_blob": "03c8cfa51892d19df53c59370f3fdd0fd8996667",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/recipe.json",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/recipe.json",
+      "git_blob": "f1620c3d9df776a93cde7632c6e8a73b430aa970",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/reference.png",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/reference.png",
+      "git_blob": "3d14ff13bc55375c2c2d5fafdcaba130eacc0fcf",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/reproduce.py",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/reproduce.py",
+      "git_blob": "c56121cf9b119044aef9d96d3a0209955105cb0b",
+      "archived": true
+    },
+    {
+      "original": "experiments/pixel-zigzag-v1/verification.json",
+      "path": "old/pre-layered-map-2026-11-02/experiments/pixel-zigzag-v1/verification.json",
+      "git_blob": "8dfde8ec8952a977065ae7a393f7bd3e3e19e5e8",
+      "archived": true
+    },
+    {
+      "original": "field-lab/ACTIONS.md",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/ACTIONS.md",
+      "git_blob": "5409208c378f77b868f6af16b3b39e1554199fed",
+      "archived": true
+    },
+    {
+      "original": "field-lab/README.md",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/README.md",
+      "git_blob": "177687eb618e7b404f8b9f3a39e4f50fdb8173ed",
+      "archived": true
+    },
+    {
+      "original": "field-lab/actions.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/actions.js",
+      "git_blob": "61575ac66d100a1f8a2f9f5ea1f98ed31ac570e2",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/0.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/0.png",
+      "git_blob": "52cd72c473530d611e46650139aafc28541e3c29",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/1.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/1.png",
+      "git_blob": "4e1171d22f05ea9ae038efecb20303ff0be9dd54",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/2.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/2.png",
+      "git_blob": "e8bb10ee09756b955a714f1383df1aad3eb1faa6",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/3.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/3.png",
+      "git_blob": "ccd48c80d422e14901a9b2cab54221b35bfafef0",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/4.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/4.png",
+      "git_blob": "0ccf6851afd740fa59ed7a3e4990a2dc5567ada0",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/5.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/5.png",
+      "git_blob": "3260c641d539b1e258c49775af7a7a042af5cee5",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/6.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/6.png",
+      "git_blob": "4897db524a95fd537bb63a96ea4fd1b5e04d176a",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/7.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/7.png",
+      "git_blob": "768ed5257102336e5400986839d9e961fc9b15cf",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/actions/bow.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/actions/bow.png",
+      "git_blob": "08ae62903f779a79343972092f57a3aab3a8f716",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/actions/cheer.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/actions/cheer.png",
+      "git_blob": "2abc4e20d4995abcdb839196f60767abc4cc3db5",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/actions/surprise.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/actions/surprise.png",
+      "git_blob": "e67c95d06cbc2d4790585b1be41b7bc4b7701714",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/actions/wave.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/actions/wave.png",
+      "git_blob": "b4a9515ce93c03fb1e0e2ee03324dd548d3ed278",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/actions8/manifest.json",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/actions8/manifest.json",
+      "git_blob": "952a5c3f821952b86718d51b504720f503204250",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/manifest.json",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/manifest.json",
+      "git_blob": "f9ac1d9e113ede1358eb1a6dcd9b62c1ae6d05f3",
+      "archived": true
+    },
+    {
+      "original": "field-lab/art/v06-manifest.json",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/art/v06-manifest.json",
+      "git_blob": "8092d8fba20bbea94904c65a675a459b3fc17db1",
+      "archived": true
+    },
+    {
+      "original": "field-lab/audit.html",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/audit.html",
+      "git_blob": "28368ef95dc322d76b8316f58579d82f02baaa94",
+      "archived": true
+    },
+    {
+      "original": "field-lab/character.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/character.js",
+      "git_blob": "b870773001c45ae26b0b3d17633ec6b78c4e1464",
+      "archived": true
+    },
+    {
+      "original": "field-lab/hizuki-reaction-lab/index.html",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/hizuki-reaction-lab/index.html",
+      "git_blob": "8b981faff6018f4958624c6fe74e75d2d868d662",
+      "archived": true
+    },
+    {
+      "original": "field-lab/index.html",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/index.html",
+      "git_blob": "feb9f3db19395e3ad233ed78580bb81a289653c6",
+      "archived": true
+    },
+    {
+      "original": "field-lab/main.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/main.js",
+      "git_blob": "e1b573d08d8a4e89bf1937e509c6865be507af90",
+      "archived": true
+    },
+    {
+      "original": "field-lab/motion.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/motion.js",
+      "git_blob": "772c1d85252e29dabb37df972b946cdafcc796ff",
+      "archived": true
+    },
+    {
+      "original": "field-lab/qa/behind.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/qa/behind.png",
+      "git_blob": "605e57921ff44d98135515b92a1aac0c56a634f7",
+      "archived": true
+    },
+    {
+      "original": "field-lab/qa/cushion.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/qa/cushion.png",
+      "git_blob": "59586c6286c0048e99331bded8e7ea5cd69ec869",
+      "archived": true
+    },
+    {
+      "original": "field-lab/qa/front.png",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/qa/front.png",
+      "git_blob": "cff4f64cba164cfe234b908a65a87e602bb76811",
+      "archived": true
+    },
+    {
+      "original": "field-lab/rig.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/rig.js",
+      "git_blob": "8699ba3e7eebe8331a2fe0ed088e84239214adcf",
+      "archived": true
+    },
+    {
+      "original": "field-lab/scenarios.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/scenarios.js",
+      "git_blob": "898abf13d2a53422f13c0b1171f170889b662d4e",
+      "archived": true
+    },
+    {
+      "original": "field-lab/startup.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/startup.js",
+      "git_blob": "51ae8ede1070efd3a0a4164db22d2791acb57b6a",
+      "archived": true
+    },
+    {
+      "original": "field-lab/wave-mask.js",
+      "path": "old/pre-layered-map-2026-11-02/field-lab/wave-mask.js",
+      "git_blob": "796bb4af15190d323f1a52735cb162e8a3e76ec9",
+      "archived": true
+    },
+    {
+      "original": "glb-studio/autofit.html",
+      "path": "old/pre-layered-map-2026-11-02/glb-studio/autofit.html",
+      "git_blob": "8c7fec50b47e11994173053212dd6ab58add7a05",
+      "archived": true
+    },
+    {
+      "original": "glb-studio/index.html",
+      "path": "old/pre-layered-map-2026-11-02/glb-studio/index.html",
+      "git_blob": "3cd8abb8e8b8dd179ea04a23a7f973db71dcf7d2",
+      "archived": true
+    },
+    {
+      "original": "hizuki-layer-motion-lab.html",
+      "path": "old/pre-layered-map-2026-11-02/hizuki-layer-motion-lab.html",
+      "git_blob": "a7fc180ebed3996d59e1e0a181f0dc819ba8e92a",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/3d-proportion-lab.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/3d-proportion-lab.html",
+      "git_blob": "95445cbed8d3a38609ca4f5457786d6234e6c180",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/8way-reaction-lab.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/8way-reaction-lab.html",
+      "git_blob": "05f37d3917b431716ee062ba76555902db505bf4",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/character-adapter-experimental.js",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/character-adapter-experimental.js",
+      "git_blob": "de81cbde8de7a929be98dd8f8d9043eff2badc39",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/character-adapter.js",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/character-adapter.js",
+      "git_blob": "f0ce0032332d4d09fe00c755a9ce9c2c055f7219",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/hizuki-3d-review.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/hizuki-3d-review.html",
+      "git_blob": "2dfde2b553c7391a7d488a2cae2434ba8b9eb173",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/hizuki-new-design-side.png",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/hizuki-new-design-side.png",
+      "git_blob": "827c5a7a90760c72ed5354793fe322199fc823a1",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/independent-limbs-lab.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/independent-limbs-lab.html",
+      "git_blob": "fcb5317f2122b3be0057a4c65c3d04b1cf8ccaf6",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/index.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/index.html",
+      "git_blob": "5ef8355b2e2d1c985202d46cffc34c68ad0674bd",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/motion-controller.js",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/motion-controller.js",
+      "git_blob": "a72d9b27b4428988652f039d9b7ce96db24abfb6",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/proportion-calibration.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/proportion-calibration.html",
+      "git_blob": "a39502e5eae187c6c8fda2492336162e6cee0297",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/reaction-qa.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/reaction-qa.html",
+      "git_blob": "5533e54cc0085055ba0f5494d5a37b1a25a93fe4",
+      "archived": true
+    },
+    {
+      "original": "hozuki-walk/reaction-rig-preview.html",
+      "path": "old/pre-layered-map-2026-11-02/hozuki-walk/reaction-rig-preview.html",
+      "git_blob": "5a3c2e0044f7df71243eef1d33e2f4fb40862610",
+      "archived": true
+    },
+    {
+      "original": "index.html",
+      "path": "old/pre-layered-map-2026-11-02/index.html",
+      "git_blob": "12f5891c82d3a81d8ccff8b96019bb5682c1a2a7",
+      "archived": true
+    },
+    {
+      "original": "layer-prototype-v039/index.html",
+      "path": "old/pre-layered-map-2026-11-02/layer-prototype-v039/index.html",
+      "git_blob": "7d272dce07bfaae096118451eb04439642c3c59a",
+      "archived": true
+    },
+    {
+      "original": "layer-prototype/index.html",
+      "path": "old/pre-layered-map-2026-11-02/layer-prototype/index.html",
+      "git_blob": "e9cb672473f6d8ecebfcbcc89b65207c0eb8ba66",
+      "archived": true
+    },
+    {
+      "original": "models/hizuki/README.md",
+      "path": "old/pre-layered-map-2026-11-02/models/hizuki/README.md",
+      "git_blob": "531a30addbd6b12c51f1776639b29ac17dd9ef4b",
+      "archived": true
+    },
+    {
+      "original": "models/hizuki/UPLOAD_V07.md",
+      "path": "old/pre-layered-map-2026-11-02/models/hizuki/UPLOAD_V07.md",
+      "git_blob": "4c6d1b706b14d08e1cf95dd5fe13e45e4503b2df",
+      "archived": true
+    },
+    {
+      "original": "models/hizuki/candidate.glb",
+      "path": "old/pre-layered-map-2026-11-02/models/hizuki/candidate.glb",
+      "git_blob": "9866dda430f41e2392968a4d52491cb1c048efa4",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/8dir.html",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/8dir.html",
+      "git_blob": "a08dab432883476948e79071c7e07ec8937267a6",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/00.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/00.png",
+      "git_blob": "6869f65e8ddfb7396935200cbd948758a2c580cc",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/01.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/01.png",
+      "git_blob": "446d511fb4d75f53dc4d9ef065eede1ad5a9c682",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/02.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/02.png",
+      "git_blob": "37687cbb8541192b09aa9570322310d056d5e291",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/03.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/03.png",
+      "git_blob": "b2ef0c752b416bf401c79f4036c60a4fcfd0e6d3",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/04.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/04.png",
+      "git_blob": "7aa7c2c253a73fb5de09846d50a8730e2edb3f7b",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/05.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/05.png",
+      "git_blob": "6bc661b01b2546e14874ac5a20a6fa3fd53ff871",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/06.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/06.png",
+      "git_blob": "7a381bf12c6749b47279f93e0bbe28757a9b3d12",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/07.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/07.png",
+      "git_blob": "9400def2404745e7c3da30d33729615cf0d7abb7",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/08.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/08.png",
+      "git_blob": "3403b5601c7b6daf6b776d26cfe178f033a41dc6",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/09.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/09.png",
+      "git_blob": "c377578d23545eeb412d00c63e63c865530a230a",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/10.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/10.png",
+      "git_blob": "b403a2078a810c5689ce1720604837e51235136a",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/11.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/11.png",
+      "git_blob": "81e0fa547f71a5116bf02f4ee5d1111a6fe37d69",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/12.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/12.png",
+      "git_blob": "43a4aa8ae9c8e9465b4b37371a087fb8936e62d5",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/13.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/13.png",
+      "git_blob": "3752fa89ce54c80b22a56f6f92e37e876a2df613",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/14.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/14.png",
+      "git_blob": "c292c1b71f3905e632a8ee65dcf916bc7bff0521",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/15.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/15.png",
+      "git_blob": "a032f003e6ba2da9d280df51e6845a63106ec3c7",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/16.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/16.png",
+      "git_blob": "df85562e00c01bb5b05a1eec39a01c8c57f45e78",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/17.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/17.png",
+      "git_blob": "782c62c4404086cb0cd43fb79107bd3c6bbce4e8",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/18.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/18.png",
+      "git_blob": "5d39fcc280c018e9897b9f491f10466a0d1f788f",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/frames/19.png",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/frames/19.png",
+      "git_blob": "3bf25b706f44efd203b7861a517e4957599885a3",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/hero_8dir.webp",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/hero_8dir.webp",
+      "git_blob": "083ab7486580359ecd8a1a9d5b6fde0b2f1a1ccd",
+      "archived": true
+    },
+    {
+      "original": "motion-demo/index.html",
+      "path": "old/pre-layered-map-2026-11-02/motion-demo/index.html",
+      "git_blob": "df334c36b95e34df9bf354d8a6cc24e5c938adcd",
+      "archived": true
+    },
+    {
+      "original": "motion-lab/index.html",
+      "path": "old/pre-layered-map-2026-11-02/motion-lab/index.html",
+      "git_blob": "d20ecabfc152700346b8ef86ac2f7f005282f2cb",
+      "archived": true
+    },
+    {
+      "original": "package.json",
+      "path": "old/pre-layered-map-2026-11-02/package.json",
+      "git_blob": "8264897614b8092618cf0994f2e3a6c9336c623c",
+      "archived": true
+    },
+    {
+      "original": "rig-preview/hero-atlas.avif",
+      "path": "old/pre-layered-map-2026-11-02/rig-preview/hero-atlas.avif",
+      "git_blob": "b083cbed46156ef3742d6af21a496840782356e9",
+      "archived": true
+    },
+    {
+      "original": "rig-preview/index.html",
+      "path": "old/pre-layered-map-2026-11-02/rig-preview/index.html",
+      "git_blob": "120bbe49a47689fcafad153b0932ece9db3b685e",
+      "archived": true
+    },
+    {
+      "original": "scripts/audit-hizuki-glb.py",
+      "path": "old/pre-layered-map-2026-11-02/scripts/audit-hizuki-glb.py",
+      "git_blob": "8e47aaf8c5650edfa4374effb5aeddf80115b562",
+      "archived": true
+    },
+    {
+      "original": "scripts/build-reaction-reference.py",
+      "path": "old/pre-layered-map-2026-11-02/scripts/build-reaction-reference.py",
+      "git_blob": "ceb8d0f2eb1ed3800f14e56cb82d1d1ed12256bf",
+      "archived": true
+    },
+    {
+      "original": "scripts/build-source-reactions.py",
+      "path": "old/pre-layered-map-2026-11-02/scripts/build-source-reactions.py",
+      "git_blob": "e9e879181a3baa9215a1cd2b9e4854efe6d3f659",
+      "archived": true
+    },
+    {
+      "original": "scripts/build-wave-right.py",
+      "path": "old/pre-layered-map-2026-11-02/scripts/build-wave-right.py",
+      "git_blob": "6f2945af51c7e1fa7820a0e3fb5ad7da37f0a6f9",
+      "archived": true
+    },
+    {
+      "original": "scripts/compare-hizuki-silhouettes.py",
+      "path": "old/pre-layered-map-2026-11-02/scripts/compare-hizuki-silhouettes.py",
+      "git_blob": "fe6bb62be6b2db2b567e544e04f2fce709e87d87",
+      "archived": true
+    },
+    {
+      "original": "scripts/verify-reaction-art.py",
+      "path": "old/pre-layered-map-2026-11-02/scripts/verify-reaction-art.py",
+      "git_blob": "a204c4a9b4b70989f191750269472fbac08fdc30",
+      "archived": true
+    },
+    {
+      "original": "skills/README.md",
+      "path": "skills/README.md",
+      "git_blob": "d859568dfaa6b4e2f28e58f023224555392ecd33",
+      "archived": false
+    },
+    {
+      "original": "skills/hizuki-walk-audit/SKILL.md",
+      "path": "skills/hizuki-walk-audit/SKILL.md",
+      "git_blob": "4dc8f335dd72aa61d58e81c5a068889850d8780c",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/MANIFEST.sha256.json",
+      "path": "skills/silhouette-first-pixel-art/MANIFEST.sha256.json",
+      "git_blob": "ab7f298c09ec8546a31725cf8961a34633628b5d",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/README.md",
+      "path": "skills/silhouette-first-pixel-art/README.md",
+      "git_blob": "e221904b45f29ead6ff33271b5d95d27daee946d",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/SKILL.md",
+      "path": "skills/silhouette-first-pixel-art/SKILL.md",
+      "git_blob": "454e2440bf44806a4ee8b311b2c8f4e0470d8cbc",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/CORNER_TRIMMING.md",
+      "path": "skills/silhouette-first-pixel-art/docs/CORNER_TRIMMING.md",
+      "git_blob": "87220deef6727b3d8849a2b307bdce7486b5641e",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/FAILURE_MODES.md",
+      "path": "skills/silhouette-first-pixel-art/docs/FAILURE_MODES.md",
+      "git_blob": "280154b3f58e1c62b25bcb2c9fa8842f1df664a6",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/HANDOFF_PROMPT.md",
+      "path": "skills/silhouette-first-pixel-art/docs/HANDOFF_PROMPT.md",
+      "git_blob": "e3c9383053f43675c699232589325eb55fe894ad",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/HIZUKI_CASE_STUDY.md",
+      "path": "skills/silhouette-first-pixel-art/docs/HIZUKI_CASE_STUDY.md",
+      "git_blob": "5a99e2b9f460ce629c7a418898e2d3c12a906f32",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/MULTIVIEW_PROTOCOL.md",
+      "path": "skills/silhouette-first-pixel-art/docs/MULTIVIEW_PROTOCOL.md",
+      "git_blob": "a188a466ff3073da43de19a57697693a66d1364d",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/PROCEDURE.md",
+      "path": "skills/silhouette-first-pixel-art/docs/PROCEDURE.md",
+      "git_blob": "e0af5d24e351c936f0de85e658452a58265087b3",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/PROFILES.md",
+      "path": "skills/silhouette-first-pixel-art/docs/PROFILES.md",
+      "git_blob": "527d9e89a5258c4167c212ae8f72bceb5a202904",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/QUALITY_GATES.md",
+      "path": "skills/silhouette-first-pixel-art/docs/QUALITY_GATES.md",
+      "git_blob": "c932ff8cbecbb36ecfa109ca90c57574c1b5c695",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/SEMANTIC_EDIT_GUARDS.md",
+      "path": "skills/silhouette-first-pixel-art/docs/SEMANTIC_EDIT_GUARDS.md",
+      "git_blob": "f686041900fa3fda7166d470483e55c9bf67164c",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/V2_1_CHANGELOG.md",
+      "path": "skills/silhouette-first-pixel-art/docs/V2_1_CHANGELOG.md",
+      "git_blob": "08c1cad8654a9c447477aff94e8c4efea7ea2432",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/docs/ZIGZAG_SHADING.md",
+      "path": "skills/silhouette-first-pixel-art/docs/ZIGZAG_SHADING.md",
+      "git_blob": "507e4fbb2fd5e4d8f7d2b23f49abd8dd383a5001",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/edit-guard-example.json",
+      "path": "skills/silhouette-first-pixel-art/examples/edit-guard-example.json",
+      "git_blob": "a3d9ee47a3765fe41c65888dddf8861e78d62bbc",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/example-64x96-mask.png",
+      "path": "skills/silhouette-first-pixel-art/examples/example-64x96-mask.png",
+      "git_blob": "7636d5e0aac8c79d46506d5650e541462c28721c",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/example-64x96-report.json",
+      "path": "skills/silhouette-first-pixel-art/examples/example-64x96-report.json",
+      "git_blob": "d304c09e887525ea6a7de282db45be41480eb3d2",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/example-64x96.png",
+      "path": "skills/silhouette-first-pixel-art/examples/example-64x96.png",
+      "git_blob": "623df7a3e63b9cdbb6c98fa4c547acb547f10ef1",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/example-multiview-report.json",
+      "path": "skills/silhouette-first-pixel-art/examples/example-multiview-report.json",
+      "git_blob": "4e4c53ed0d7f2819fe3ab1adc71ffba625b333e0",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/example-two-views-atlas.png",
+      "path": "skills/silhouette-first-pixel-art/examples/example-two-views-atlas.png",
+      "git_blob": "0f207cc18cb8481e7230e156c69e22fd0d3fff87",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/hizuki-exp06-audit-summary.json",
+      "path": "skills/silhouette-first-pixel-art/examples/hizuki-exp06-audit-summary.json",
+      "git_blob": "d39c8f03e6dc6e4e3ecc3c78a8357286713346b5",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/multiview-example.json",
+      "path": "skills/silhouette-first-pixel-art/examples/multiview-example.json",
+      "git_blob": "c7a08a99cde3c67b39cb7ebf13d7815862836c2d",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/project_profile.json",
+      "path": "skills/silhouette-first-pixel-art/examples/project_profile.json",
+      "git_blob": "5b88b51bd543841aa5c35802c02d38a64ace17e9",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/sample_palette.json",
+      "path": "skills/silhouette-first-pixel-art/examples/sample_palette.json",
+      "git_blob": "61bf5068801d538a532a7ef44e41cc13787a9627",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/synthetic_reference.png",
+      "path": "skills/silhouette-first-pixel-art/examples/synthetic_reference.png",
+      "git_blob": "35eae93037622db2998475d3ef632b81134216d5",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/examples/views-example.json",
+      "path": "skills/silhouette-first-pixel-art/examples/views-example.json",
+      "git_blob": "b3fd5f0f51fd29fc22310e04fec81a78e31547b8",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/requirements.txt",
+      "path": "skills/silhouette-first-pixel-art/requirements.txt",
+      "git_blob": "64d9c61d4c56064934cd17161547fe0f938ea3c2",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/scripts/pixel_pipeline.py",
+      "path": "skills/silhouette-first-pixel-art/scripts/pixel_pipeline.py",
+      "git_blob": "5e6715403b424765e47482d5159721afe731275d",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/scripts/semantic_quality.py",
+      "path": "skills/silhouette-first-pixel-art/scripts/semantic_quality.py",
+      "git_blob": "7ad0bd121c5742d7bcad91e0654d72e2b2c4c8e9",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/scripts/test_pipeline.py",
+      "path": "skills/silhouette-first-pixel-art/scripts/test_pipeline.py",
+      "git_blob": "cff1dc876a3f131347b356f40d9c53e5e6987be9",
+      "archived": false
+    },
+    {
+      "original": "skills/silhouette-first-pixel-art/scripts/test_semantic_quality.py",
+      "path": "skills/silhouette-first-pixel-art/scripts/test_semantic_quality.py",
+      "git_blob": "8f3e47704bdd765964e3f59b27b4702dd1fb3c93",
+      "archived": false
+    },
+    {
+      "original": "src/anchor.js",
+      "path": "old/pre-layered-map-2026-11-02/src/anchor.js",
+      "git_blob": "ff07c424cdc789adfb25a51608c3762b91caabc0",
+      "archived": true
+    },
+    {
+      "original": "src/animation-demo.js",
+      "path": "old/pre-layered-map-2026-11-02/src/animation-demo.js",
+      "git_blob": "0160ae2453206f67330020c2db3aefea8314decd",
+      "archived": true
+    },
+    {
+      "original": "src/areas/demo.js",
+      "path": "old/pre-layered-map-2026-11-02/src/areas/demo.js",
+      "git_blob": "724c8adcf32dcfb83605e8370a8648da5ffd741b",
+      "archived": true
+    },
+    {
+      "original": "src/areas/hozuki.js",
+      "path": "old/pre-layered-map-2026-11-02/src/areas/hozuki.js",
+      "git_blob": "5f1311c3aa525c64e998902931092e74749bfc9f",
+      "archived": true
+    },
+    {
+      "original": "src/areas/outdoor.js",
+      "path": "old/pre-layered-map-2026-11-02/src/areas/outdoor.js",
+      "git_blob": "06713d322a8e4ed952d76f43b73cc908792b3377",
+      "archived": true
+    },
+    {
+      "original": "src/areas/registry.js",
+      "path": "old/pre-layered-map-2026-11-02/src/areas/registry.js",
+      "git_blob": "d89cda10e7a8c375a36d0551699de7d2ed29f955",
+      "archived": true
+    },
+    {
+      "original": "src/audio.js",
+      "path": "old/pre-layered-map-2026-11-02/src/audio.js",
+      "git_blob": "923b321a154ca0c9e9ee1dbade19a18f571fc1ff",
+      "archived": true
+    },
+    {
+      "original": "src/camera.js",
+      "path": "old/pre-layered-map-2026-11-02/src/camera.js",
+      "git_blob": "bdf8255b7a7797f41b7b73e378cc96c6a3f6ada2",
+      "archived": true
+    },
+    {
+      "original": "src/character.js",
+      "path": "old/pre-layered-map-2026-11-02/src/character.js",
+      "git_blob": "58f2ccf576bad7f303ab504868801305ab9f54f1",
+      "archived": true
+    },
+    {
+      "original": "src/dpad.js",
+      "path": "old/pre-layered-map-2026-11-02/src/dpad.js",
+      "git_blob": "f9a1b9b0fe0564cd23f4bf670b6bf406f7834eb7",
+      "archived": true
+    },
+    {
+      "original": "src/events.js",
+      "path": "old/pre-layered-map-2026-11-02/src/events.js",
+      "git_blob": "05de1820f6c6a35ae7f183901b9b41b06f02ab32",
+      "archived": true
+    },
+    {
+      "original": "src/hero-art.js",
+      "path": "old/pre-layered-map-2026-11-02/src/hero-art.js",
+      "git_blob": "d813a52b86965350ef412a22245752b11b718a86",
+      "archived": true
+    },
+    {
+      "original": "src/hozuki-hd2d.js",
+      "path": "old/pre-layered-map-2026-11-02/src/hozuki-hd2d.js",
+      "git_blob": "073421acfcb18d5a1d59b0e0fa713c8f8ffb6511",
+      "archived": true
+    },
+    {
+      "original": "src/hozuki-world.js",
+      "path": "old/pre-layered-map-2026-11-02/src/hozuki-world.js",
+      "git_blob": "70936a776025aa63b4bab8927fc67630939c16e6",
+      "archived": true
+    },
+    {
+      "original": "src/input.js",
+      "path": "old/pre-layered-map-2026-11-02/src/input.js",
+      "git_blob": "32168a4f2d2fdda954dd986c4c9700919640e183",
+      "archived": true
+    },
+    {
+      "original": "src/main.js",
+      "path": "old/pre-layered-map-2026-11-02/src/main.js",
+      "git_blob": "46fa230947094eaad5b545f06169f7bb7caf5daa",
+      "archived": true
+    },
+    {
+      "original": "src/movement.js",
+      "path": "old/pre-layered-map-2026-11-02/src/movement.js",
+      "git_blob": "a937df0a848fe68e2e7bc44e0736395650fd03bf",
+      "archived": true
+    },
+    {
+      "original": "src/painted-shrine.js",
+      "path": "old/pre-layered-map-2026-11-02/src/painted-shrine.js",
+      "git_blob": "4874c693ced49f02f16a7144e8f927517cddcfcc",
+      "archived": true
+    },
+    {
+      "original": "src/portals.js",
+      "path": "old/pre-layered-map-2026-11-02/src/portals.js",
+      "git_blob": "00bd1ee2b5cb4488de72363aee53e6a13d8f4839",
+      "archived": true
+    },
+    {
+      "original": "src/save.js",
+      "path": "old/pre-layered-map-2026-11-02/src/save.js",
+      "git_blob": "56a54b322197eaa96416a0b59449f016680d84bd",
+      "archived": true
+    },
+    {
+      "original": "src/surfaces.js",
+      "path": "old/pre-layered-map-2026-11-02/src/surfaces.js",
+      "git_blob": "796c54e82ff1db840f73b05a95db4f45ffacfd45",
+      "archived": true
+    },
+    {
+      "original": "src/transitions.js",
+      "path": "old/pre-layered-map-2026-11-02/src/transitions.js",
+      "git_blob": "94b07ab19bb7558b28c65a8e1b39589bd6697df1",
+      "archived": true
+    },
+    {
+      "original": "src/world.js",
+      "path": "old/pre-layered-map-2026-11-02/src/world.js",
+      "git_blob": "665115bfcb2d02c5fce8542863b99f6f2f9fd9fe",
+      "archived": true
+    },
+    {
+      "original": "tests/ai-pixel-editor-64x96.browser.mjs",
+      "path": "old/pre-layered-map-2026-11-02/tests/ai-pixel-editor-64x96.browser.mjs",
+      "git_blob": "92b4979a7f9425dbe81d5ce5260ba663bf0df4dd",
+      "archived": true
+    },
+    {
+      "original": "tests/ai-pixel-editor.browser.mjs",
+      "path": "old/pre-layered-map-2026-11-02/tests/ai-pixel-editor.browser.mjs",
+      "git_blob": "a7b29c8446dee8fb6966e50428a076a060bd5654",
+      "archived": true
+    },
+    {
+      "original": "tests/ai-pixel-editor.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/ai-pixel-editor.test.js",
+      "git_blob": "7c5eefc95465fc14d576fb218081a1aaccab7593",
+      "archived": true
+    },
+    {
+      "original": "tests/anchor.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/anchor.test.js",
+      "git_blob": "076aec75eb04cb400f046af99f153294d8d71c3a",
+      "archived": true
+    },
+    {
+      "original": "tests/areas.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/areas.test.js",
+      "git_blob": "56ca2499ea43d9b7d2b6abe8e9b6fdc1c53810d0",
+      "archived": true
+    },
+    {
+      "original": "tests/dpad.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/dpad.test.js",
+      "git_blob": "03efe8d9ab09105bab8cd2c808c4e7d9150376f0",
+      "archived": true
+    },
+    {
+      "original": "tests/events.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/events.test.js",
+      "git_blob": "ef4e7be26bac70bad46c3e7e0273036cd7b139ec",
+      "archived": true
+    },
+    {
+      "original": "tests/hozuki-elevation.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/hozuki-elevation.test.js",
+      "git_blob": "89c33f679371b061120304065a4e02468b7d04f3",
+      "archived": true
+    },
+    {
+      "original": "tests/lab-actions.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/lab-actions.test.js",
+      "git_blob": "565bece4762e76204be7fb50d61a9dd49c06de62",
+      "archived": true
+    },
+    {
+      "original": "tests/lab-motion.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/lab-motion.test.js",
+      "git_blob": "294b3c2aef13c7cdedd3ad968816e971a7ab9754",
+      "archived": true
+    },
+    {
+      "original": "tests/lab-rig.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/lab-rig.test.js",
+      "git_blob": "0f7d75af21919188029f205754b87ac4e88db69b",
+      "archived": true
+    },
+    {
+      "original": "tests/lab-wave-mask.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/lab-wave-mask.test.js",
+      "git_blob": "df3574a7b65a608734d90d88aa0171732514a55a",
+      "archived": true
+    },
+    {
+      "original": "tests/movement.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/movement.test.js",
+      "git_blob": "4648a68599480ca9ea834bec7f7177f08cca9f09",
+      "archived": true
+    },
+    {
+      "original": "tests/portals-save.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/portals-save.test.js",
+      "git_blob": "a7e21bd2244ccdc9ef16add760fc85c7140327a3",
+      "archived": true
+    },
+    {
+      "original": "tests/surfaces.test.js",
+      "path": "old/pre-layered-map-2026-11-02/tests/surfaces.test.js",
+      "git_blob": "7d879ac858a7cef854979859804b3b1f78f4f90e",
+      "archived": true
+    },
+    {
+      "original": "tests/test_hizuki_pose_audit.py",
+      "path": "old/pre-layered-map-2026-11-02/tests/test_hizuki_pose_audit.py",
+      "git_blob": "2ada35989596e2012e4bdf26a52afb616a47724a",
+      "archived": true
+    },
+    {
+      "original": "tools/field-lab-smoke.mjs",
+      "path": "old/pre-layered-map-2026-11-02/tools/field-lab-smoke.mjs",
+      "git_blob": "a0b9199141051f61f21b069c8f05ba6b91604973",
+      "archived": true
+    },
+    {
+      "original": "tools/hizuki_pose_audit.py",
+      "path": "old/pre-layered-map-2026-11-02/tools/hizuki_pose_audit.py",
+      "git_blob": "2b4776961b66bd15b2ae265e28caeb0cb56e93a8",
+      "archived": true
+    },
+    {
+      "original": "verify-v0.4.4.html",
+      "path": "old/pre-layered-map-2026-11-02/verify-v0.4.4.html",
+      "git_blob": "e970daeabdd57c72afacffd20f01a3ce17b2c407",
+      "archived": true
+    }
+  ]
+}

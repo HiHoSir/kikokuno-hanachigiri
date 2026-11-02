@@ -4,7 +4,7 @@
 Audit the eight-direction walk assets for Hizuki (緋月), the protagonist of 新生 鬼哭の花契り. Prevent the recurring failure of swapping anatomical left and right limbs and of silently accepting visually inconsistent generated frames.
 
 ## References and priorities
-1. The approved original character-design and eight static direction images in `assets/characters/hizuki/8directions/` are the **appearance source of truth**. Do not take a generated walk frame or GLB render as a replacement source of truth.
+1. Follow the latest adopted character manifest. The current approved still is `assets/characters/hizuki-v35/normal.png`; other directions are being produced separately. Historical eight-direction images under `old/` are not appearance authority and must not be loaded without an explicit reuse request.
 2. A GLB (if present) or independently defined pose JSON is **pose evidence only**, not an appearance reference.
 3. Never claim a generated image passes anatomy solely because pose coordinates pass. Image-based anatomy and costume approval require separate visual review.
 4. Do not use a fixed sprite size, pixel-art resolution, or automatic up/down scaling without explicit project approval.
@@ -18,7 +18,7 @@ When a rig uses alternate naming, create a checked explicit mapping; **never** i
 
 ## Required process
 1. Inventory approved eight static references, current walk assets, image dimensions, alpha format and hashes. Preserve originals.
-2. Prepare a machine-readable pose contract with named joints (see `tools/hizuki_pose_audit.py`).
+2. Prepare a machine-readable pose contract with named joints (see `skills/hizuki-walk-audit/scripts/hizuki_pose_audit.py`).
 3. First gate: verify right-foot-forward / left-arm-forward in body-local Z; verify opposite phase separately. Reject missing or ambiguous joint labels.
 4. Render the bone pose from the exact coordinates with transparent background; optionally use colour-coded *reference overlays* (blue right / green left). No coloured ribbons or labels in final sprites.
 5. Use one approved direction's still as appearance input and the pose as pose-only input. Change a single phase/direction at a time. Never silently introduce new accessories.
@@ -31,8 +31,8 @@ Test `front-left`, phase `right_forward`: **character's right ankle ahead of lef
 
 ## Use from Python
 ```bash
-python tools/hizuki_pose_audit.py path/to/pose.json --phase right_forward
-python tools/hizuki_pose_audit.py path/to/pose.json --phase left_forward
+python skills/hizuki-walk-audit/scripts/hizuki_pose_audit.py path/to/pose.json --phase right_forward
+python skills/hizuki-walk-audit/scripts/hizuki_pose_audit.py path/to/pose.json --phase left_forward
 ```
 Accepts either top-level `joints` or a JSON object consisting of joints; each joint coordinate is [x,y,z]. Exit status 0 means the coordinate checks passed; exit status 1 indicates failed/invalid input. Neither status attests a completed picture's visual accuracy.
 
