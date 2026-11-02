@@ -1,5 +1,5 @@
 import {MotionPlayer} from './motion.js';
-import {validateMap,canStand,move,findPath} from './logic.js';
+import {validateMap,canStand,move,findPath,approachTarget} from './logic.js';
 import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js';
 import {createInput} from './input.js';
 
@@ -52,7 +52,8 @@ function update(dt,direction){
   // Undo ground foreshortening for screen-direction input; route vectors already
   // use world metres, so only manual input is converted here.
   if(direction.x||direction.y)y/=Math.sin(map.projection.elevation*Math.PI/180);
-  const next=move(map,player,x,y,dt,running?hero.config.runSpeed:hero.config.speed,hero.config.radius);
+  const speed=running?hero.config.runSpeed:hero.config.speed;
+  const next=route.length?approachTarget(map,player,route[0],dt,speed,hero.config.radius):move(map,player,x,y,dt,speed,hero.config.radius);
   moving=Math.hypot(next.x-player.x,next.z-player.z)>.00001;facing=face(x,y);player=next;if(!moving&&route.length)route=[];
  }
 }

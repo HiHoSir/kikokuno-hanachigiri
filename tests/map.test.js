@@ -47,3 +47,10 @@ test('depth order uses anchor ground depth, with stable tie-breaking',()=>{
  const ordered=depthOrder([{id:'b',z:5},{id:'a',z:5},{id:'hero',z:4}]);
  assert.deepEqual(ordered.map(x=>x.id),['hero','a','b']);
 });
+
+test('running reaches a short tap target at 20fps without oscillating',async()=>{
+ const {approachTarget}=await import('../src/map/logic.js');
+ let p={x:2,z:5};const target={x:1.3,z:5.3};
+ for(let i=0;i<100;i++)p=approachTarget(map,p,target,.05,3.4,.16);
+ assert.ok(Math.hypot(p.x-target.x,p.z-target.z)<.000001);
+});

@@ -109,3 +109,10 @@ export function validateMap(map){
  if(!map.spawn||!canStand(map,map.spawn.x,map.spawn.z,.16))throw new Error('開始位置が歩行範囲外です');
  return map;
 }
+
+// A route step cannot pass its waypoint, even at low frame rates or run speed.
+export function approachTarget(map,player,target,dt,speed=2,radius=.16){
+ const dx=target.x-player.x,dz=target.z-player.z,distance=Math.hypot(dx,dz);
+ if(distance<1e-9)return {...player};
+ return move(map,player,dx,dz,Math.min(dt,distance/speed),speed,radius);
+}
