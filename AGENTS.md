@@ -18,6 +18,8 @@
 
 ## 緋月
 
+- 表示・操作の採用基準は `docs/CHARACTER_MOVEMENT_RULES.md`。キャラ表示や移動を変更する前に読む。利用者承認済みの `scale=0.85`、カメラ基準高145.04、歩行1.15m/s、走行2.8m/s、1周期距離は歩行0.56m／走行0.76mを維持する。実移動距離で位相を進め、方向・歩行走行切替で維持する。キャラ縮小をカメラの寄りで相殺しない。利用者の最新の再調整依頼がある場合だけ基準を更新する。
+
 - 現行の採用基準は `assets/characters/hizuki-v35/normal.png`。80×112px・30色・角落としありの通常版。元PNGを変更せず `production-record.json` と `character.json` を照合する。
 - ジグザグ陰影は不採用の比較実験で、`old/` に保管。採用画像へ取り違えない。
 - 登録済みV35の8動作×8方向×8コマは `assets/characters/hizuki/v35-expanded-cells/`。`hizuki-v35/character.json` のmotions台帳から読む。各動作の共通セルとpadding加算後アンカーを維持し、元PNGを変更・反転しない。専用Idle/Interactは未提供。仮停止姿勢はfall先頭コマであり、待機モーション完成とは扱わない。
