@@ -1,3 +1,4 @@
+import {validateMotions} from './motion.js';
 import {project,unproject,depthOrder,collidersFor,surfacesFor} from './logic.js';
 export async function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(`画像を読み込めません: ${new URL(url).pathname}`));image.src=url;});}
 export async function loadMapImages(map,url){
@@ -20,6 +21,7 @@ export function validateCharacter(config){
    }
   }
  }
+ validateMotions(config);
  return config;
 }
 export async function loadCharacter(url){
@@ -28,6 +30,11 @@ export async function loadCharacter(url){
  for(const dirs of Object.values(config.animations))for(const frames of Object.values(dirs))for(const f of frames){
   if(!images.has(f.image))images.set(f.image,await loadImage(new URL(f.image,url)));
   const im=images.get(f.image);if(f.rect[0]<0||f.rect[1]<0||f.rect[0]+f.rect[2]>im.width||f.rect[1]+f.rect[3]>im.height)throw new Error('アトラスのコマ範囲が不正です');
+ }
+ for(const m of Object.values(config.motions||{})){
+  const im=await loadImage(new URL(m.image,url));
+  if(im.width!==m.size[0]*m.frames||im.height!==m.size[1]*m.directions.length)throw new Error('モーション画像の寸法が台帳と一致しません');
+  images.set(m.image,im);
  }
  return {config,images};
 }
@@ -43,7 +50,7 @@ export class MapRenderer{
  }
  toWorld(screen,map){return unproject({x:screen.x/this.camera.zoom+this.camera.x,y:screen.y/this.camera.zoom+this.camera.y},map.projection);}
  toScreen(world,map){const p=project(world,map.projection),c=this.camera;return {x:(p.x-c.x)*c.zoom,y:(p.y-c.y)*c.zoom};}
- draw(map,images,hero,player,{overview=false,debug=false,route=[],time=0,moving=false,facing='front_right'}={}){
+ draw(map,images,hero,player,{overview=false,debug=false,route=[],time=0,moving=false,facing='front_right',motion=null}={}){
   this.updateCamera(map,player,hero.config,overview);
   const c=this.ctx,cam=this.camera,k=this.dpr*cam.zoom;
   c.setTransform(this.dpr,0,0,this.dpr,0,0);c.fillStyle='#26382f';c.fillRect(0,0,this.width,this.height);
@@ -59,7 +66,9 @@ export class MapRenderer{
    if(entity.id!=='~hero'){drawAsset(entity);continue;}
    const config=hero.config,frames=(moving&&config.animations.walk?.[facing])||config.animations.idle[facing]||config.animations.idle.default;
    const total=frames.reduce((sum,f)=>sum+f.durationMs,0);let t=time%total,frame=frames[0];for(const f of frames){if(t<f.durationMs){frame=f;break;}t-=f.durationMs;}
-   c.imageSmoothingEnabled=!config.pixelArt;c.drawImage(hero.images.get(frame.image),...frame.rect,foot.x-config.anchor[0]*config.scale,foot.y-config.anchor[1]*config.scale,config.size[0]*config.scale,config.size[1]*config.scale);
+   if(motion)frame=motion;
+   const anchor=frame.anchor||config.anchor;
+   c.imageSmoothingEnabled=!config.pixelArt;c.drawImage(hero.images.get(frame.image),...frame.rect,foot.x-anchor[0]*config.scale,foot.y-anchor[1]*config.scale,frame.rect[2]*config.scale,frame.rect[3]*config.scale);
   }
   if(debug){
    const polygon=(points,fill,stroke)=>{c.beginPath();for(const [j,v]of points.entries()){const p=project({x:v[0],z:v[1]},map.projection);j?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y);}c.closePath();c.fillStyle=fill;c.fill();c.strokeStyle=stroke;c.lineWidth=1/cam.zoom;c.stroke();};

@@ -1,0 +1,194 @@
+{
+  "walking": {
+    "sheet_sha256": "e568f5e9005bad34b08ae643c3eaeb84a805738c9070724717199a9a9660c416",
+    "source_frames": [
+      0,
+      4,
+      8,
+      12,
+      17,
+      21,
+      25,
+      29
+    ],
+    "matched_cells": 64,
+    "cell": [
+      80,
+      118
+    ],
+    "padding": [
+      0,
+      1,
+      0,
+      5
+    ]
+  },
+  "fall": {
+    "sheet_sha256": "673a5b4da0986efb2b26cc0e5b0e4fc117080d209abc5b8dfaa41fd22367b807",
+    "source_frames": [
+      0,
+      7,
+      13,
+      20,
+      27,
+      34,
+      40,
+      47
+    ],
+    "matched_cells": 64,
+    "cell": [
+      118,
+      128
+    ],
+    "padding": [
+      15,
+      1,
+      23,
+      15
+    ]
+  },
+  "attack_katana": {
+    "sheet_sha256": "2db3d8d998061098455ff4be637b9803df0849ac579cf58746ebe3dd22987707",
+    "source_frames": [
+      0,
+      4,
+      8,
+      12,
+      17,
+      21,
+      25,
+      29
+    ],
+    "matched_cells": 64,
+    "cell": [
+      137,
+      146
+    ],
+    "padding": [
+      25,
+      30,
+      32,
+      4
+    ]
+  },
+  "attack_wakizashi": {
+    "sheet_sha256": "55bd246fed08e28ecbc6c6750890d08857c3eaffe5f2f923182a27cc7cb9bc98",
+    "source_frames": [
+      0,
+      3,
+      6,
+      9,
+      12,
+      15,
+      18,
+      21
+    ],
+    "matched_cells": 64,
+    "cell": [
+      99,
+      127
+    ],
+    "padding": [
+      6,
+      11,
+      13,
+      4
+    ]
+  },
+  "cast": {
+    "sheet_sha256": "18cd9a9fc739d9f200e5ef694300a85d0680e56b57db4bd798a448d1e6d9b15c",
+    "source_frames": [
+      0,
+      6,
+      12,
+      18,
+      25,
+      31,
+      37,
+      44
+    ],
+    "matched_cells": 64,
+    "cell": [
+      83,
+      115
+    ],
+    "padding": [
+      0,
+      2,
+      3,
+      1
+    ]
+  },
+  "hit": {
+    "sheet_sha256": "ada70a5e536868c0790be52f18d9f2dc68677d23565eb121f81af283e3cd43ae",
+    "source_frames": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      12,
+      15,
+      17
+    ],
+    "matched_cells": 64,
+    "cell": [
+      80,
+      115
+    ],
+    "padding": [
+      0,
+      2,
+      0,
+      1
+    ]
+  },
+  "victory": {
+    "sheet_sha256": "c3aa95fec97c49c24d3c903f147398a0a3ad3933c48ee2679842c559d2bd66b8",
+    "source_frames": [
+      0,
+      7,
+      14,
+      21,
+      28,
+      35,
+      42,
+      50
+    ],
+    "matched_cells": 64,
+    "cell": [
+      80,
+      118
+    ],
+    "padding": [
+      0,
+      5,
+      0,
+      1
+    ]
+  },
+  "running": {
+    "sheet_sha256": "41595f4c2f460b4670f97b2d19a45dca586738a8243073094b8593962086e5a7",
+    "source_frames": [
+      0,
+      2,
+      5,
+      7,
+      10,
+      12,
+      15,
+      17
+    ],
+    "matched_cells": 64,
+    "cell": [
+      80,
+      121
+    ],
+    "padding": [
+      0,
+      3,
+      0,
+      6
+    ]
+  }
+}

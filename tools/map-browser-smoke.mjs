@@ -35,6 +35,39 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
    await page.evaluate(()=>window.dispatchEvent(new Event('blur')));await page.mouse.up();
    const before=await page.evaluate(()=>window.__mapLab.getState().player);await page.waitForTimeout(120);
    const after=await page.evaluate(()=>window.__mapLab.getState().player);assert.ok(Math.hypot(before.x-after.x,before.z-after.z)<.02);
+   // Locomotion, action UI, all eight direction rows, and held-fall recovery.
+   await page.getByRole('button',{name:'走行切替'}).click();
+   assert.equal(await page.evaluate(()=>window.__mapLab.getState().running),true);
+   await page.evaluate(()=>window.__mapLab.routeTo({x:7.8,z:12.5}));
+   await page.waitForFunction(()=>window.__mapLab.getState().motion.id==='running');
+   await page.waitForFunction(()=>window.__mapLab.getState().motion.frame>0);
+   await page.evaluate(()=>window.__mapLab.stop());
+   await page.getByRole('button',{name:'配置・検査',exact:true}).click();
+   await page.locator('#motion-controls summary').click();
+   await page.locator('#motion-select').selectOption('attack_katana');
+   await page.locator('#motion-direction').selectOption('left');
+   await page.getByRole('button',{name:'再生して閉じる'}).click();
+   assert.equal(await page.locator('#drawer').isHidden(),true);
+   assert.equal(await page.evaluate(()=>window.__mapLab.getState().motion.facing),'left');
+   await page.waitForFunction(()=>window.__mapLab.getState().motion.id==='standing');
+   await page.evaluate(()=>{
+    const lab=window.__mapLab,config=lab.getState().character;
+    for(const [id,m]of Object.entries(config.motions))for(const direction of m.directions){
+     lab.playMotion(id,direction);const state=lab.getState();
+     if(state.motion.frame!==0||state.motion.facing!==direction||state.motion.rect[1]!==m.directions.indexOf(direction)*m.size[1])throw new Error('Incorrect motion or direction row');
+    }
+    lab.playMotion('fall','front');
+   });
+   await page.waitForFunction(()=>window.__mapLab.getState().motion.frame===7);
+   const held=await page.evaluate(()=>window.__mapLab.getState().player);
+   await page.screenshot({path:`test-results/${name}-${orientation}-fall.png`});
+   await page.waitForTimeout(150);
+   assert.deepEqual(await page.evaluate(()=>window.__mapLab.getState().player),held);
+   await page.evaluate(()=>window.__mapLab.routeTo({x:7.8,z:12.5}));
+   await page.waitForFunction(()=>window.__mapLab.getState().motion.id==='running');
+   await page.evaluate(()=>window.__mapLab.stop());
+   await page.getByRole('button',{name:'走行切替'}).click();
+   await page.screenshot({path:`test-results/${name}-${orientation}-motions.png`});
    assert.equal((await page.request.get(new URL('old/README.md',base).href)).status(),404);
    assert.deepEqual(errors,[]);results.push({browser:name,orientation,pass:true});
   }catch(error){await page.screenshot({path:`test-results/${name}-${orientation}-failure.png`});throw error;}
