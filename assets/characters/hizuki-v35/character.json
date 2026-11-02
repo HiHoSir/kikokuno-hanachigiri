@@ -12,7 +12,7 @@
   ],
   "scale": 0.85,
   "radius": 0.16,
-  "speed": 0.85,
+  "speed": 1.15,
   "pixelArt": true,
   "animations": {
     "idle": {
@@ -31,7 +31,7 @@
     }
   },
   "notes": "Original still preserved. Registered V35 Ortho40 motions use original-scale cells plus audited padding. Idle not supplied: first fall frame is a temporary directional standing pose; no new art or mirrors.",
-  "runSpeed": 1.6,
+  "runSpeed": 2.8,
   "motions": {
     "walking": {
       "label": "歩行",
