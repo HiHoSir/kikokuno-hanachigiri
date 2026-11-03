@@ -41,3 +41,13 @@ If the project chooses a single fixed background, retain it and register matchin
 ## Verified implementation example
 
 `HiHoSir/kikokuno-hanachigiri`: `docs/PLAYABLE_MAP_WORKFLOW.md`, `maps/village/map.json`, `src/map/`, `tools/map-browser-smoke.mjs`. The example uses a 40° painted outdoor map, an approved still placeholder, separate house/tree/bridge images, JSON placement round trips and an `old/` quarantine. These are example settings, not universal constraints.
+
+## 3D制作→2D固定カメラの景観品質ゲート（v7以降）
+
+- 新作では **GLB/3D幾何・UVテクスチャと、ゲーム用Canvas2DのRGBA実表示**を区別。新しい見た目はイメージ生成ではなく、再出力した実素材と実マップの同位置比較で検証する。
+- **造形変更は目に見える品質改善を優先**する。強い角張り、球状の樹冠、箱型の崖を単なる色補正でごまかさず、必要なら小さな3D葉房・幹枝・岸辺などの形状／境界へ戻って改善する。枝が露出しすぎる新造形もそのまま承認しない。
+- 木目は**板の物理長軸に沿ってUVのU方向**へ写す。画面方向で決めない。屋根瓦・柱・欄干・板の境界をテクスチャへ置き換える際は輪郭と物理占有を維持。
+- 視覚だけの境界フェードは**エリア拡張ではなく**、実歩行範囲と見える地面が矛盾しないか画面端の通行QAも必要。連続ワールド化を勝手に宣言しない。
+- **実キャラ比較は採用済みV35**を使い、オフラインの仮マーカーで年齢感・サイズ・背景適合を合格扱いしない。
+- 比較デモのON/OFFは**地面・樹木・前景を全て同一版で切替**する。既存の座標・足元・橋通行・衝突の単体／ブラウザ回帰テストを再実施する。
+- 実例：`docs/3d2d-landscape-v7.md` と `authoring/3d2d-v7/source/`。バイナリ素材は会話添付ZIPのベースラインが必要。
