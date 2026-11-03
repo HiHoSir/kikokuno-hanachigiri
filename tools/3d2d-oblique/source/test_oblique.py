@@ -27,6 +27,14 @@ with sync_playwright() as p:
   assert page.evaluate('__demoQA.canStand(13.35,9.7)') is True
   assert page.evaluate('__demoQA.go(13.75,9.7)')>0
   assert page.evaluate('__demoQA.go(6.95,5.6)')>0
+  # Real Canvas pointer interaction, not just a direct routing API call.
+  page.locator('#overview').click()
+  px=page.evaluate('''() => { const p=__demoQA.project({x:8.9,z:10.9});
+    const c=__demoQA.get().camera; return {x:(p.x-c.x)*c.zoom,y:(p.y-c.y)*c.zoom}; }''')
+  if 0<px['x']<width and 0<px['y']<height:
+   page.mouse.click(px['x'],px['y'])
+   assert page.evaluate('__demoQA.get().routeLength')>0
+  page.locator('#overview').click()
   page.evaluate('__demoQA.set(9,9)')
   page.locator('#reset').click()
   page.screenshot(path=str(P/f'preview-{label}.png'))
