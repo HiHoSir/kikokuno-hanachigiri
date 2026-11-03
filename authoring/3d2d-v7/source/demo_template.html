@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ja"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"><meta name="theme-color" content="#24352f">
+<title>鬼哭の花契り｜斜め視点 3D→2D 樹木・地形の再設計 v7</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#202c29;color:#f9f3df;font-family:-apple-system,BlinkMacSystemFont,'Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;overscroll-behavior:none}button{font:inherit;border:1px solid #d5dbc5a8;background:#203b33de;color:#f9f3df;border-radius:11px;padding:9px 12px;cursor:pointer;touch-action:manipulation}button:active{background:#59766a}#scene{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}header{position:absolute;top:0;left:0;right:0;z-index:2;padding:calc(10px + env(safe-area-inset-top)) 12px 10px;background:linear-gradient(#172a24ed,#172a2455);display:flex;align-items:center;justify-content:space-between;gap:8px;pointer-events:none}h1{font-size:14px;margin:0;letter-spacing:.04em;line-height:1.5}.sub{color:#cbd3c0;font-size:10px}header button{pointer-events:auto;font-size:12px;padding:6px 9px}#topButtons{display:flex;gap:4px;flex-shrink:0}#topButtons button{white-space:nowrap}#status{position:absolute;top:calc(67px + env(safe-area-inset-top));left:12px;right:12px;max-width:420px;margin:auto;background:#192b25b5;backdrop-filter:blur(7px);border:1px solid #cbdbbc45;border-radius:10px;padding:8px 12px;text-align:center;font-size:12px;z-index:3;pointer-events:none}#controls{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom));left:0;right:0;z-index:4;display:flex;align-items:end;justify-content:space-between;padding:0 20px;pointer-events:none}#stick{width:114px;height:114px;background:#23372cc9;border:1px solid #d7dfb17a;box-shadow:inset 0 0 16px #9ab28a40,0 3px 18px #1121177a;border-radius:50%;position:relative;touch-action:none;pointer-events:auto}#stick:before,#stick:after{content:'';position:absolute;background:#e2e7cb23;left:50%;top:16px;bottom:16px;width:1px}#stick:after{transform:rotate(90deg)}#thumb{width:45px;height:45px;background:#f4eed0c8;border:3px solid #7b9978;border-radius:50%;position:absolute;left:34px;top:34px;box-shadow:0 2px 4px #101e1ba3;pointer-events:none}#footButtons{display:flex;flex-direction:column;gap:8px;pointer-events:auto}#footButtons button{min-width:85px;font-size:13px;background:#284639ef}#info{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));color:#e7e7d4c9;font-size:10px;text-align:center;white-space:nowrap;pointer-events:none}#help{display:none;position:absolute;inset:0;z-index:8;background:#17261de8;backdrop-filter:blur(5px);padding:70px 19px 20px;overflow:auto}#help.open{display:block}#help .panel{max-width:660px;margin:auto;background:#f7f0e1;color:#29352d;border-radius:16px;padding:18px 21px;line-height:1.7}#help h2{margin:0 0 8px;font-size:17px}#help p{font-size:13px}#help code{font-size:11px;overflow-wrap:anywhere}#help button{background:#304b3a;margin-top:8px}#heroIndicator{position:absolute;right:12px;top:calc(83px + env(safe-area-inset-top));font-size:10px;background:#24372abb;border-radius:7px;padding:5px 7px;display:none}
+@media(max-width:500px){header h1{font-size:11px}header button{padding:6px 6px;font-size:10px}header .sub{font-size:8px}#controls{padding:0 14px}#stick{width:106px;height:106px}#thumb{left:30px;top:30px}#status{font-size:11px}#info{bottom:4px;font-size:9px}}
+</style></head><body>
+<canvas id="scene" aria-label="樹木と地形を作り直した3D由来の2Dマップ。歩行できます"></canvas>
+<header><div><h1>鬼哭の花契り｜樹木・地形の再設計 v7</h1><div class="sub">実GLBへUV貼付→PNG書出し／40°＋35°</div></div><div id="topButtons"><button id="texture" aria-pressed="true">景観改良ON</button><button id="overview">全景</button><button id="debug">判定</button><button id="about">説明</button></div></header>
+<div id="status">3Dから描画した村の風景を読込中…</div><div id="heroIndicator"></div>
+<div id="controls"><div id="stick" aria-label="移動スティック"><span id="thumb"></span></div><div id="footButtons"><button id="run">走る</button><button id="reset">初期位置</button></div></div>
+<div id="info">道をタップして移動／スティック・矢印キー</div>
+<div id="help"><div class="panel"><h2>このデモの仕組み</h2><p><b>① 3Dで制作：</b>屋根瓦はUVテクスチャ、柱・屋根の骨格は3Dで表現した民家、枝分かれと不規則な樹冠を持つ樹木・桜、橋・灯籠・岩・植栽を立体メッシュとして生成。元モデルはGLBでも保存しています。</p><p><b>② 固定カメラで2Dへ：</b>俯角40°・方位35°の斜め平行投影により、各3Dモデルを背景透過PNGに書き出しています。地面は3D平面としてカメラ方向に投影し、断崖の側面を描画しています。</p><p><b>③ 2Dゲームで歩行：</b>この画面はWebGLを使わず、Canvas2DでPNGを表示。X/Zメートルの足元座標から歩行可能範囲・家・幹・水辺の当たり判定を計算しています。緋月は既存V35素材をネット接続できる場合に読み込みます。</p><p><b>検査：</b>「判定」を押すと緑が歩ける場所、赤が障害／水面です。橋だけ水の上を渡れます。家・木の手前や裏を移動して重なりを確認してください。</p><p>※ 「景観改良ON／旧v6」は同じカメラ、配置、歩行判定で樹木と地形の造形変更前後を切り替えます。屋根・壁・木目はv6に維持し、樹冠の構造と地面の境界を重点改善しました。 この風景は制作スクリプトで再生成できる3D→2Dデモです。最終的な淡彩アートへの仕上げやユーザーの承認はまだです。既存ゲームのデータは変更していません。</p><button id="closeHelp">戻る</button></div></div>
+<script>
+'use strict';
+const DATA=__DATA__;
+const BEFORE=__BEFORE_DATA__;
+const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
+const S=Math.sin(Math.PI*40/180),C=Math.cos(Math.PI*40/180),AZ=35*Math.PI/180,SA=Math.sin(AZ),CA=Math.cos(AZ),OX=1064,OY=300,MAP_W=2440,MAP_H=1810,PPM=100,DIRS=['front','front_right','right','back_right','back','back_left','left','front_left'];
+const entities=[
+ {id:'house',asset:'house',x:4.35,z:7.0,depth:1.15},
+ {id:'teahouse',asset:'teahouse',x:6.95,z:3.65,depth:1.05},
+ {id:'tree-left',asset:'tree',x:2.3,z:12.0,depth:0},
+ {id:'sakura',asset:'sakura',x:10.9,z:7.2,depth:0},
+ {id:'tree-right',asset:'tree',x:9.45,z:13.5,depth:0},
+ {id:'bridge',asset:'bridge',x:13.35,z:9.7,depth:0,ground:true},
+ {id:'lantern',asset:'lantern',x:6.7,z:9.5,depth:0},
+ {id:'rock-1',asset:'rock',x:10.9,z:12.3,depth:0},
+ {id:'rock-2',asset:'rock',x:11.4,z:4.4,depth:0},
+ {id:'shrub-front',asset:'shrub',x:3.86,z:12.8,depth:0},
+ {id:'shrub-behind',asset:'shrub',x:9.17,z:4.35,depth:0},
+ {id:'shrub-east',asset:'shrub',x:10.92,z:11.5,depth:0},
+ {id:'shrub-left',asset:'shrub',x:.97,z:8.75,depth:0},
+ {id:'flower-a',asset:'flowerpatch',x:3.3,z:10.3,depth:0},
+ {id:'flower-b',asset:'flowerpatch',x:7.62,z:6.12,depth:0},
+ {id:'flower-c',asset:'flowerpatch',x:9.4,z:11.5,depth:0},
+ {id:'flower-d',asset:'flowerpatch',x:5.85,z:14.05,depth:0},
+ {id:'flower-e',asset:'flowerpatch',x:10.73,z:3.72,depth:0},
+ {id:'fence-lower',asset:'fence',x:2.53,z:14.62,depth:0},
+ {id:'fence-north',asset:'fence',x:11.1,z:2.6,depth:0},
+ {id:'lantern-door',asset:'lantern',x:5.55,z:9.28,depth:0},
+];
+const hero={x:9,z:9.0,radius:.16,facing:'back',phase:0,moving:false};
+const sheets={
+ walking:{name:'walking_8dir.png',w:80,h:118,anchor:[43.6993,98.5213],stride:.56},
+ running:{name:'running_8dir.png',w:80,h:121,anchor:[43.6993,100.5213],stride:.76},
+ standing:{name:'fall_8dir.png',w:118,h:128,anchor:[58.6993,98.5213]},
+};
+const HERO_BASE='https://hihosir.github.io/kikokuno-hanachigiri/assets/characters/hizuki/v35-expanded-cells/';
+// When embedded by the GitHub deployment step, no secondary sprite network request is needed.
+const INLINE_HERO=__HERO_IMAGES__;
+let assets={},beforeAssets={},texturesEnabled=true,heroImages={},heroAvailable=false,route=[],facing='back',overview=false,debug=false,running=false,joyX=0,joyY=0,keys=new Set(),camera={x:0,y:0,zoom:1},W=0,H=0,dpr=1,last=performance.now(),fps=0,noticeExpires=0,debugOverlay=null,ready=false;
+function say(t){const p=document.getElementById('status');p.textContent=t;noticeExpires=performance.now()+3300;p.style.opacity='1';}
+function load(src){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=reject;image.src=src;});}
+const projection=p=>({x:OX+PPM*(p.x*CA-p.z*SA),y:OY+PPM*((p.x*SA+p.z*CA)*S-(p.y||0)*C)});
+function inverseGround(p){const u=(p.x-OX)/PPM,v=(p.y-OY)/(PPM*S);return {x:CA*u+SA*v,z:-SA*u+CA*v};}
+const groundDepth=p=>p.x*SA+p.z*CA;
+const bankLeft=z=>12.52+Math.sin(z*.58)*.40,bankRight=z=>14.72+Math.sin(z*.58+.20)*.35;
+function openAt(x,z){
+ if(x<.22||x>15.14||z<.22||z>15.68)return false;
+ const bridge=z>8.97&&z<10.35&&x>11.55&&x<15.18;
+ if(!bridge&&x>bankLeft(z)&&x<bankRight(z))return false;
+ if(x>2.88&&x<5.84&&z>6.02&&z<7.98)return false;
+ if(x>5.79&&x<8.12&&z>2.77&&z<4.54)return false;
+ for(const e of entities){
+  if(e.asset==='tree'||e.asset==='sakura'){if(Math.hypot(x-e.x,z-e.z)<.26)return false;}
+  else if(e.asset==='lantern'&&Math.hypot(x-e.x,z-e.z)<.20)return false;
+  else if(e.asset==='fence'&&Math.abs(z-e.z)<.16&&Math.abs(x-e.x)<1.15)return false;
+ }
+ return true;
+}
+function canStand(x,z,rad=hero.radius){
+ if(!openAt(x,z))return false;
+ for(let i=0;i<16;i++){const t=Math.PI*2*i/16;if(!openAt(x+Math.cos(t)*rad,z+Math.sin(t)*rad))return false;}
+ return true;
+}
+function collideMove(dx,dz,dt,speed){
+ const n=Math.hypot(dx,dz);if(n<.03)return 0;
+ const dist=Math.min(.05,dt)*speed,steps=Math.max(1,Math.ceil(dist/.04));let taken=0;
+ for(let i=0;i<steps;i++){
+  const beforeX=hero.x,beforeZ=hero.z;
+  const sx=dx/n*dist/steps,sz=dz/n*dist/steps;
+  if(canStand(hero.x+sx,hero.z))hero.x+=sx;
+  if(canStand(hero.x,hero.z+sz))hero.z+=sz;
+  taken+=Math.hypot(hero.x-beforeX,hero.z-beforeZ);
+ }
+ return taken;
+}
+function segmentOK(a,b){
+ const n=Math.max(1,Math.ceil(Math.hypot(b.x-a.x,b.z-a.z)/.09));
+ for(let i=0;i<=n;i++){const t=i/n;if(!canStand(a.x+(b.x-a.x)*t,a.z+(b.z-a.z)*t))return false;}
+ return true;
+}
+function pathfind(target){
+ if(!canStand(target.x,target.z))return [];
+ if(segmentOK(hero,target))return [target];
+ const cell=.32,cols=Math.ceil(15.36/cell)+1,rows=Math.ceil(15.93/cell)+1;
+ const nearest=p=>{
+  const gx=Math.round(p.x/cell),gz=Math.round(p.z/cell);let best=-1,score=99;
+  for(let zz=-2;zz<=2;zz++)for(let xx=-2;xx<=2;xx++){
+   const x=gx+xx,z=gz+zz,id=z*cols+x;
+   if(x<0||z<0||x>=cols||z>=rows)continue;
+   const q={x:x*cell,z:z*cell},d=Math.hypot(q.x-p.x,q.z-p.z);
+   if(d<score&&segmentOK(p,q)){best=id;score=d;}
+  }return best;
+ };
+ const start=nearest(hero),end=nearest(target);if(start<0||end<0)return [];
+ const coord=id=>({x:(id%cols)*cell,z:Math.floor(id/cols)*cell});
+ const queue=[start],g=new Map([[start,0]]),prev=new Map(),closed=new Set();
+ const heuristic=id=>{const v=coord(id),t=coord(end);return Math.hypot(t.x-v.x,t.z-v.z);};
+ for(let iter=0;queue.length&&iter<7500;iter++){
+  queue.sort((a,b)=>(g.get(b)+heuristic(b))-(g.get(a)+heuristic(a)));
+  const p=queue.pop();if(closed.has(p))continue;if(p===end){
+   const chain=[target];let cur=p;
+   while(cur!==start){chain.push(coord(cur));cur=prev.get(cur);if(cur===undefined)return [];}
+   chain.push(coord(start));return chain.reverse();
+  }
+  closed.add(p);const cx=p%cols,cz=Math.floor(p/cols);
+  for(const [dx,dz] of [[1,0],[-1,0],[0,1],[0,-1],[1,1],[1,-1],[-1,1],[-1,-1]]){
+   const x=cx+dx,z=cz+dz;if(x<0||z<0||x>=cols||z>=rows)continue;
+   const nid=z*cols+x;if(closed.has(nid))continue;
+   const a=coord(p),b=coord(nid);if(!canStand(b.x,b.z)||!segmentOK(a,b))continue;
+   if(dx&&dz&&(!canStand((cx+dx)*cell,cz*cell)||!canStand(cx*cell,(cz+dz)*cell)))continue;
+   const cost=g.get(p)+Math.hypot(dx,dz)*cell;if(cost<(g.get(nid)??Infinity)){g.set(nid,cost);prev.set(nid,p);queue.push(nid);}
+  }
+ }
+ return [];
+}
+const directionName=(dx,dz)=>{
+ const ang=Math.atan2(dx,dz),oct=Math.round(ang/(Math.PI/4));
+ return ['front','front_right','right','back_right','back','back_left','left','front_left'][((oct%8)+8)%8];
+};
+function resize(){
+ const rect=canvas.getBoundingClientRect();W=rect.width;H=rect.height;dpr=Math.min(2,devicePixelRatio||1);canvas.width=Math.round(W*dpr);canvas.height=Math.round(H*dpr);
+}
+function cameraUpdate(){
+ let zoom=overview?Math.min((W-20)/MAP_W,(H-115)/MAP_H):Math.min(.92,Math.max(.60,H/1230));
+ zoom=Math.max(.2,zoom);const vw=W/zoom,vh=H/zoom;
+ const foot=projection(hero);
+ const clamp=(v,max,span)=>span>=max?(max-span)/2:Math.max(0,Math.min(max-span,v));
+ camera={zoom,x:overview?(MAP_W-vw)/2:clamp(foot.x-vw*.49,MAP_W,vw),y:overview?(MAP_H-vh)/2:clamp(foot.y-vh*.54,MAP_H,vh)};
+}
+function imageAt(e){const selected=texturesEnabled?DATA:BEFORE;const meta=selected.metadata.assets[e.asset],im=(texturesEnabled?assets:beforeAssets)[e.asset],p=projection(e);ctx.drawImage(im,p.x-meta.anchor[0],p.y-meta.anchor[1]);}
+function shadow(x,y,rx,ry){ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);
+ const g=ctx.createRadialGradient(0,0,.1,0,0,1);g.addColorStop(0,'rgba(45,56,43,.28)');g.addColorStop(.55,'rgba(43,55,44,.14)');g.addColorStop(1,'rgba(43,55,44,0)');
+ ctx.fillStyle=g;ctx.beginPath();ctx.arc(0,0,1,0,7);ctx.fill();ctx.restore();}
+function drawHero(){
+ const foot=projection(hero);
+ shadow(foot.x,foot.y+2,19,6);
+ const key=hero.moving?(running?'running':'walking'):'standing',s=sheets[key],image=heroImages[key];
+ if(image){
+  const frame=hero.moving?Math.floor(hero.phase*8)%8:0,dir=DIRS.indexOf(hero.facing),scale=.85;
+  ctx.imageSmoothingEnabled=false;
+  ctx.drawImage(image,frame*s.w,dir*s.h,s.w,s.h,foot.x-s.anchor[0]*scale,foot.y-s.anchor[1]*scale,s.w*scale,s.h*scale);
+  ctx.imageSmoothingEnabled=true;
+ }else{
+  // QA marker only: not a substitute for the real Hizuki design.
+  ctx.save();ctx.translate(foot.x,foot.y);
+  ctx.fillStyle='#a83f42';ctx.strokeStyle='#f4d6be';ctx.lineWidth=2;
+  ctx.beginPath();ctx.ellipse(0,-34,18,26,0,0,7);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#8dc3ce';ctx.beginPath();ctx.ellipse(0,-69,17,18,0,0,7);ctx.fill();ctx.stroke();
+  ctx.fillStyle='#f6d878';ctx.beginPath();ctx.moveTo(-3,-84);ctx.lineTo(0,-98);ctx.lineTo(4,-84);ctx.fill();
+  ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillStyle='#2a3732';ctx.fillText('仮',0,-46);ctx.restore();
+ }
+}
+function makeDebug(){
+ const cv=document.createElement('canvas');cv.width=MAP_W;cv.height=MAP_H;const c=cv.getContext('2d');
+ for(let z=.22;z<15.7;z+=.28)for(let x=.22;x<15.14;x+=.28){
+  c.fillStyle=canStand(x,z)?'rgba(56,180,104,.24)':'rgba(235,65,62,.35)';
+  const a=projection({x,z}),b=projection({x:x+.28,z}),cc=projection({x:x+.28,z:z+.28}),d=projection({x,z:z+.28});c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(cc.x,cc.y);c.lineTo(d.x,d.y);c.closePath();c.fill();
+ }return cv;
+}
+function waterLight(now){
+ // 2D animation layered over the pre-rendered 3D river. No WebGL at runtime.
+ ctx.save();ctx.beginPath();
+ const left=[],right=[];
+ for(let z=0;z<=16.0;z+=.25){left.push(projection({x:bankLeft(z),z}));right.push(projection({x:bankRight(z),z}));}
+ left.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+ for(const p of right.reverse())ctx.lineTo(p.x,p.y);
+ ctx.closePath();ctx.clip();
+ const t=now*.001;
+ for(let i=0;i<34;i++){
+  const z=(i*.67 + t*.23)%15.7, x=(bankLeft(z)+bankRight(z))/2+Math.sin(i*41.23+t*.7)*.72;
+  const p=projection({x,z});const w=4+4*(Math.sin(i*3+t)+1);
+  ctx.beginPath();ctx.moveTo(p.x-w,p.y);ctx.quadraticCurveTo(p.x,p.y-1.7,p.x+w,p.y-1.1);
+  ctx.strokeStyle=`rgba(227,248,232,${.09+.09*(1+Math.sin(i+t*2))})`;
+  ctx.lineWidth=1.2;ctx.stroke();
+ }
+ ctx.restore();
+}
+function driftingPetals(now){
+ // Sparse atmospheric particles are 2D effects; the trees themselves remain GLB-derived images.
+ const t=now*.00025;
+ ctx.save();
+ for(let i=0;i<24;i++){
+  const drift=(t*(.18+i%3*.025)+i*.173)%1;
+  const x=10.9+Math.sin(i*29.7)*1.8+(drift-.5)*1.6;
+  const z=7.2+Math.cos(i*17.2)*1.3+drift*2.1;
+  const h=.35+((i*43)%11)*.16;
+  const p=projection({x,z,y:h});
+  ctx.fillStyle=i%3===0?'rgba(252,228,234,.63)':'rgba(243,195,209,.54)';
+  ctx.save();ctx.translate(p.x,p.y);ctx.rotate(i*.97+now*.0005);
+  ctx.beginPath();ctx.ellipse(0,0,2.1+(i%3),1.15,0,0,Math.PI*2);ctx.fill();ctx.restore();
+ }
+ ctx.restore();
+}
+function frame(now){
+ if(!ready){requestAnimationFrame(frame);return;}
+ const dt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;
+ if(noticeExpires&&now>noticeExpires){document.getElementById('status').style.opacity='0';noticeExpires=0;}
+ const key={x:(keys.has('arrowright')||keys.has('d')?1:0)-(keys.has('arrowleft')||keys.has('a')?1:0),y:(keys.has('arrowdown')||keys.has('s')?1:0)-(keys.has('arrowup')||keys.has('w')?1:0)};
+ let dx=joyX+key.x,dz=joyY+key.y,moved=0;
+ if(Math.hypot(dx,dz)>.08){route=[];const sx=dx,sy=dz/S;dx=CA*sx+SA*sy;dz=-SA*sx+CA*sy;}
+ else if(route.length){
+  while(route.length&&Math.hypot(route[0].x-hero.x,route[0].z-hero.z)<.07)route.shift();
+  if(route.length){dx=route[0].x-hero.x;dz=route[0].z-hero.z;}
+ }
+ const dist=Math.hypot(dx,dz),speed=running?2.8:1.15;
+ if(dist>.08){hero.facing=directionName(CA*dx-SA*dz,S*(SA*dx+CA*dz));const targetDist=route.length?Math.min(dt*speed,dist):dt*speed;
+  moved=collideMove(dx,dz,targetDist/speed,speed);
+  if(route.length&&moved<.0001)route=[];
+ }
+ hero.moving=moved>.00001;
+ if(hero.moving)hero.phase=(hero.phase+moved/(running?.76:.56))%1;
+ else hero.phase=0;
+ cameraUpdate();
+ const sc=camera.zoom*dpr;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ const glow=ctx.createLinearGradient(0,0,W,H);glow.addColorStop(0,'#e5eadd');glow.addColorStop(.47,'#d8e3d8');glow.addColorStop(1,'#b5cec5');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+ // Scenic ambience outside the fixed 3D-derived map, no runtime WebGL.
+ const vignette=ctx.createRadialGradient(W*.43,H*.45,W*.10,W*.5,H*.65,Math.max(W,H)*.9);
+ vignette.addColorStop(0,'#dfe3d000');vignette.addColorStop(1,'#6a8b8730');ctx.fillStyle=vignette;ctx.fillRect(0,0,W,H);
+ ctx.setTransform(sc,0,0,sc,-camera.x*sc,-camera.y*sc);
+ ctx.imageSmoothingEnabled=true;ctx.drawImage(texturesEnabled?assets.ground:beforeAssets.ground,0,0);waterLight(now);
+ if(debug){if(!debugOverlay)debugOverlay=makeDebug();ctx.drawImage(debugOverlay,0,0);}
+ imageAt(entities.find(e=>e.id==='bridge'));
+ const ordered=[...entities.filter(e=>!e.ground).map(e=>({...e,sort:groundDepth(e)+(e.depth||0)})),{id:'hero',sort:groundDepth(hero)}].sort((a,b)=>a.sort-b.sort);
+ for(const e of ordered){if(e.id==='hero')drawHero();else{
+  const p=projection(e);if(['tree','sakura','house','teahouse','shrub'].includes(e.asset))shadow(p.x,p.y+2,(e.asset==='house'||e.asset==='teahouse')?135:e.asset==='shrub'?31:49,(e.asset==='house'||e.asset==='teahouse')?16:e.asset==='shrub'?8:15);
+  imageAt(e);
+ }}
+ driftingPetals(now);
+ if(route.length){ctx.save();ctx.strokeStyle='#f8f1d7';ctx.lineWidth=2;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(...Object.values(projection(hero)));for(const p of route){const q=projection(p);ctx.lineTo(q.x,q.y);}ctx.stroke();ctx.restore();}
+ if(debug){const p=projection(hero);ctx.beginPath();ctx.ellipse(p.x,p.y,hero.radius*PPM,hero.radius*PPM*S,0,0,7);ctx.strokeStyle='#ffdd75';ctx.lineWidth=2;ctx.stroke();}
+ requestAnimationFrame(frame);
+}
+canvas.addEventListener('pointerup',e=>{
+ if(!ready)return;const rect=canvas.getBoundingClientRect(),world=inverseGround({x:(e.clientX-rect.left)/camera.zoom+camera.x,y:(e.clientY-rect.top)/camera.zoom+camera.y}),{x,z}=world;
+ if(!canStand(x,z)){say('そこには移動できません。道か橋をタップしてください。');return;}
+ const p=pathfind({x,z});if(!p.length){say('その場所へは道がつながっていません。');return;}route=p;
+});
+const stick=document.getElementById('stick'),thumb=document.getElementById('thumb');let pointer=null;
+function changeStick(e){const rect=stick.getBoundingClientRect(),midX=rect.left+rect.width/2,midY=rect.top+rect.height/2,dx=e.clientX-midX,dy=e.clientY-midY,scale=Math.min(1,37/(Math.hypot(dx,dy)||1));joyX=dx*scale/37;joyY=dy*scale/37;if(Math.hypot(joyX,joyY)<.14){joyX=joyY=0;}thumb.style.transform=`translate(${joyX*28}px,${joyY*28}px)`;}
+function resetStick(){joyX=joyY=0;thumb.style.transform='';pointer=null;}
+stick.addEventListener('pointerdown',e=>{if(pointer!==null)return;pointer=e.pointerId;stick.setPointerCapture(pointer);changeStick(e);e.preventDefault();});
+stick.addEventListener('pointermove',e=>{if(e.pointerId===pointer){changeStick(e);e.preventDefault();}});
+for(const type of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(type,e=>{if(e.pointerId===pointer)resetStick();});
+window.addEventListener('keydown',e=>{if(/^(arrow|w$|a$|s$|d$)/i.test(e.key)){keys.add(e.key.toLowerCase());e.preventDefault();}});
+window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+window.addEventListener('blur',()=>{keys.clear();resetStick();route=[];});
+window.addEventListener('resize',resize);
+document.getElementById('texture').onclick=()=>{texturesEnabled=!texturesEnabled;document.getElementById('texture').textContent=texturesEnabled?'景観改良ON':'旧v6';document.getElementById('texture').setAttribute('aria-pressed',String(texturesEnabled));say(texturesEnabled?'v7：枝が見える樹木・自然な草地・崖面廃止':'v6：以前の樹冠・浮島状の地形');};
+document.getElementById('overview').onclick=()=>{overview=!overview;document.getElementById('overview').textContent=overview?'追従':'全景';};
+document.getElementById('debug').onclick=()=>{debug=!debug;document.getElementById('debug').textContent=debug?'判定ON':'判定';say(debug?'緑=歩行可、赤=歩行不可。幹と家の衝突を確認できます。':'判定表示を閉じました。');};
+document.getElementById('run').onclick=()=>{running=!running;document.getElementById('run').textContent=running?'歩く':'走る';};
+document.getElementById('reset').onclick=()=>{hero.x=9;hero.z=9.0;hero.phase=0;route=[];say('初期位置に戻しました。');};
+document.getElementById('about').onclick=()=>document.getElementById('help').classList.add('open');
+document.getElementById('closeHelp').onclick=()=>document.getElementById('help').classList.remove('open');
+window.__demoQA={get:()=>({ready,texturesEnabled,hero:{...hero},routeLength:route.length,heroAvailable,debug,overview,azimuth:35,projection:'orthographic',camera:{...camera}}),canStand,go:(x,z)=>{const r=pathfind({x,z});route=r;return r.length},set:(x,z)=>{if(!canStand(x,z))throw Error('blocked');hero.x=x;hero.z=z;route=[];},project:projection,inverse:inverseGround};
+(async()=>{
+ try{
+  resize();for(const [key,src] of Object.entries(DATA.images))assets[key]=await load(src);for(const [key,src] of Object.entries(BEFORE.images))beforeAssets[key]=await load(src);
+  ready=true;last=performance.now();say('3Dから出力したPNGで描画中。道のタップ／スティックで移動できます。');requestAnimationFrame(frame);
+  const imgResults=await Promise.allSettled(Object.entries(sheets).map(async([name,v])=>{heroImages[name]=await load(INLINE_HERO[name]||HERO_BASE+v.name);return name;}));
+  heroAvailable=imgResults.every(x=>x.status==='fulfilled');
+  document.getElementById('heroIndicator').style.display='block';
+  document.getElementById('heroIndicator').textContent=heroAvailable?'緋月 V35 素材を使用':'緋月素材未読込：仮マーカー表示';
+  if(!heroAvailable)say('マップは操作可能です。緋月の実素材は通信できず、仮マーカーを表示しています。');
+ }catch(e){console.error(e);say('読込エラー: '+e.message);}
+})();
+</script></body></html>
