@@ -60,7 +60,7 @@ function openAt(x,z){
  const bridge=z>8.97&&z<10.35&&x>11.55&&x<15.18;
  if(!bridge&&x>bankLeft(z)&&x<bankRight(z))return false;
  if(x>2.88&&x<5.84&&z>6.02&&z<7.98)return false;
- if(x>5.98&&x<7.94&&z>2.88&&z<4.72)return false;
+ if(x>5.79&&x<8.12&&z>2.77&&z<4.54)return false;
  for(const e of entities){
   if(e.asset==='tree'||e.asset==='sakura'){if(Math.hypot(x-e.x,z-e.z)<.26)return false;}
   else if(e.asset==='lantern'&&Math.hypot(x-e.x,z-e.z)<.20)return false;
@@ -263,7 +263,7 @@ document.getElementById('run').onclick=()=>{running=!running;document.getElement
 document.getElementById('reset').onclick=()=>{hero.x=9;hero.z=9.0;hero.phase=0;route=[];say('初期位置に戻しました。');};
 document.getElementById('about').onclick=()=>document.getElementById('help').classList.add('open');
 document.getElementById('closeHelp').onclick=()=>document.getElementById('help').classList.remove('open');
-window.__demoQA={get:()=>({ready,hero:{...hero},routeLength:route.length,heroAvailable,debug,overview,azimuth:35,projection:'orthographic'}),canStand,go:(x,z)=>{const r=pathfind({x,z});route=r;return r.length},set:(x,z)=>{if(!canStand(x,z))throw Error('blocked');hero.x=x;hero.z=z;route=[];},project:projection,inverse:inverseGround};
+window.__demoQA={get:()=>({ready,hero:{...hero},routeLength:route.length,heroAvailable,debug,overview,azimuth:35,projection:'orthographic',camera:{...camera}}),canStand,go:(x,z)=>{const r=pathfind({x,z});route=r;return r.length},set:(x,z)=>{if(!canStand(x,z))throw Error('blocked');hero.x=x;hero.z=z;route=[];},project:projection,inverse:inverseGround};
 (async()=>{
  try{
   resize();for(const [key,src] of Object.entries(DATA.images))assets[key]=await load(src);
