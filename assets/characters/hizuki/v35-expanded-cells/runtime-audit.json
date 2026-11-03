@@ -1,16 +1,7 @@
 {
   "walking": {
-    "sheet_sha256": "1aab81c702def1775ebea9d072be616a3eb954606c2ac61d94cdd319de1cae65",
-    "source_frames": [
-      0,
-      4,
-      8,
-      12,
-      17,
-      21,
-      25,
-      29
-    ],
+    "sheet_sha256": "2dc6109c75d988fdcdb059f2956eb507fc28c4e90059bba3bf5b9d5519b02290",
+    "git_blob_sha1": "2a89d468b29f9cf0c72d1c2e43b44aaeb2812acb",
     "cell": [
       80,
       118
@@ -21,10 +12,37 @@
       0,
       5
     ],
-    "original_sheet_sha256": "e568f5e9005bad34b08ae643c3eaeb84a805738c9070724717199a9a9660c416",
-    "original_source_matched_cells": 64,
-    "current_alpha_matched_cells": 64,
-    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
+    "source_animation": "V35_Walking",
+    "source_period_s": 1.12,
+    "source_glb": "Hizuki_V35_RunV20_RelaxedElbows_WalkV11.glb",
+    "source_glb_sha256": "bcac08605692bf8aef9d861b6b8586bc8a692a68d128c6f4f0d184f0f7af108e",
+    "camera": "orthographic elevation 40°, camera-facing original front lighting",
+    "directions": [
+      "front",
+      "front_right",
+      "right",
+      "back_right",
+      "back",
+      "back_left",
+      "left",
+      "front_left"
+    ],
+    "frame_count_per_direction": 8,
+    "frame_select": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "appearance": "GLB embedded texture, palette-indexed lossless PNG",
+    "qa": "64 frames checked; no cropped frame",
+    "integration": "runtime image path, cell, anchor, stride and JS unchanged",
+    "previous_sheet_sha256": "1aab81c702def1775ebea9d072be616a3eb954606c2ac61d94cdd319de1cae65",
+    "archived_to": "old/pre-v20-20261104/walking_8dir.png"
   },
   "fall": {
     "sheet_sha256": "3faa1b3f32ca5e387d30ef6f10aaa0138d7c40a9913ba6b54d0d0234600923c6",
@@ -189,17 +207,8 @@
     "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "running": {
-    "sheet_sha256": "1029cabf130b9764875d1cedd9a50371870242d848379edf576a5535123964d6",
-    "source_frames": [
-      0,
-      2,
-      5,
-      7,
-      10,
-      12,
-      15,
-      17
-    ],
+    "sheet_sha256": "88de6f66eb85053a1af63cff04c76748d3309cc64f63b4852c391631b48f9352",
+    "git_blob_sha1": "804fd78f0d79c4dbb63cbe82b0bafd70eb3bc4c9",
     "cell": [
       80,
       121
@@ -210,9 +219,36 @@
       0,
       6
     ],
-    "original_sheet_sha256": "41595f4c2f460b4670f97b2d19a45dca586738a8243073094b8593962086e5a7",
-    "original_source_matched_cells": 64,
-    "current_alpha_matched_cells": 64,
-    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
+    "source_animation": "V35_Running",
+    "source_period_s": 0.66,
+    "source_glb": "Hizuki_V35_RunV20_RelaxedElbows_WalkV11.glb",
+    "source_glb_sha256": "bcac08605692bf8aef9d861b6b8586bc8a692a68d128c6f4f0d184f0f7af108e",
+    "camera": "orthographic elevation 40°, camera-facing original front lighting",
+    "directions": [
+      "front",
+      "front_right",
+      "right",
+      "back_right",
+      "back",
+      "back_left",
+      "left",
+      "front_left"
+    ],
+    "frame_count_per_direction": 8,
+    "frame_select": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "appearance": "GLB embedded texture, palette-indexed lossless PNG",
+    "qa": "64 frames checked; no cropped frame",
+    "integration": "runtime image path, cell, anchor, stride and JS unchanged",
+    "previous_sheet_sha256": "1029cabf130b9764875d1cedd9a50371870242d848379edf576a5535123964d6",
+    "archived_to": "old/pre-v20-20261104/running_8dir.png"
   }
 }
