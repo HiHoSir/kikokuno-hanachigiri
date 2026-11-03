@@ -250,5 +250,58 @@
     "integration": "runtime image path, cell, anchor, stride and JS unchanged",
     "previous_sheet_sha256": "1029cabf130b9764875d1cedd9a50371870242d848379edf576a5535123964d6",
     "archive_label": "pre-v20-20261104"
+  },
+  "idle": {
+    "sheet_sha256": "5e15c2cfd9458121623c5a60476613f27503de2195a777995e49b99da0b7109c",
+    "git_blob_sha1": "c2e4a0aaaf68b6c4d9f0e75ca5d0b05938ab41af",
+    "source_glb": "Hizuki_V35_RunV20_RelaxedElbows_WalkV11.glb",
+    "source_glb_sha256": "bcac08605692bf8aef9d861b6b8586bc8a692a68d128c6f4f0d184f0f7af108e",
+    "source_animation": "V35_Idle",
+    "durationMs": 3600,
+    "cell": [
+      80,
+      132
+    ],
+    "anchor": [
+      43.6993006993007,
+      106.52129729729731
+    ],
+    "padding": [
+      0,
+      9,
+      0,
+      11
+    ],
+    "frames": 8,
+    "directions": [
+      "front",
+      "front_right",
+      "right",
+      "back_right",
+      "back",
+      "back_left",
+      "left",
+      "front_left"
+    ],
+    "orthographicElevationDeg": 40,
+    "cameraRelativeLight": {
+      "key": [
+        -3,
+        4,
+        5
+      ],
+      "keyIntensity": 0.8,
+      "fill": [
+        3,
+        1,
+        -2
+      ],
+      "fillIntensity": 0.42,
+      "ambient": 0.52,
+      "diffuse": 0.48
+    },
+    "process": "Full-color RGBA from the embedded 3D texture, no palette reduction and no pixel-art filters; 3x master archived in handoff package",
+    "quality": "8x8 nonempty, within bounds, frame dimensions constant, 2000+ distinct RGB per frame",
+    "status": "Replaced temporary fall frame as standing; walking and running untouched"
   }
 }

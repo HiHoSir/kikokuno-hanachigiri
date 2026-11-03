@@ -70,7 +70,7 @@ export class MapRenderer{
    const total=frames.reduce((sum,f)=>sum+f.durationMs,0);let t=time%total,frame=frames[0];for(const f of frames){if(t<f.durationMs){frame=f;break;}t-=f.durationMs;}
    if(motion)frame=motion;
    const anchor=frame.anchor||config.anchor;
-   c.imageSmoothingEnabled=!config.pixelArt;c.drawImage(hero.images.get(frame.image),...frame.rect,foot.x-anchor[0]*config.scale,foot.y-anchor[1]*config.scale,frame.rect[2]*config.scale,frame.rect[3]*config.scale);
+   c.imageSmoothingEnabled=frame.smooth===true||!config.pixelArt;if(frame.smooth===true)c.imageSmoothingQuality='high';c.drawImage(hero.images.get(frame.image),...frame.rect,foot.x-anchor[0]*config.scale,foot.y-anchor[1]*config.scale,frame.rect[2]*config.scale,frame.rect[3]*config.scale);
   }
   if(debug){
    const polygon=(points,fill,stroke)=>{c.beginPath();for(const [j,v]of points.entries()){const p=project({x:v[0],z:v[1]},map.projection);j?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y);}c.closePath();c.fillStyle=fill;c.fill();c.strokeStyle=stroke;c.lineWidth=1/cam.zoom;c.stroke();};

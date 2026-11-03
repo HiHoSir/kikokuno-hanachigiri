@@ -30,9 +30,42 @@
       ]
     }
   },
-  "notes": "Original still preserved. Registered V35 Ortho40 motions use original-scale cells plus audited padding. Idle not supplied: first fall frame is a temporary directional standing pose; no new art or mirrors.",
+  "notes": "Original approved normal.png remains unchanged. Dedicated V35_Idle at ortho40 with camera-relative original front light is active while standing; 8 directional frames loop over 3.6 s. Walking, running and all other animation images retain their current contents; no sprite pixel-art conversion was performed for idle.",
   "runSpeed": 2.8,
   "motions": {
+    "idle": {
+      "label": "待機",
+      "image": "../hizuki/v35-expanded-cells/idle_8dir.png",
+      "size": [
+        80,
+        132
+      ],
+      "padding": [
+        0,
+        9,
+        0,
+        11
+      ],
+      "anchor": [
+        43.6993006993007,
+        106.52129729729731
+      ],
+      "directions": [
+        "front",
+        "front_right",
+        "right",
+        "back_right",
+        "back",
+        "back_left",
+        "left",
+        "front_left"
+      ],
+      "frames": 8,
+      "durationMs": 3600,
+      "loop": true,
+      "holdLast": false,
+      "smooth": true
+    },
     "walking": {
       "label": "歩行",
       "image": "../hizuki/v35-expanded-cells/walking_8dir.png",

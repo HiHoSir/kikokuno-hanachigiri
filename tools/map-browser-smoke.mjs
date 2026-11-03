@@ -10,10 +10,11 @@ for(const [name,type] of [['chromium',chromium],['webkit',webkit]]){
   const page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
   try{
    await page.goto(base);await page.waitForFunction(()=>window.__mapLab?.getState().ready);
-   assert.equal(await page.locator('#motion-buttons button').count(),8);
+   assert.equal(await page.locator('#motion-buttons button').count(),9);
    const initial=await page.evaluate(()=>window.__mapLab.getState());
    assert.equal(initial.character.scale,.85);assert.equal(initial.character.cameraReferenceHeight,145.04);
    await page.screenshot({path:`test-results/${name}-${orientation}-scale.png`});
+   assert.equal(await page.locator('#motion-buttons [data-motion="idle"]').count(),1);
    await page.locator('#motion-buttons [data-motion="attack_katana"]').click();
    await page.waitForFunction(()=>{const m=window.__mapLab.getState().motion;return m.id==='attack_katana'&&m.frame>0;});
    await page.locator('#quick-stop-motion').click();

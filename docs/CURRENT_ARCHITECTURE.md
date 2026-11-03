@@ -31,11 +31,11 @@ X/Zは地面上のメートル。原点は地面画像左上相当。今回の�
 
 採用基準は [CHARACTER_MOVEMENT_RULES.md](CHARACTER_MOVEMENT_RULES.md)。実行時の数値は `character.json` が正本。表示倍率0.85、独立したカメラ基準高145.04、歩行1.15m/s、走行2.8m/s、1周期距離は歩行0.56m／走行0.76m。
 
-`motions` 台帳に8動作×8方向×8コマを登録。動作ごとに `image`、`size`、`padding`、`anchor`、`directions`、`frames`、`durationMs` を持ち、移動用の歩行・走行には `strideMetres` を持つ。方向順は `front / front_right / right / back_right / back / back_left / left / front_left`。セル寸法は動作間で異なってよいが、同じ動作の方向・コマで再トリミングせず、共通モデル原点を維持する。
+`motions` 台帳に9動作×8方向×8コマを登録。動作ごとに `image`、`size`、`padding`、`anchor`、`directions`、`frames`、`durationMs` を持ち、移動用の歩行・走行には `strideMetres` を持つ。方向順は `front / front_right / right / back_right / back / back_left / left / front_left`。セル寸法は動作間で異なってよいが、同じ動作の方向・コマで再トリミングせず、共通モデル原点を維持する。
 
 `app.js` が衝突解決後の実移動距離を測り、`MotionPlayer` が歩行・走行の位相を進める。方向や歩行／走行切替では位相を維持する。経路の中継点到達で停止フレームを挿入せず、目的地までの残り距離で移動量を抑える。
 
-専用Idleは未提供で、通常停止は `fall` の先頭コマを向き別に仮使用する。旧形式 `animations.idle.default` と元の承認静止画は保全しているが、現行の通常操作は `motions` を使う。素材差し替え時は台帳・PNG・アンカー・採用状態を照合し、勝手に旧素材を復帰しない。
+専用IdleはV35 GLBを40°平行投影とカメラ追従正面ライトで再レンダリングした全色RGBAアトラスを使い、停止時は時間駆動3.6秒の8コマループを表示する。旧形式 `animations.idle.default` と元の承認静止画は保全しているが、現行の通常操作は `motions` を使う。素材差し替え時は台帳・PNG・アンカー・採用状態を照合し、勝手に旧素材を復帰しない。
 
 上部の「動作テスト」で今の向きの8動作を呼び出し、停止・折り畳みができる。「配置・検査」では向き指定も可能。実験のその場再生と単発動作だけは時間駆動。倒れる動作の最終姿勢は保持し、移動・地面タップ・停止で復帰する。
 

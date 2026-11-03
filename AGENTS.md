@@ -28,7 +28,7 @@
 
 - 現行の採用基準は `assets/characters/hizuki-v35/normal.png`。80×112px・30色・角落としありの通常版。元PNGを変更せず `production-record.json` と `character.json` を照合する。
 - ジグザグ陰影は不採用の比較実験で、`old/` に保管。採用画像へ取り違えない。
-- 登録済みV35の8動作×8方向×8コマは `assets/characters/hizuki/v35-expanded-cells/`。`hizuki-v35/character.json` のmotions台帳から読む。各動作の共通セルとpadding加算後アンカーを維持し、元PNGを変更・反転しない。専用Idle/Interactは未提供。仮停止姿勢はfall先頭コマであり、待機モーション完成とは扱わない。
+- 登録済みV35の9動作×8方向×8コマは `assets/characters/hizuki/v35-expanded-cells/`。`hizuki-v35/character.json` のmotions台帳から読む。各動作の共通セルとpadding加算後アンカーを維持し、元PNGを変更・反転しない。専用Idleは2026-11-04にGLBのV35_Idleから再レンダリングした8方向×8コマ、3.6秒ループを採用し、停止時に使用する。Interactは未実装。旧normal.pngは保全する。
 - `skills/silhouette-first-pixel-art/SKILL.md` と同梱手順・品質ゲートを読む。シルエット→色面下書き→部位限定画素修正→差分再適用→目視比較。自動縮小・減色だけで完成としない。
 - 角落としは座標限定・別候補の独立パッチ。通常修正はalpha差分0。アニメは共通セル・尺度・足元アンカー・方向・時刻を維持し、フレームごとに再トリミングしない。
 

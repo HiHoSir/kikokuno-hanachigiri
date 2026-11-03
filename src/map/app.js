@@ -1,6 +1,6 @@
-import {MotionPlayer} from './motion.js?v=scene-alignment-6';
+import {MotionPlayer} from './motion.js?v=idle-v21';
 import {validateMap,canStand,move,findPath,followRoute} from './logic.js?v=scene-alignment-6';
-import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=scene-alignment-6';
+import {MapRenderer,loadMapImages,loadCharacter} from './renderer.js?v=idle-v21';
 import {createInput} from './input.js?v=scene-alignment-6';
 
 const canvas=document.querySelector('#scene'),renderer=new MapRenderer(canvas),MAP_URL=new URL('../../maps/village/map.json?v=scene-alignment-6',import.meta.url);
@@ -75,7 +75,7 @@ function loop(now){
 async function boot(){
  try{
   const response=await fetch(MAP_URL);if(!response.ok)throw new Error('マップを取得できません');original=validateMap(await response.json());
-  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json?v=scene-alignment-6',import.meta.url));
+  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json?v=idle-v21',import.meta.url));
   motions=new MotionPlayer(hero.config);
   for(const [id,m]of Object.entries(hero.config.motions)){const option=document.createElement('option');option.value=id;option.textContent=m.label;$('motion-select').append(option);}
   for(const [id,m]of Object.entries(hero.config.motions)){

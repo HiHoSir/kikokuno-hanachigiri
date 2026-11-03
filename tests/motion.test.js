@@ -4,7 +4,7 @@ import {validateCharacter} from '../src/map/renderer.js';
 import fs from 'node:fs';
 const config=JSON.parse(fs.readFileSync('assets/characters/hizuki-v35/character.json'));
 test('registered motions load as 8 directions and retain model origin despite different padding',()=>{
- assert.equal(Object.keys(config.motions||{}).length,8);
+ assert.equal(Object.keys(config.motions||{}).length,9);
  validateCharacter(config);
  for(const [id,m] of Object.entries(config.motions)){
   assert.equal(m.directions.length,8);assert.equal(m.frames,8);
@@ -36,6 +36,18 @@ test('motion frame uses correct sheet row and its own padded cell',async()=>{
  for(const change of [c=>c.motions.walking.frames=0,c=>c.motions.walking.durationMs=0,c=>c.motions.walking.anchor=[999,999],c=>c.motions.walking.directions=['front','front']]){
   const c=structuredClone(config);change(c);assert.throws(()=>validateCharacter(c));
  }
+});
+
+test('standing uses the dedicated 3.6-second idle animation and resets after moving',async()=>{
+ const {MotionPlayer}=await import('../src/map/motion.js');const p=new MotionPlayer(config);
+ assert.equal(p.current.id,'standing');assert.equal(p.current.image,config.motions.idle.image);
+ assert.equal(p.current.frame,0);assert.equal(p.current.smooth,true);
+ p.update(460,{moving:false,facing:'back'});assert.equal(p.current.frame,1);assert.equal(p.current.facing,'back');
+ p.update(3200,{moving:false});assert.equal(p.current.frame,0);
+ p.update(50,{moving:true,running:false,distance:.56/8});assert.equal(p.current.id,'walking');
+ p.update(50,{moving:false});assert.equal(p.current.id,'standing');assert.equal(p.current.frame,0);
+ p.play('idle','front_right');p.update(900,{});assert.equal(p.current.frame,2);
+ p.cancel();assert.equal(p.current.frame,0);
 });
 
 test('tap routing keeps run cycle advancing across intermediate waypoints',async()=>{

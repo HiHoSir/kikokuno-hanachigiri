@@ -10,3 +10,7 @@
 - Other motions (fall, attack, cast, hit, victory) unchanged.
 - runtime-audit.json includes exact PNG hashes and provenance.
 - iPhone Safari live runtime approval remains a separate test.
+
+## Dedicated idle 2026-11-04
+
+`idle_8dir.png` is 8 directions × 8 frames, 80×132 px cells, 640×1056 PNG, 3600 ms loop. The GLB's original front key/fill lighting is rotated with each 40° orthographic camera. Preserves the embedded texture as full-colour RGBA, without palette reduction or pixel art conversion. Shared anchor is [43.6993006993007, 106.52129729729731]. Other animations and approved normal.png are untouched. The game uses this for standing instead of the temporary first fall frame. See runtime-audit.json for SHA-256.
