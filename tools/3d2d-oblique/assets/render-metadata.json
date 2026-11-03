@@ -1,0 +1,158 @@
+{
+  "camera": {
+    "ortho": true,
+    "elevation": 40,
+    "azimuth": 35,
+    "pixelsPerMetre": 100,
+    "offset": [
+      1064,
+      300
+    ],
+    "imageSize": [
+      2440,
+      1810
+    ]
+  },
+  "assets": {
+    "house": {
+      "image": "assets/house.png",
+      "size": [
+        461,
+        401
+      ],
+      "anchor": [
+        233.161,
+        263.892
+      ],
+      "scale": 1,
+      "source3d": "assets/house.glb",
+      "faces": 3763
+    },
+    "teahouse": {
+      "image": "assets/teahouse.png",
+      "size": [
+        375,
+        338
+      ],
+      "anchor": [
+        189.604,
+        222.875
+      ],
+      "scale": 1,
+      "source3d": "assets/teahouse.glb",
+      "faces": 3788
+    },
+    "tree": {
+      "image": "assets/tree.png",
+      "size": [
+        357,
+        412
+      ],
+      "anchor": [
+        185.544,
+        376.6
+      ],
+      "scale": 1,
+      "source3d": "assets/tree.glb",
+      "faces": 4201
+    },
+    "sakura": {
+      "image": "assets/sakura.png",
+      "size": [
+        436,
+        426
+      ],
+      "anchor": [
+        202.621,
+        367.658
+      ],
+      "scale": 1,
+      "source3d": "assets/sakura.glb",
+      "faces": 4941
+    },
+    "bridge": {
+      "image": "assets/bridge.png",
+      "size": [
+        424,
+        347
+      ],
+      "anchor": [
+        212.591,
+        206.411
+      ],
+      "scale": 1,
+      "source3d": "assets/bridge.glb",
+      "faces": 508
+    },
+    "lantern": {
+      "image": "assets/lantern.png",
+      "size": [
+        119,
+        167
+      ],
+      "anchor": [
+        59.024,
+        130.496
+      ],
+      "scale": 1,
+      "source3d": "assets/lantern.glb",
+      "faces": 75
+    },
+    "rock": {
+      "image": "assets/rock.png",
+      "size": [
+        127,
+        84
+      ],
+      "anchor": [
+        75.221,
+        50.876
+      ],
+      "scale": 1,
+      "source3d": "assets/rock.glb",
+      "faces": 14
+    },
+    "shrub": {
+      "image": "assets/shrub.png",
+      "size": [
+        135,
+        117
+      ],
+      "anchor": [
+        66.625,
+        80.835
+      ],
+      "scale": 1,
+      "source3d": "assets/shrub.glb",
+      "faces": 2335
+    },
+    "fence": {
+      "image": "assets/fence.png",
+      "size": [
+        198,
+        164
+      ],
+      "anchor": [
+        95.853,
+        112.296
+      ],
+      "scale": 1,
+      "source3d": "assets/fence.glb",
+      "faces": 50
+    },
+    "flowerpatch": {
+      "image": "assets/flowerpatch.png",
+      "size": [
+        153,
+        126
+      ],
+      "anchor": [
+        76.257,
+        77.552
+      ],
+      "scale": 1,
+      "source3d": "assets/flowerpatch.glb",
+      "faces": 528
+    }
+  }
+}
