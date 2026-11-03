@@ -42,7 +42,7 @@
     "qa": "64 frames checked; no cropped frame",
     "integration": "runtime image path, cell, anchor, stride and JS unchanged",
     "previous_sheet_sha256": "1aab81c702def1775ebea9d072be616a3eb954606c2ac61d94cdd319de1cae65",
-    "archived_to": "old/pre-v20-20261104/walking_8dir.png"
+    "archive_label": "pre-v20-20261104"
   },
   "fall": {
     "sheet_sha256": "3faa1b3f32ca5e387d30ef6f10aaa0138d7c40a9913ba6b54d0d0234600923c6",
@@ -249,6 +249,6 @@
     "qa": "64 frames checked; no cropped frame",
     "integration": "runtime image path, cell, anchor, stride and JS unchanged",
     "previous_sheet_sha256": "1029cabf130b9764875d1cedd9a50371870242d848379edf576a5535123964d6",
-    "archived_to": "old/pre-v20-20261104/running_8dir.png"
+    "archive_label": "pre-v20-20261104"
   }
 }
