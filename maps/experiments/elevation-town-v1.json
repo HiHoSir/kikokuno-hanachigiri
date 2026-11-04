@@ -1,0 +1,1305 @@
+{
+  "schema": "hanachigiri.2p5d.height-surfaces.image-first.v1",
+  "source_image": "source_illustration.png",
+  "source_size": [
+    1448,
+    1086
+  ],
+  "status": "prototype—not metrically reconstructed",
+  "coordinates": "source image x,y pixels, top-left origin",
+  "heights": {
+    "low": 0,
+    "village": 1.25,
+    "shrine": 3
+  },
+  "height_units": "relative demo height, not metres",
+  "grid": {
+    "step_px": 12,
+    "columns": 121,
+    "rows": 91,
+    "data_base64": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMDAwMAAAAAAAAAAAAAAAAAAAAAAAADAwMDAwMAAAAAAAADAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDAAAAAAAAAwMDAwMDAwMDAwAAAAAAAAAAAAAAAAAAAAADAwMDAwMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMDAAAAAwMDAwMDAwMDAwMDAwMDAAAAAAAAAAAAAAADAwMDAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAAAAAAADAwMDAwAAAAAAAAAAAAAAAAADAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwAAAAAAAAAAAAAAAAADAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwAAAAAAAAAAAAAAAAMDAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwAAAAAAAAAAAwMDAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADAwMDAwMDAwUDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwMDAwUFBQMDAwMDAwMDAwMDAwMDAwMDAwMDAwMDAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUFBQUFAwMDAwMDAwMDAwMDAwMDAwMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUFBQUFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUFBQUFBQUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBQUFBQUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBQUFBQUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBQUFBQUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAFBQUFBQUFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQUFBQUFBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQUFBQUFBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQUFBQUFBQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUFBQUFBQUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQUFBQUFBQUAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEAAAAAAAAAAAAAAAABAQAAAAAAAAAAAQEBAQEBBQUFBQUBAQAAAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEAAAAAAAAAAAEBAQEBAAAAAAABAQEBAQEBAQEFBQUFAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEAAAAAAQEBAQEBAQEAAAAAAQEBAQEBAQEBAQEFAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAABAAAAAAAAAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAABAQEBAQEBAQEAAAABAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAABAQEBAQEBAAAAAAAAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAABAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQABAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAQEBAQEAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAABAQEBAQAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQAAAAAAAAAAAAAAAAAAAAABAQEBAQEAAAABAQEBAQEBAQEBAQEAAAEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAQEBAQAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAEBAQAAAAAAAAAAAAAAAAEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAABAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQEBAQEBAAAAAAAAAAAAAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEBAQEBAQEAAAABAQABAQEBAQAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEAAAEBAQEBAQAAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQEBAAAAAQEBAQEBAQEAAAAAAAAAAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQQEBAEBAQEBAQEBAQEBAAAAAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEBAQEBAQBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAQEBAQBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQEBAQEAAABAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIEBAQEBAIAAAAAAAAAAAAAAAABAQEBAQEBAQEBAQEBAQEBAQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAgICAgQCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAgICAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+    "codes": {
+      "0": "blocked",
+      "1": "village",
+      "2": "low",
+      "3": "shrine",
+      "4": "south_stairs",
+      "5": "shrine_stairs"
+    }
+  },
+  "cliff_barriers_px": [
+    [
+      [
+        744,
+        500
+      ],
+      [
+        793,
+        449
+      ],
+      [
+        820,
+        391
+      ],
+      [
+        793,
+        356
+      ],
+      [
+        756,
+        324
+      ],
+      [
+        677,
+        300
+      ],
+      [
+        667,
+        409
+      ],
+      [
+        699,
+        482
+      ],
+      [
+        744,
+        500
+      ]
+    ],
+    [
+      [
+        1327,
+        512
+      ],
+      [
+        1393,
+        419
+      ],
+      [
+        1365,
+        322
+      ],
+      [
+        1185,
+        353
+      ],
+      [
+        1057,
+        363
+      ],
+      [
+        978.5,
+        363
+      ],
+      [
+        978.8,
+        363.5
+      ],
+      [
+        979.8,
+        365.1
+      ],
+      [
+        980.6,
+        366.8
+      ],
+      [
+        981.2,
+        368.5
+      ],
+      [
+        981.7,
+        370.3
+      ],
+      [
+        982,
+        372.2
+      ],
+      [
+        982,
+        374
+      ],
+      [
+        982,
+        375.9
+      ],
+      [
+        981.7,
+        377.7
+      ],
+      [
+        981.2,
+        379.6
+      ],
+      [
+        980.6,
+        381.3
+      ],
+      [
+        979.8,
+        383
+      ],
+      [
+        978.8,
+        384.6
+      ],
+      [
+        977.7,
+        386.1
+      ],
+      [
+        976.5,
+        387.5
+      ],
+      [
+        948,
+        416
+      ],
+      [
+        943.1,
+        422.4
+      ],
+      [
+        951,
+        474
+      ],
+      [
+        1081,
+        504
+      ],
+      [
+        1198,
+        545
+      ],
+      [
+        1327,
+        512
+      ]
+    ],
+    [
+      [
+        860.8,
+        1066.1
+      ],
+      [
+        1099.5,
+        1014.9
+      ],
+      [
+        1270.3,
+        863.5
+      ],
+      [
+        1251.7,
+        842.5
+      ],
+      [
+        1086.5,
+        989.1
+      ],
+      [
+        859.2,
+        1037.9
+      ],
+      [
+        634.7,
+        1016.2
+      ],
+      [
+        615.3,
+        1010.4
+      ],
+      [
+        614.9,
+        1015.6
+      ],
+      [
+        614.6,
+        1017.4
+      ],
+      [
+        614.2,
+        1019.1
+      ],
+      [
+        613.7,
+        1020.8
+      ],
+      [
+        613,
+        1022.4
+      ],
+      [
+        612.1,
+        1023.9
+      ],
+      [
+        611.1,
+        1025.3
+      ],
+      [
+        609.9,
+        1026.7
+      ],
+      [
+        608.6,
+        1027.9
+      ],
+      [
+        607.2,
+        1029
+      ],
+      [
+        605.7,
+        1029.9
+      ],
+      [
+        604.2,
+        1030.7
+      ],
+      [
+        602.5,
+        1031.3
+      ],
+      [
+        600.8,
+        1031.8
+      ],
+      [
+        599.1,
+        1032.1
+      ],
+      [
+        597.3,
+        1032.2
+      ],
+      [
+        595.5,
+        1032.2
+      ],
+      [
+        588.4,
+        1031.6
+      ],
+      [
+        629.3,
+        1043.8
+      ],
+      [
+        860.8,
+        1066.1
+      ]
+    ],
+    [
+      [
+        251.6,
+        908.7
+      ],
+      [
+        41.7,
+        815.2
+      ],
+      [
+        30.3,
+        840.8
+      ],
+      [
+        242.4,
+        935.3
+      ],
+      [
+        408.2,
+        977.5
+      ],
+      [
+        521.2,
+        1011.6
+      ],
+      [
+        521.1,
+        1010.2
+      ],
+      [
+        521.1,
+        1008.4
+      ],
+      [
+        523.1,
+        982.9
+      ],
+      [
+        415.8,
+        950.5
+      ],
+      [
+        251.6,
+        908.7
+      ]
+    ]
+  ],
+  "regions": [
+    {
+      "id": "village",
+      "code": 1,
+      "height": 1.25,
+      "polygons": [
+        [
+          [
+            283,
+            544
+          ],
+          [
+            156,
+            555
+          ],
+          [
+            76,
+            632
+          ],
+          [
+            110,
+            779
+          ],
+          [
+            181,
+            764.6
+          ],
+          [
+            194.1,
+            782
+          ],
+          [
+            177.5,
+            795.6
+          ],
+          [
+            233.7,
+            864.5
+          ],
+          [
+            317.7,
+            895.2
+          ],
+          [
+            426.4,
+            921.9
+          ],
+          [
+            545.7,
+            949
+          ],
+          [
+            558.8,
+            891.4
+          ],
+          [
+            586.7,
+            928.6
+          ],
+          [
+            577.4,
+            981.1
+          ],
+          [
+            683.7,
+            999.8
+          ],
+          [
+            819.3,
+            1004
+          ],
+          [
+            957.3,
+            1007.2
+          ],
+          [
+            1097.6,
+            959.8
+          ],
+          [
+            1089.2,
+            935
+          ],
+          [
+            1093,
+            934
+          ],
+          [
+            1133,
+            855
+          ],
+          [
+            1118.4,
+            848.3
+          ],
+          [
+            1131.7,
+            825.2
+          ],
+          [
+            1133,
+            826
+          ],
+          [
+            1266,
+            785
+          ],
+          [
+            1349,
+            669
+          ],
+          [
+            1351,
+            564
+          ],
+          [
+            1275,
+            528
+          ],
+          [
+            1085,
+            537
+          ],
+          [
+            1017.9,
+            578
+          ],
+          [
+            1000.7,
+            481.8
+          ],
+          [
+            934.3,
+            493.7
+          ],
+          [
+            895.8,
+            499.6
+          ],
+          [
+            869,
+            491
+          ],
+          [
+            762,
+            483
+          ],
+          [
+            703,
+            513
+          ],
+          [
+            729.9,
+            585.8
+          ],
+          [
+            716.3,
+            574.9
+          ],
+          [
+            602.4,
+            471.6
+          ],
+          [
+            590.4,
+            472.3
+          ],
+          [
+            507.4,
+            422.3
+          ],
+          [
+            387.6,
+            487.6
+          ],
+          [
+            311.4,
+            542.3
+          ],
+          [
+            283,
+            544
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "low",
+      "code": 2,
+      "height": 0,
+      "polygons": [
+        [
+          [
+            524,
+            1013
+          ],
+          [
+            571,
+            1040
+          ],
+          [
+            618,
+            1021
+          ],
+          [
+            601,
+            990
+          ],
+          [
+            554,
+            980
+          ],
+          [
+            524,
+            1013
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "shrine",
+      "code": 3,
+      "height": 3,
+      "polygons": [
+        [
+          [
+            704,
+            259
+          ],
+          [
+            763,
+            235
+          ],
+          [
+            856,
+            235
+          ],
+          [
+            954,
+            249
+          ],
+          [
+            1055,
+            227
+          ],
+          [
+            1195,
+            224
+          ],
+          [
+            1335,
+            249
+          ],
+          [
+            1345,
+            299
+          ],
+          [
+            1277,
+            330
+          ],
+          [
+            1181,
+            352
+          ],
+          [
+            1058,
+            362
+          ],
+          [
+            936,
+            366
+          ],
+          [
+            820,
+            332
+          ],
+          [
+            711,
+            308
+          ],
+          [
+            704,
+            259
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "south_stairs",
+      "code": 4,
+      "from": "low",
+      "to": "village",
+      "from_point": [
+        568,
+        1012
+      ],
+      "to_point": [
+        586,
+        943
+      ],
+      "polygons": [
+        [
+          [
+            598.8,
+            990.3
+          ],
+          [
+            602.4,
+            974.1
+          ],
+          [
+            611.7,
+            956.5
+          ],
+          [
+            560.3,
+            929.5
+          ],
+          [
+            547.6,
+            953.9
+          ],
+          [
+            541.2,
+            981.7
+          ],
+          [
+            539.1,
+            1009.8
+          ],
+          [
+            596.9,
+            1014.2
+          ],
+          [
+            598.8,
+            990.3
+          ]
+        ]
+      ]
+    },
+    {
+      "id": "shrine_stairs",
+      "code": 5,
+      "from": "village",
+      "to": "shrine",
+      "from_point": [
+        817,
+        509
+      ],
+      "to_point": [
+        939,
+        350
+      ],
+      "polygons": [
+        [
+          [
+            878,
+            482.3
+          ],
+          [
+            906.7,
+            438.7
+          ],
+          [
+            933.6,
+            403.4
+          ],
+          [
+            963,
+            374
+          ],
+          [
+            915,
+            326
+          ],
+          [
+            882.4,
+            358.6
+          ],
+          [
+            851.3,
+            399.3
+          ],
+          [
+            822,
+            443.7
+          ],
+          [
+            789.4,
+            489.2
+          ],
+          [
+            844.6,
+            528.8
+          ],
+          [
+            878,
+            482.3
+          ]
+        ]
+      ]
+    }
+  ],
+  "buildings": [
+    {
+      "id": "shrine-main",
+      "label": "社殿",
+      "level": "shrine",
+      "collision_polygon_px": [
+        [
+          953,
+          250
+        ],
+        [
+          1096,
+          282
+        ],
+        [
+          1185,
+          214
+        ],
+        [
+          1048,
+          188
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          875,
+          155
+        ],
+        [
+          1098,
+          246
+        ],
+        [
+          1221,
+          112
+        ],
+        [
+          961,
+          49
+        ]
+      ],
+      "entrance_px": [
+        1044,
+        291
+      ],
+      "door_px": [
+        1043,
+        239
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "shrine-west-annex",
+      "label": "社殿西小殿",
+      "level": "shrine",
+      "collision_polygon_px": [
+        [
+          732,
+          241
+        ],
+        [
+          799,
+          267
+        ],
+        [
+          869,
+          216
+        ],
+        [
+          804,
+          198
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          713,
+          162
+        ],
+        [
+          782,
+          203
+        ],
+        [
+          889,
+          148
+        ],
+        [
+          809,
+          103
+        ]
+      ],
+      "entrance_px": [
+        747,
+        273
+      ],
+      "door_px": [
+        768,
+        244
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "shrine-east-annex",
+      "label": "社殿東小殿",
+      "level": "shrine",
+      "collision_polygon_px": [
+        [
+          1161,
+          303
+        ],
+        [
+          1246,
+          326
+        ],
+        [
+          1338,
+          271
+        ],
+        [
+          1256,
+          238
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          1131,
+          234
+        ],
+        [
+          1223,
+          271
+        ],
+        [
+          1343,
+          191
+        ],
+        [
+          1257,
+          154
+        ]
+      ],
+      "entrance_px": [
+        1208,
+        331
+      ],
+      "door_px": [
+        1217,
+        300
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "upper-west-house",
+      "label": "上段西の二階家",
+      "level": "village",
+      "collision_polygon_px": [
+        [
+          415,
+          463
+        ],
+        [
+          540,
+          523
+        ],
+        [
+          704,
+          445
+        ],
+        [
+          584,
+          393
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          363,
+          290
+        ],
+        [
+          453,
+          363
+        ],
+        [
+          655,
+          281
+        ],
+        [
+          576,
+          203
+        ]
+      ],
+      "entrance_px": [
+        548,
+        531
+      ],
+      "door_px": [
+        561,
+        472
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "west-merchant",
+      "label": "西の商家",
+      "level": "village",
+      "collision_polygon_px": [
+        [
+          92,
+          591
+        ],
+        [
+          356,
+          661
+        ],
+        [
+          546,
+          556
+        ],
+        [
+          319,
+          500
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          91,
+          402
+        ],
+        [
+          262,
+          465
+        ],
+        [
+          456,
+          351
+        ],
+        [
+          314,
+          272
+        ]
+      ],
+      "entrance_px": [
+        337,
+        670
+      ],
+      "door_px": [
+        344,
+        594
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "west-small-house",
+      "label": "西端の民家",
+      "level": "village",
+      "collision_polygon_px": [
+        [
+          20,
+          755
+        ],
+        [
+          172,
+          797
+        ],
+        [
+          338,
+          724
+        ],
+        [
+          173,
+          668
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          0,
+          652
+        ],
+        [
+          180,
+          721
+        ],
+        [
+          326,
+          637
+        ],
+        [
+          132,
+          561
+        ]
+      ],
+      "entrance_px": [
+        226,
+        800
+      ],
+      "door_px": [
+        217,
+        763
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "mid-block-house",
+      "label": "中央奥の民家",
+      "level": "village",
+      "collision_polygon_px": [
+        [
+          455,
+          768
+        ],
+        [
+          608,
+          819
+        ],
+        [
+          761,
+          732
+        ],
+        [
+          614,
+          691
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          426,
+          663
+        ],
+        [
+          581,
+          725
+        ],
+        [
+          747,
+          630
+        ],
+        [
+          587,
+          542
+        ]
+      ],
+      "entrance_px": [
+        555,
+        814
+      ],
+      "door_px": [
+        556,
+        777
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "front-west-house",
+      "label": "手前左の民家",
+      "level": "village",
+      "collision_polygon_px": [
+        [
+          351,
+          855
+        ],
+        [
+          516,
+          905
+        ],
+        [
+          681,
+          818
+        ],
+        [
+          531,
+          769
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          334,
+          757
+        ],
+        [
+          494,
+          816
+        ],
+        [
+          670,
+          731
+        ],
+        [
+          505,
+          669
+        ]
+      ],
+      "entrance_px": [
+        428,
+        890
+      ],
+      "door_px": [
+        424,
+        848
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "front-center-house",
+      "label": "手前中央の商家",
+      "level": "village",
+      "collision_polygon_px": [
+        [
+          561,
+          876
+        ],
+        [
+          743,
+          941
+        ],
+        [
+          899,
+          850
+        ],
+        [
+          713,
+          795
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          537,
+          798
+        ],
+        [
+          728,
+          865
+        ],
+        [
+          876,
+          781
+        ],
+        [
+          678,
+          707
+        ]
+      ],
+      "entrance_px": [
+        691,
+        938
+      ],
+      "door_px": [
+        693,
+        892
+      ],
+      "confidence": "manual trial; revise overlaps"
+    },
+    {
+      "id": "east-teahouse",
+      "label": "東の茶屋",
+      "level": "village",
+      "collision_polygon_px": [
+        [
+          953,
+          645
+        ],
+        [
+          1123,
+          710
+        ],
+        [
+          1384,
+          605
+        ],
+        [
+          1191,
+          549
+        ]
+      ],
+      "roof_polygon_px": [
+        [
+          931,
+          517
+        ],
+        [
+          1119,
+          586
+        ],
+        [
+          1376,
+          493
+        ],
+        [
+          1153,
+          389
+        ]
+      ],
+      "entrance_px": [
+        1085,
+        709
+      ],
+      "door_px": [
+        1101,
+        635
+      ],
+      "confidence": "manual trial; revise overlaps"
+    }
+  ],
+  "stairs_connection": {
+    "low_to_village": "only south_stairs",
+    "village_to_shrine": "only shrine_stairs",
+    "direct_low_to_shrine": false,
+    "cliff_crossing": false
+  },
+  "scope": {
+    "included": [
+      "walk surface prototype",
+      "two staircase connectors",
+      "ten house obstacles",
+      "roof masks",
+      "click-to-move grid navigation"
+    ],
+    "not_implemented": [
+      "full elevation geometry",
+      "bridge underpass",
+      "correct parallax",
+      "indoor transitions",
+      "real-world metres conversion",
+      "all stone wall collision",
+      "device Safari hardware QA"
+    ]
+  },
+  "path_test": [
+    {
+      "from": "low",
+      "to": "shrine_front",
+      "cells": 81,
+      "region_sequence": [
+        2,
+        4,
+        1,
+        5,
+        3
+      ]
+    },
+    {
+      "from": "shrine_front",
+      "to": "low",
+      "cells": 80,
+      "region_sequence": [
+        3,
+        5,
+        1,
+        4,
+        2
+      ]
+    },
+    {
+      "from": "plaza",
+      "to": "east",
+      "cells": 23,
+      "region_sequence": [
+        1
+      ]
+    }
+  ]
+}
