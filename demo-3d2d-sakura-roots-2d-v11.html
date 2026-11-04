@@ -198,3 +198,144 @@ function drawHero(){
   ctx.beginPath();ctx.ellipse(0,-34,18,26,0,0,7);ctx.fill();ctx.stroke();
   ctx.fillStyle='#8dc3ce';ctx.beginPath();ctx.ellipse(0,-69,17,18,0,0,7);ctx.fill();
   ctx.font='12px sans-serif';ctx.textAlign='center';ctx.fillStyle='#223c38';ctx.fillText('未読込',0,-43);ctx.restore();
+ }
+}
+function makeDebug(){
+ const cv=document.createElement('canvas');cv.width=MAP_W;cv.height=MAP_H;const c=cv.getContext('2d');
+ for(let z=.22;z<15.7;z+=.28)for(let x=.22;x<15.14;x+=.28){
+  c.fillStyle=canStand(x,z)?'rgba(56,180,104,.24)':'rgba(235,65,62,.35)';
+  const a=projection({x,z}),b=projection({x:x+.28,z}),cc=projection({x:x+.28,z:z+.28}),d=projection({x,z:z+.28});c.beginPath();c.moveTo(a.x,a.y);c.lineTo(b.x,b.y);c.lineTo(cc.x,cc.y);c.lineTo(d.x,d.y);c.closePath();c.fill();
+ }return cv;
+}
+function waterLight(now){
+ // 2D animation layered over the pre-rendered 3D river. No WebGL at runtime.
+ ctx.save();ctx.beginPath();
+ const left=[],right=[];
+ for(let z=0;z<=16.0;z+=.25){left.push(projection({x:bankLeft(z),z}));right.push(projection({x:bankRight(z),z}));}
+ left.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));
+ for(const p of right.reverse())ctx.lineTo(p.x,p.y);
+ ctx.closePath();ctx.clip();
+ const t=now*.001;
+ for(let i=0;i<34;i++){
+  const z=(i*.67 + t*.23)%15.7, x=(bankLeft(z)+bankRight(z))/2+Math.sin(i*41.23+t*.7)*.72;
+  const p=projection({x,z});const w=4+4*(Math.sin(i*3+t)+1);
+  ctx.beginPath();ctx.moveTo(p.x-w,p.y);ctx.quadraticCurveTo(p.x,p.y-1.7,p.x+w,p.y-1.1);
+  ctx.strokeStyle=`rgba(227,248,232,${.09+.09*(1+Math.sin(i+t*2))})`;
+  ctx.lineWidth=1.2;ctx.stroke();
+ }
+ ctx.restore();
+}
+function driftingPetals(now){
+ // Sparse atmospheric particles are 2D effects; the trees themselves remain GLB-derived images.
+ const t=now*.00025;
+ ctx.save();
+ for(let i=0;i<24;i++){
+  const drift=(t*(.18+i%3*.025)+i*.173)%1;
+  const x=10.9+Math.sin(i*29.7)*1.8+(drift-.5)*1.6;
+  const z=7.2+Math.cos(i*17.2)*1.3+drift*2.1;
+  const h=.35+((i*43)%11)*.16;
+  const p=projection({x,z,y:h});
+  ctx.fillStyle=i%3===0?'rgba(252,228,234,.63)':'rgba(243,195,209,.54)';
+  ctx.save();ctx.translate(p.x,p.y);ctx.rotate(i*.97+now*.0005);
+  ctx.beginPath();ctx.ellipse(0,0,2.1+(i%3),1.15,0,0,Math.PI*2);ctx.fill();ctx.restore();
+ }
+ ctx.restore();
+}
+function frame(now){
+ if(!ready){requestAnimationFrame(frame);return;}
+ const dt=Math.max(0,Math.min(.05,(now-last)/1000));last=now;
+ if(noticeExpires&&now>noticeExpires){document.getElementById('status').style.opacity='0';noticeExpires=0;}
+ const key={x:(keys.has('arrowright')||keys.has('d')?1:0)-(keys.has('arrowleft')||keys.has('a')?1:0),y:(keys.has('arrowdown')||keys.has('s')?1:0)-(keys.has('arrowup')||keys.has('w')?1:0)};
+ let dx=joyX+key.x,dz=joyY+key.y,moved=0;
+ if(Math.hypot(dx,dz)>.08){route=[];const sx=dx,sy=dz/S;dx=CA*sx+SA*sy;dz=-SA*sx+CA*sy;}
+ else if(route.length){
+  while(route.length&&Math.hypot(route[0].x-hero.x,route[0].z-hero.z)<.07)route.shift();
+  if(route.length){dx=route[0].x-hero.x;dz=route[0].z-hero.z;}
+ }
+ const dist=Math.hypot(dx,dz),speed=running?(currentCharacter?.config.runSpeed??2.8):(currentCharacter?.config.speed??1.15);
+ if(dist>.08){hero.facing=directionName(CA*dx-SA*dz,S*(SA*dx+CA*dz));const targetDist=route.length?Math.min(dt*speed,dist):dt*speed;
+  moved=collideMove(dx,dz,targetDist/speed,speed);
+  if(route.length&&moved<.0001)route=[];
+ }
+ hero.moving=moved>.00001;
+ if(characterMotion){
+  characterMotion.update(dt*1000,{moving:hero.moving,running,facing:hero.facing,distance:moved});
+  hero.phase=characterMotion.phase;
+ }else hero.phase=0;
+ cameraUpdate();
+ const sc=camera.zoom*dpr;
+ ctx.setTransform(dpr,0,0,dpr,0,0);
+ const glow=ctx.createLinearGradient(0,0,W,H);glow.addColorStop(0,'#e5eadd');glow.addColorStop(.47,'#d8e3d8');glow.addColorStop(1,'#b5cec5');ctx.fillStyle=glow;ctx.fillRect(0,0,W,H);
+ // Scenic ambience outside the fixed 3D-derived map, no runtime WebGL.
+ const vignette=ctx.createRadialGradient(W*.43,H*.45,W*.10,W*.5,H*.65,Math.max(W,H)*.9);
+ vignette.addColorStop(0,'#dfe3d000');vignette.addColorStop(1,'#6a8b8730');ctx.fillStyle=vignette;ctx.fillRect(0,0,W,H);
+ ctx.setTransform(sc,0,0,sc,-camera.x*sc,-camera.y*sc);
+ ctx.imageSmoothingEnabled=true;ctx.drawImage(assets.ground,0,0);waterLight(now);
+ if(debug){if(!debugOverlay)debugOverlay=makeDebug();ctx.drawImage(debugOverlay,0,0);}
+ imageAt(entities.find(e=>e.id==='bridge'));
+ const ordered=[...entities.filter(e=>!e.ground).map(e=>({...e,sort:groundDepth(e)+(e.depth||0)})),{id:'hero',sort:groundDepth(hero)}].sort((a,b)=>a.sort-b.sort);
+ for(const e of ordered){if(e.id==='hero')drawHero();else{
+  const p=projection(e);if(['tree','sakura','house','teahouse','shrub'].includes(e.asset))shadow(p.x,p.y+2,(e.asset==='house'||e.asset==='teahouse')?135:e.asset==='shrub'?31:49,(e.asset==='house'||e.asset==='teahouse')?16:e.asset==='shrub'?8:15);
+  imageAt(e);
+ }}
+ driftingPetals(now);
+ if(route.length){ctx.save();ctx.strokeStyle='#f8f1d7';ctx.lineWidth=2;ctx.setLineDash([5,5]);ctx.beginPath();ctx.moveTo(...Object.values(projection(hero)));for(const p of route){const q=projection(p);ctx.lineTo(q.x,q.y);}ctx.stroke();ctx.restore();}
+ if(debug){const p=projection(hero);ctx.beginPath();ctx.ellipse(p.x,p.y,hero.radius*PPM,hero.radius*PPM*S,0,0,7);ctx.strokeStyle='#ffdd75';ctx.lineWidth=2;ctx.stroke();}
+ requestAnimationFrame(frame);
+}
+canvas.addEventListener('pointerup',e=>{
+ if(!ready)return;const rect=canvas.getBoundingClientRect(),world=inverseGround({x:(e.clientX-rect.left)/camera.zoom+camera.x,y:(e.clientY-rect.top)/camera.zoom+camera.y}),{x,z}=world;
+ if(!canStand(x,z)){say('そこには移動できません。道か橋をタップしてください。');return;}
+ const p=pathfind({x,z});if(!p.length){say('その場所へは道がつながっていません。');return;}route=p;
+});
+const stick=document.getElementById('stick'),thumb=document.getElementById('thumb');let pointer=null;
+function changeStick(e){const rect=stick.getBoundingClientRect(),midX=rect.left+rect.width/2,midY=rect.top+rect.height/2,dx=e.clientX-midX,dy=e.clientY-midY,scale=Math.min(1,37/(Math.hypot(dx,dy)||1));joyX=dx*scale/37;joyY=dy*scale/37;if(Math.hypot(joyX,joyY)<.14){joyX=joyY=0;}thumb.style.transform=`translate(${joyX*28}px,${joyY*28}px)`;}
+function resetStick(){joyX=joyY=0;thumb.style.transform='';pointer=null;}
+stick.addEventListener('pointerdown',e=>{if(pointer!==null)return;pointer=e.pointerId;stick.setPointerCapture(pointer);changeStick(e);e.preventDefault();});
+stick.addEventListener('pointermove',e=>{if(e.pointerId===pointer){changeStick(e);e.preventDefault();}});
+for(const type of ['pointerup','pointercancel','lostpointercapture'])stick.addEventListener(type,e=>{if(e.pointerId===pointer)resetStick();});
+window.addEventListener('keydown',e=>{if(/^(arrow|w$|a$|s$|d$)/i.test(e.key)){keys.add(e.key.toLowerCase());e.preventDefault();}});
+window.addEventListener('keyup',e=>keys.delete(e.key.toLowerCase()));
+window.addEventListener('blur',()=>{keys.clear();resetStick();route=[];});
+window.addEventListener('resize',resize);
+document.getElementById('texture').onclick=()=>{
+ texturesEnabled=!texturesEnabled;
+ document.getElementById('texture').textContent=texturesEnabled?'2D根元ON':'旧v10';
+ document.getElementById('texture').setAttribute('aria-pressed',String(texturesEnabled));
+ say(texturesEnabled?'v11：3D幹＋2Dの根・土・苔':'v10：露出した根も3Dだった旧版');
+};
+const LAYER_LABELS=['全部表示','奥の花だけ','幹・根元だけ','中間の花だけ','手前の花だけ'];
+document.getElementById('layers').onclick=()=>{layerMode=(layerMode+1)%5;texturesEnabled=true;
+ document.getElementById('texture').textContent='2D根元ON';
+ document.getElementById('layers').textContent=layerMode?('層 '+layerMode+'/4'):'層を確認';
+ say('桜：'+LAYER_LABELS[layerMode]+'（足元アンカー共通）');};
+document.getElementById('rootFocus').onclick=()=>{rootFocus=!rootFocus;overview=false;document.getElementById('rootFocus').textContent=rootFocus?'追従に戻る':'桜の根元';document.getElementById('overview').textContent='全景';say(rootFocus?'根元を拡大中（タップで新旧比較できます）':'通常の追従表示へ');};
+document.getElementById('overview').onclick=()=>{overview=!overview;document.getElementById('overview').textContent=overview?'追従':'全景';};
+document.getElementById('debug').onclick=()=>{debug=!debug;document.getElementById('debug').textContent=debug?'判定ON':'判定';say(debug?'緑=歩行可、赤=歩行不可。幹と家の衝突を確認できます。':'判定表示を閉じました。');};
+document.getElementById('run').onclick=()=>{running=!running;document.getElementById('run').textContent=running?'歩く':'走る';};
+document.getElementById('reset').onclick=()=>{hero.x=9;hero.z=9.0;hero.phase=0;characterMotion?.cancel();route=[];say('初期位置に戻しました。');};
+document.getElementById('about').onclick=()=>document.getElementById('help').classList.add('open');
+document.getElementById('closeHelp').onclick=()=>document.getElementById('help').classList.remove('open');
+window.__demoQA={get:()=>({ready,texturesEnabled,layerMode,rootFocus,hero:{...hero},routeLength:route.length,heroAvailable,characterId:currentCharacter?.config.id??null,characterMotion:characterMotion?.current??null,characterConfig:currentCharacter?{scale:currentCharacter.config.scale,walk:currentCharacter.config.motions.walking.size,run:currentCharacter.config.motions.running.size,idle:currentCharacter.config.motions.idle.size}:null,characterError,debug,overview,azimuth:35,projection:'orthographic',camera:{...camera}}),canStand,go:(x,z)=>{const r=pathfind({x,z});route=r;return r.length},set:(x,z)=>{if(!canStand(x,z))throw Error('blocked');hero.x=x;hero.z=z;route=[];},project:projection,inverse:inverseGround};
+(async()=>{
+ try{
+  resize();for(const [key,src] of Object.entries(DATA.images))assets[key]=await load(src);for(const [key,src] of Object.entries(BEFORE.images))beforeAssets[key]=await load(src);
+  ready=true;last=performance.now();say('桜：3D幹＋2D花3層のデモ。上部で旧v9・各層を比較できます。');requestAnimationFrame(frame);
+  try{
+   // Only the needed motion images are fetched, but sizes/anchors/smoothing stay defined in current character.json.
+   currentCharacter=await loadCharacter(characterURL,{motions:['idle','walking','running']});
+   characterMotion=new MotionPlayer(currentCharacter.config);
+   hero.radius=currentCharacter.config.radius;
+   heroAvailable=true;
+   document.getElementById('heroIndicator').style.display='block';
+   document.getElementById('heroIndicator').textContent='緋月：本編共通の待機・歩行・走行を使用';
+   say('本編の最新モーションを読み込みました。');
+  }catch(e){
+   heroAvailable=false;characterError=String(e.message??e);
+   document.getElementById('heroIndicator').style.display='block';
+   document.getElementById('heroIndicator').textContent='緋月読込失敗（マップは操作可能）';
+   say('緋月の共通描画が読み込めません: '+characterError);
+  }
+ }catch(e){console.error(e);say('読込エラー: '+e.message);}
+})();
+</script></body></html>
