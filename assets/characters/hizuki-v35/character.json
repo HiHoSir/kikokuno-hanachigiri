@@ -30,7 +30,7 @@
       ]
     }
   },
-  "notes": "Approved normal.png retained. Dedicated idle v21 and walking v11 / running v20 images were rendered from V35 textured GLB with identical scale 0.295, original front lighting rotated with the orthographic 40° camera, and no palette reduction. Walking/running runtime sheets updated 2026-11-04 to v23 with a single shared 3D root anchor. Other animations unchanged.",
+  "notes": "Approved normal.png retained. Dedicated idle v21 and walking v11 / running v20 images were rendered from V35 textured GLB with identical scale 0.295, original front lighting rotated with the orthographic 40° camera, and no palette reduction. Walking/running runtime sheets updated 2026-11-04 to v23 with a single shared 3D root anchor. Other animations unchanged. User accepted katana v44 on 2026-11-05; full-colour 40-degree 8x8, 1.10s one-shot; old katana image retained for rollback.",
   "runSpeed": 2.8,
   "motions": {
     "idle": {
@@ -134,20 +134,20 @@
     },
     "attack_katana": {
       "label": "刀",
-      "image": "../hizuki/v35-expanded-cells/attack_katana_8dir.png",
+      "image": "../hizuki/v35-expanded-cells/attack_katana_v44_8dir.png",
       "size": [
-        137,
-        146
+        224,
+        256
       ],
       "padding": [
-        25,
-        30,
-        32,
-        4
+        68,
+        112,
+        0,
+        0
       ],
       "anchor": [
-        68.6993006993007,
-        127.52129729729731
+        111.6993006993007,
+        209.5212972972973
       ],
       "directions": [
         "front",
@@ -160,9 +160,12 @@
         "front_left"
       ],
       "frames": 8,
-      "durationMs": 1000,
+      "durationMs": 1100,
       "loop": false,
-      "holdLast": false
+      "holdLast": false,
+      "smooth": true,
+      "sourceAnimation": "V35_Attack_Katana",
+      "sourceRevision": "v44"
     },
     "attack_wakizashi": {
       "label": "脇差",

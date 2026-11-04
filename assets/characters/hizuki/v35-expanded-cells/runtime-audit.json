@@ -77,31 +77,82 @@
     "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "attack_katana": {
-    "sheet_sha256": "ccd814bc6d67a7b67791b5b52be5291458d8f6f80e394846f8a3c2e9d4647c6a",
+    "sheet_sha256": "a83bd5a574877733c9e4fac5c8ce4f69b36e79be913107b2186179538a259c93",
+    "git_blob_sha1": "36f912c267436c3fdbf64474413bfba9abb174ae",
+    "source_glb_sha256": "f50236f3f065b38e8ce776b8494f6922cce17f2040b904766047c7b878f8ccb6",
+    "source_glb": "Hizuki_V44_ThighShinRollBalanced_v43c_Footplanted_Trial.glb",
+    "source_animation": "V35_Attack_Katana",
+    "source_period_s": 1.100000023841858,
     "source_frames": [
       0,
+      1,
+      2,
+      3,
       4,
-      8,
-      12,
-      17,
-      21,
-      25,
-      29
+      5,
+      6,
+      7
     ],
     "cell": [
-      137,
-      146
+      224,
+      256
     ],
     "padding": [
-      25,
-      30,
-      32,
-      4
+      68,
+      112,
+      0,
+      0
     ],
-    "original_sheet_sha256": "2db3d8d998061098455ff4be637b9803df0849ac579cf58746ebe3dd22987707",
-    "original_source_matched_cells": 64,
-    "current_alpha_matched_cells": 64,
-    "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
+    "anchor": [
+      111.6993006993007,
+      209.5212972972973
+    ],
+    "runtime_image": "attack_katana_v44_8dir.png",
+    "raster_pixels_per_metre": 70,
+    "directions": [
+      "front",
+      "front_right",
+      "right",
+      "back_right",
+      "back",
+      "back_left",
+      "left",
+      "front_left"
+    ],
+    "frame_count_per_direction": 8,
+    "camera": "orthographic 40 degrees, camera-relative original front key/fill",
+    "appearance": "Full-color GLB textured RGBA; no palette reduction, no pixel filters, no per-frame trimming or mirrored rows",
+    "qa": "64/64 nonempty alpha; 0/64 cell clipping; dimensions 1792x2048; 1100ms non-looping",
+    "integration": "New versioned PNG; prior attack asset kept for rollback; other motions unchanged",
+    "accepted_by_user": "2026-11-05",
+    "previous_sheet_sha256": "ccd814bc6d67a7b67791b5b52be5291458d8f6f80e394846f8a3c2e9d4647c6a",
+    "previous_record": {
+      "sheet_sha256": "ccd814bc6d67a7b67791b5b52be5291458d8f6f80e394846f8a3c2e9d4647c6a",
+      "source_frames": [
+        0,
+        4,
+        8,
+        12,
+        17,
+        21,
+        25,
+        29
+      ],
+      "cell": [
+        137,
+        146
+      ],
+      "padding": [
+        25,
+        30,
+        32,
+        4
+      ],
+      "original_sheet_sha256": "2db3d8d998061098455ff4be637b9803df0849ac579cf58746ebe3dd22987707",
+      "original_source_matched_cells": 64,
+      "current_alpha_matched_cells": 64,
+      "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
+    }
   },
   "attack_wakizashi": {
     "sheet_sha256": "c73d65e93ccf2e498d7b1e23deef428bc87c2fdc81a830f22b4d8f96d0dcb962",

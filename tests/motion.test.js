@@ -42,7 +42,7 @@ test('loops advance from frame zero; one-shot completes and fall holds the last 
 test('motion frame uses correct sheet row and its own padded cell',async()=>{
  const {MotionPlayer}=await import('../src/map/motion.js');const p=new MotionPlayer(config);
  p.play('attack_katana','back_left');p.update(260,{});
- assert.deepEqual(p.current.rect,[274,730,137,146]);
+ assert.deepEqual(p.current.rect,[448,1280,224,256]);
  assert.deepEqual(p.current.anchor,config.motions.attack_katana.anchor);
  for(const change of [c=>c.motions.walking.frames=0,c=>c.motions.walking.durationMs=0,c=>c.motions.walking.anchor=[999,999],c=>c.motions.walking.directions=['front','front']]){
   const c=structuredClone(config);change(c);assert.throws(()=>validateCharacter(c));
@@ -95,4 +95,22 @@ test('camera scale stays independent from character display size',async()=>{
  r.updateCamera(map,map.spawn,config,false);const zoom=r.camera.zoom;
  r.updateCamera(map,map.spawn,{...config,scale:config.scale/2},false);
  assert.equal(r.camera.zoom,zoom);assert.ok(config.scale<.91);
+});
+
+test('adopted katana v44 sprite has eight directions, eight frames and 1.10s one-shot',async()=>{
+ const {MotionPlayer}=await import('../src/map/motion.js');
+ const m=config.motions.attack_katana;
+ assert.equal(m.sourceRevision,'v44');
+ assert.equal(m.image,'../hizuki/v35-expanded-cells/attack_katana_v44_8dir.png');
+ assert.equal(m.durationMs,1100);
+ assert.equal(m.smooth,true);
+ assert.deepEqual(m.size,[224,256]);
+ const data=fs.readFileSync('assets/characters/hizuki/v35-expanded-cells/attack_katana_v44_8dir.png');
+ assert.equal(data.toString('hex',0,8),'89504e470d0a1a0a');
+ assert.deepEqual([data.readUInt32BE(16),data.readUInt32BE(20)],[1792,2048]);
+ const p=new MotionPlayer(config);
+ p.play('attack_katana','front_left');
+ p.update(550,{});assert.equal(p.current.frame,4);
+ p.update(550,{});assert.equal(p.busy,false);
+ assert.equal(p.current.id,'standing');
 });
