@@ -42,7 +42,7 @@ test('loops advance from frame zero; one-shot completes and fall holds the last 
 test('motion frame uses correct sheet row and its own padded cell',async()=>{
  const {MotionPlayer}=await import('../src/map/motion.js');const p=new MotionPlayer(config);
  p.play('attack_katana','back_left');p.update(260,{});
- assert.deepEqual(p.current.rect,[448,1280,224,256]);
+ assert.deepEqual(p.current.rect,[224,1280,224,256]); // 260ms / 1100ms => frame 1, back_left row 5
  assert.deepEqual(p.current.anchor,config.motions.attack_katana.anchor);
  for(const change of [c=>c.motions.walking.frames=0,c=>c.motions.walking.durationMs=0,c=>c.motions.walking.anchor=[999,999],c=>c.motions.walking.directions=['front','front']]){
   const c=structuredClone(config);change(c);assert.throws(()=>validateCharacter(c));
