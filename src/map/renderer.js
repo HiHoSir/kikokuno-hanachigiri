@@ -1,3 +1,4 @@
+import {drawCharacterFrame} from './character-visual.js?v=character-shared-v9';
 import {validateMotions} from './motion.js?v=scene-alignment-6';
 import {project,unproject,depthOrder,collidersFor,surfacesFor,groundTiles} from './logic.js?v=scene-alignment-6';
 export async function loadImage(url){return new Promise((resolve,reject)=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>reject(new Error(`画像を読み込めません: ${new URL(url).pathname}`));image.src=url;});}
@@ -25,7 +26,7 @@ export function validateCharacter(config){
  validateMotions(config);
  return config;
 }
-export async function loadCharacter(url){
+export async function loadCharacter(url,{motions=null}={}){
  const response=await fetch(url);if(!response.ok)throw new Error('キャラクター設定を取得できません');
  const config=validateCharacter(await response.json()),images=new Map();
  const assetUrl=key=>{const target=new URL(key,url),version=new URL(url).searchParams.get('v');if(version)target.searchParams.set('v',version);return target;};
@@ -33,7 +34,8 @@ export async function loadCharacter(url){
   if(!images.has(f.image))images.set(f.image,await loadImage(assetUrl(f.image)));
   const im=images.get(f.image);if(f.rect[0]<0||f.rect[1]<0||f.rect[0]+f.rect[2]>im.width||f.rect[1]+f.rect[3]>im.height)throw new Error('アトラスのコマ範囲が不正です');
  }
- for(const m of Object.values(config.motions||{})){
+ for(const [name,m] of Object.entries(config.motions||{})){
+  if(motions&&!motions.includes(name))continue;
   const im=await loadImage(assetUrl(m.image));
   if(im.width!==m.size[0]*m.frames||im.height!==m.size[1]*m.directions.length)throw new Error('モーション画像の寸法が台帳と一致しません');
   images.set(m.image,im);
@@ -69,8 +71,7 @@ export class MapRenderer{
    const config=hero.config,frames=(moving&&config.animations.walk?.[facing])||config.animations.idle[facing]||config.animations.idle.default;
    const total=frames.reduce((sum,f)=>sum+f.durationMs,0);let t=time%total,frame=frames[0];for(const f of frames){if(t<f.durationMs){frame=f;break;}t-=f.durationMs;}
    if(motion)frame=motion;
-   const anchor=frame.anchor||config.anchor;
-   c.imageSmoothingEnabled=frame.smooth===true||!config.pixelArt;if(frame.smooth===true)c.imageSmoothingQuality='high';c.drawImage(hero.images.get(frame.image),...frame.rect,foot.x-anchor[0]*config.scale,foot.y-anchor[1]*config.scale,frame.rect[2]*config.scale,frame.rect[3]*config.scale);
+   drawCharacterFrame(c,hero,frame,foot);
   }
   if(debug){
    const polygon=(points,fill,stroke)=>{c.beginPath();for(const [j,v]of points.entries()){const p=project({x:v[0],z:v[1]},map.projection);j?c.lineTo(p.x,p.y):c.moveTo(p.x,p.y);}c.closePath();c.fillStyle=fill;c.fill();c.strokeStyle=stroke;c.lineWidth=1/cam.zoom;c.stroke();};
