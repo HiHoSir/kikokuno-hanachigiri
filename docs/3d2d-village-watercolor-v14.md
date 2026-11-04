@@ -23,6 +23,7 @@
 
 ## ファイル
 - ブラウザ操作デモ: `demo-3d2d-village-watercolor-v14.html` （mainルート、`tools/build-site.mjs`のPages配信対象）
+- 再生成コード: `tools/v14_build_village_watercolor.py` （リポジトリから直接実行可）。
 - 本会話の成果物ZIP: `hanachigiri_v14_watercolor_scene_sources.zip` に元v13デモ、RGBA素材4点、再現Python、Chromium検査スクリプト、新旧スクリーンショットを同梱。
 - 再生成: ZIP内で `python source/build_v14.py`。検査: `python tests/test_v14.py`。Python依存: Pillow/NumPy、検査にはPlaywright + Chromium。
 - 本編の `maps/village/map.json` と `assets/characters/` は**変更していない**。今回のHTMLはv13の独立3D→2Dデモを改良した比較ページ。
