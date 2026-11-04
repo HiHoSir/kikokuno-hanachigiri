@@ -7,7 +7,7 @@
 ## 実装契約
 
 - 入力 3D ソース：`Hizuki_V44_ThighShinRollBalanced_v43c_Footplanted_Trial.glb` (SHA256 `f50236f3f065b38e8ce776b8494f6922cce17f2040b904766047c7b878f8ccb6`)
-- 出力 2D：`assets/characters/hizuki/v35-expanded-cells/attack_katana_v44_8dir.png`
+- 出力 2D：`assets/characters/hizuki/v35-expanded-cells/attack_katana_v44_corrected_8dir.png`
 - 8方向は front/front_right/right/back_right/back/back_left/left/front_left。各8フレーム、1.10秒、一回のみ再生。
 - 40°平行投影、原テクスチャ・カメラ追従ライト、全色RGBA。30色減色、ドット絵化、左右反転、フレーム別トリミングなし。
 - 共通セル224×256、ランタイム足元アンカー `base [43.6993006993007,97.52129729729731] + padding [68,112]`、表示倍率0.85を維持。
@@ -28,4 +28,7 @@
 
 ## 再現手順
 
-Python に `numpy`, `scipy`, `Pillow`, `vtk` を入れ、環境変数 `HIZUKI_V44_GLB` に元GLBのパスを渡して `python tools/hizuki-attack-v44/render_atlas.py` を実行。生成された `attack_katana_v44_8dir.png` と `atlas_qa.json` を品質検査し、ゲームのアセットへ反映する。
+Python に `numpy`, `scipy`, `Pillow`, `vtk` を入れ、環境変数 `HIZUKI_V44_GLB` に元GLBのパスを渡して `python tools/hizuki-attack-v44/render_atlas.py` を実行。生成された `attack_katana_v44_corrected_8dir.png` と `atlas_qa.json` を品質検査し、ゲームのアセットへ反映する。
+## 2026-11-05 修正：方向／表示倍率
+
+最初に公開したアトラスの右向き／左向きが逆で、70px/mと大きすぎた。承認済みモーションv44は維持し、アトラスのみ **60px/m**、カメラyawを`[0,-45,-90,-135,180,135,90,45]`へ修正。共通登録オフセット[-2,-4]、元の足元アンカー・実行時の0.85スケール・1100msは変えない。以前のPNGはランタイムから参照しない。詳細は `docs/HIZUKI_ATTACK_V44_SPRITE_CORRECTION.md`。

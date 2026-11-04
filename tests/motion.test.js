@@ -101,7 +101,7 @@ test('adopted katana v44 sprite has eight directions, eight frames and 1.10s one
  const {MotionPlayer}=await import('../src/map/motion.js');
  const m=config.motions.attack_katana;
  assert.equal(m.sourceRevision,'v44');
- assert.equal(m.image,'../hizuki/v35-expanded-cells/attack_katana_v44_8dir.png');
+ assert.equal(m.image,'../hizuki/v35-expanded-cells/attack_katana_v44_corrected_8dir.png');
  assert.equal(m.durationMs,1100);
  assert.equal(m.smooth,true);
  assert.deepEqual(m.size,[224,256]);

@@ -1,0 +1,829 @@
+{
+  "sourceFile": "Hizuki_V44_ThighShinRollBalanced_v43c_Footplanted_Trial.glb",
+  "sourceSHA256": "f50236f3f065b38e8ce776b8494f6922cce17f2040b904766047c7b878f8ccb6",
+  "sheetFile": "attack_katana_v44_corrected_8dir.png",
+  "sheetSHA256": "ec9e7db23e6b2b8baa12ecc28f03b7b762e0c9d4564e704070af2fb217b12ec6",
+  "cell": [
+    224,
+    256
+  ],
+  "rasterPlacement": [
+    110,
+    206
+  ],
+  "runtimeAnchor": [
+    111.6993006993007,
+    209.5212972972973
+  ],
+  "registrationCorrectionPx": [
+    -2,
+    -4
+  ],
+  "sheetDimensions": [
+    1792,
+    2048
+  ],
+  "camera": {
+    "projection": "parallel",
+    "elevationDeg": 40,
+    "sourceModelHeightToPixels": 60,
+    "originalFrontKeyFillCameraRelative": true,
+    "scaleFactorComparedWithModel": 60
+  },
+  "format": "Full-color GLB textured RGBA, no palette reduction, no per-frame crop",
+  "directions": [
+    "front",
+    "front_right",
+    "right",
+    "back_right",
+    "back",
+    "back_left",
+    "left",
+    "front_left"
+  ],
+  "cameraYawDeg": [
+    0,
+    -45,
+    -90,
+    -135,
+    180,
+    135,
+    90,
+    45
+  ],
+  "baseline": "Approved normal front_right silhouette 46x108 px; model V35_Idle at 60px/m is 49x108px. Shared per-atlas registration (-2,-4) aligns original ground anchor. No per-frame trimming.",
+  "frameCount": 8,
+  "durationMs": 1100,
+  "nonempty": 64,
+  "clipped": 0,
+  "bboxes": [
+    {
+      "dir": "front",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        85,
+        114,
+        162,
+        221
+      ],
+      "alpha": 3679
+    },
+    {
+      "dir": "front",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        85,
+        114,
+        162,
+        221
+      ],
+      "alpha": 3679
+    },
+    {
+      "dir": "front",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        85,
+        115,
+        167,
+        221
+      ],
+      "alpha": 3698
+    },
+    {
+      "dir": "front",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        85,
+        118,
+        139,
+        221
+      ],
+      "alpha": 3376
+    },
+    {
+      "dir": "front",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        59,
+        123,
+        134,
+        222
+      ],
+      "alpha": 3566
+    },
+    {
+      "dir": "front",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        34,
+        127,
+        134,
+        233
+      ],
+      "alpha": 3653
+    },
+    {
+      "dir": "front",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        34,
+        128,
+        134,
+        235
+      ],
+      "alpha": 3666
+    },
+    {
+      "dir": "front",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        34,
+        128,
+        134,
+        235
+      ],
+      "alpha": 3666
+    },
+    {
+      "dir": "front_right",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        85,
+        114,
+        140,
+        222
+      ],
+      "alpha": 3353
+    },
+    {
+      "dir": "front_right",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        85,
+        114,
+        140,
+        222
+      ],
+      "alpha": 3354
+    },
+    {
+      "dir": "front_right",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        85,
+        114,
+        156,
+        222
+      ],
+      "alpha": 3349
+    },
+    {
+      "dir": "front_right",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        86,
+        118,
+        178,
+        222
+      ],
+      "alpha": 3103
+    },
+    {
+      "dir": "front_right",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        88,
+        122,
+        136,
+        223
+      ],
+      "alpha": 2889
+    },
+    {
+      "dir": "front_right",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        82,
+        126,
+        139,
+        230
+      ],
+      "alpha": 3187
+    },
+    {
+      "dir": "front_right",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        82,
+        126,
+        140,
+        232
+      ],
+      "alpha": 3199
+    },
+    {
+      "dir": "front_right",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        82,
+        126,
+        140,
+        232
+      ],
+      "alpha": 3199
+    },
+    {
+      "dir": "right",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        88,
+        114,
+        136,
+        218
+      ],
+      "alpha": 2890
+    },
+    {
+      "dir": "right",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        88,
+        114,
+        136,
+        218
+      ],
+      "alpha": 2894
+    },
+    {
+      "dir": "right",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        88,
+        114,
+        137,
+        218
+      ],
+      "alpha": 2989
+    },
+    {
+      "dir": "right",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        89,
+        117,
+        178,
+        218
+      ],
+      "alpha": 3430
+    },
+    {
+      "dir": "right",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        88,
+        120,
+        187,
+        216
+      ],
+      "alpha": 3422
+    },
+    {
+      "dir": "right",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        88,
+        123,
+        156,
+        223
+      ],
+      "alpha": 3305
+    },
+    {
+      "dir": "right",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        88,
+        123,
+        158,
+        225
+      ],
+      "alpha": 3311
+    },
+    {
+      "dir": "right",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        88,
+        123,
+        158,
+        225
+      ],
+      "alpha": 3311
+    },
+    {
+      "dir": "back_right",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        66,
+        111,
+        135,
+        214
+      ],
+      "alpha": 3317
+    },
+    {
+      "dir": "back_right",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        66,
+        111,
+        135,
+        214
+      ],
+      "alpha": 3316
+    },
+    {
+      "dir": "back_right",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        75,
+        112,
+        135,
+        214
+      ],
+      "alpha": 3269
+    },
+    {
+      "dir": "back_right",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        86,
+        105,
+        145,
+        214
+      ],
+      "alpha": 3678
+    },
+    {
+      "dir": "back_right",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        85,
+        115,
+        199,
+        213
+      ],
+      "alpha": 3798
+    },
+    {
+      "dir": "back_right",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        85,
+        117,
+        192,
+        213
+      ],
+      "alpha": 3608
+    },
+    {
+      "dir": "back_right",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        85,
+        117,
+        191,
+        213
+      ],
+      "alpha": 3592
+    },
+    {
+      "dir": "back_right",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        85,
+        117,
+        191,
+        213
+      ],
+      "alpha": 3592
+    },
+    {
+      "dir": "back",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        58,
+        109,
+        135,
+        209
+      ],
+      "alpha": 3436
+    },
+    {
+      "dir": "back",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        58,
+        109,
+        135,
+        209
+      ],
+      "alpha": 3436
+    },
+    {
+      "dir": "back",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        53,
+        109,
+        135,
+        209
+      ],
+      "alpha": 3427
+    },
+    {
+      "dir": "back",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        81,
+        105,
+        135,
+        217
+      ],
+      "alpha": 3362
+    },
+    {
+      "dir": "back",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        86,
+        104,
+        161,
+        220
+      ],
+      "alpha": 3545
+    },
+    {
+      "dir": "back",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        86,
+        113,
+        185,
+        220
+      ],
+      "alpha": 3387
+    },
+    {
+      "dir": "back",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        86,
+        113,
+        186,
+        220
+      ],
+      "alpha": 3380
+    },
+    {
+      "dir": "back",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        86,
+        113,
+        186,
+        220
+      ],
+      "alpha": 3380
+    },
+    {
+      "dir": "back_left",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        80,
+        109,
+        135,
+        214
+      ],
+      "alpha": 3314
+    },
+    {
+      "dir": "back_left",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        80,
+        109,
+        135,
+        214
+      ],
+      "alpha": 3313
+    },
+    {
+      "dir": "back_left",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        64,
+        109,
+        135,
+        214
+      ],
+      "alpha": 3358
+    },
+    {
+      "dir": "back_left",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        42,
+        112,
+        134,
+        219
+      ],
+      "alpha": 3227
+    },
+    {
+      "dir": "back_left",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        84,
+        97,
+        132,
+        222
+      ],
+      "alpha": 2980
+    },
+    {
+      "dir": "back_left",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        81,
+        114,
+        138,
+        222
+      ],
+      "alpha": 2973
+    },
+    {
+      "dir": "back_left",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        80,
+        115,
+        138,
+        222
+      ],
+      "alpha": 2997
+    },
+    {
+      "dir": "back_left",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        80,
+        115,
+        138,
+        222
+      ],
+      "alpha": 2997
+    },
+    {
+      "dir": "left",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        84,
+        113,
+        132,
+        218
+      ],
+      "alpha": 2946
+    },
+    {
+      "dir": "left",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        84,
+        113,
+        132,
+        218
+      ],
+      "alpha": 2945
+    },
+    {
+      "dir": "left",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        83,
+        114,
+        132,
+        217
+      ],
+      "alpha": 2952
+    },
+    {
+      "dir": "left",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        41,
+        117,
+        131,
+        217
+      ],
+      "alpha": 3346
+    },
+    {
+      "dir": "left",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        34,
+        119,
+        132,
+        218
+      ],
+      "alpha": 3531
+    },
+    {
+      "dir": "left",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        64,
+        122,
+        132,
+        218
+      ],
+      "alpha": 3529
+    },
+    {
+      "dir": "left",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        62,
+        122,
+        132,
+        218
+      ],
+      "alpha": 3510
+    },
+    {
+      "dir": "left",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        62,
+        122,
+        132,
+        218
+      ],
+      "alpha": 3510
+    },
+    {
+      "dir": "front_left",
+      "frame": 0,
+      "t": 0.0,
+      "bbox": [
+        85,
+        114,
+        155,
+        222
+      ],
+      "alpha": 3499
+    },
+    {
+      "dir": "front_left",
+      "frame": 1,
+      "t": 0.138,
+      "bbox": [
+        85,
+        114,
+        155,
+        222
+      ],
+      "alpha": 3499
+    },
+    {
+      "dir": "front_left",
+      "frame": 2,
+      "t": 0.275,
+      "bbox": [
+        85,
+        114,
+        146,
+        221
+      ],
+      "alpha": 3457
+    },
+    {
+      "dir": "front_left",
+      "frame": 3,
+      "t": 0.413,
+      "bbox": [
+        75,
+        118,
+        134,
+        215
+      ],
+      "alpha": 3549
+    },
+    {
+      "dir": "front_left",
+      "frame": 4,
+      "t": 0.55,
+      "bbox": [
+        21,
+        122,
+        135,
+        214
+      ],
+      "alpha": 3824
+    },
+    {
+      "dir": "front_left",
+      "frame": 5,
+      "t": 0.688,
+      "bbox": [
+        29,
+        125,
+        135,
+        222
+      ],
+      "alpha": 3800
+    },
+    {
+      "dir": "front_left",
+      "frame": 6,
+      "t": 0.825,
+      "bbox": [
+        29,
+        126,
+        135,
+        224
+      ],
+      "alpha": 3803
+    },
+    {
+      "dir": "front_left",
+      "frame": 7,
+      "t": 0.963,
+      "bbox": [
+        29,
+        126,
+        135,
+        224
+      ],
+      "alpha": 3803
+    }
+  ]
+}

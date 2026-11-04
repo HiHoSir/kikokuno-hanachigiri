@@ -21,8 +21,12 @@ Walking v11 and running v20 were re-rendered with the *same* 3D source-to-sprite
 
 ## Katana attack v44 (adopted 2026-11-05)
 
-- Runtime atlas: `attack_katana_v44_8dir.png`, 1792×2048, cells 224×256, 8 directions×8 phases, period 1100ms, one-shot.
+- Runtime atlas: `attack_katana_v44_corrected_8dir.png`, 1792×2048, cells 224×256, 8 directions×8 phases, period 1100ms, one-shot.
 - Full-color original GLB UV-texture RGBA; 40° orthographic and camera-relative front lighting. No palette reduction, mirroring, frame cropping or pixel-art processing.
 - Anchor `[111.6993006993007,209.5212972972973]`, runtime scale remains 0.85. Old `attack_katana_8dir.png` is preserved as rollback but no longer referenced in the motion registry.
 - Source GLB SHA256: `f50236f3f065b38e8ce776b8494f6922cce17f2040b904766047c7b878f8ccb6`. PNG SHA256: `a83bd5a574877733c9e4fac5c8ce4f69b36e79be913107b2186179538a259c93`. Source and atlas QA are in `tools/hizuki-attack-v44/`.
 - The Canvas2D map loads this sprite, not a GLB. Other eight motions remain unchanged; browser/iPhone real-device inspection is separate.
+
+## 2026-11-05 v44スプライト方向・倍率修正
+
+新しい運用画像は `attack_katana_v44_corrected_8dir.png`。初回公開版は、カメラyawが逆で左右向きが逆、70px/mで通常姿勢より約17%大きい欠陥があったため不採用とした。修正版は60px/m・yaw `[0,-45,-90,-135,180,135,90,45]`、登録オフセット[-2,-4]、8×8全セル・足元共通。元のv44ボーンアニメーション・他8動作は変更なし。詳細は `docs/HIZUKI_ATTACK_V44_SPRITE_CORRECTION.md` と `tests/attack-atlas-v44.test.js`。

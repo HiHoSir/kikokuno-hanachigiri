@@ -28,7 +28,7 @@
 
 - 現行の採用基準は `assets/characters/hizuki-v35/normal.png`。80×112px・30色・角落としありの通常版。元PNGを変更せず `production-record.json` と `character.json` を照合する。
 - ジグザグ陰影は不採用の比較実験で、`old/` に保管。採用画像へ取り違えない。
-- 登録済みV35の9動作×8方向×8コマは `assets/characters/hizuki/v35-expanded-cells/`。`hizuki-v35/character.json` のmotions台帳から読む。各動作の共通セルとpadding加算後アンカーを維持し、元PNGを変更・反転しない。専用Idleは2026-11-04にGLBのV35_Idleから再レンダリングした8方向×8コマ、3.6秒ループを採用し、停止時に使用する。刀攻撃は2026-11-05に利用者採用のv44を `attack_katana_v44_8dir.png`（8方向×8コマ、1100ms）として登録。旧刀素材はロールバック用に維持し、刀以外の8動作には触れない。Interactは未実装。旧normal.pngは保全する。
+- 登録済みV35の9動作×8方向×8コマは `assets/characters/hizuki/v35-expanded-cells/`。`hizuki-v35/character.json` のmotions台帳から読む。各動作の共通セルとpadding加算後アンカーを維持し、元PNGを変更・反転しない。専用Idleは2026-11-04にGLBのV35_Idleから再レンダリングした8方向×8コマ、3.6秒ループを採用し、停止時に使用する。刀攻撃は2026-11-05に利用者採用のv44を `attack_katana_v44_corrected_8dir.png`（8方向×8コマ、1100ms）として登録。旧刀素材はロールバック用に維持し、刀以外の8動作には触れない。Interactは未実装。旧normal.pngは保全する。
 - `skills/silhouette-first-pixel-art/SKILL.md` と同梱手順・品質ゲートを読む。シルエット→色面下書き→部位限定画素修正→差分再適用→目視比較。自動縮小・減色だけで完成としない。
 - 角落としは座標限定・別候補の独立パッチ。通常修正はalpha差分0。アニメは共通セル・尺度・足元アンカー・方向・時刻を維持し、フレームごとに再トリミングしない。
 
@@ -39,3 +39,5 @@
 - `npm test`、`node tools/verify-archive.mjs`、`npm run build` を実行する。ブラウザ検査は `tools/map-browser-smoke.mjs`。公開対象は `dist/` のみ。
 - 素材、静止合成、移動、遮蔽、配置保存、公開、実機検査を別々に報告する。未実装・未確認を合格にしない。
 - 依頼範囲内の通常の可逆作業は重ねて許可を求めず進める。旧データを勝手に復帰させない。
+
+- 刀攻撃スプライトの2026-11-05修正：**サイズ・方向の誤公開を修正**。現行PNGは `attack_katana_v44_corrected_8dir.png`、60px/m、カメラの左右向き修正済み。v44モーションGLBには変更なし。根拠は `docs/HIZUKI_ATTACK_V44_SPRITE_CORRECTION.md` と `tests/attack-atlas-v44.test.js`。
