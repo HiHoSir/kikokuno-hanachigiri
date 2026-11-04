@@ -18,10 +18,11 @@ const BEFORE={"images":{"sakura":"data:image/webp;base64,UklGRnZ8AABXRUJQVlA4WAo
 const canvas=document.getElementById('scene'),ctx=canvas.getContext('2d');
 // The same character loader, motion controller, and character sprite drawing as the current map.
 // The map keeps its own 35-degree projection and scene assets.
+const characterModuleVersion=String(Date.now());
 const [{loadCharacter},{MotionPlayer},{drawCharacterFrame}]=await Promise.all([
- import('./src/map/renderer.js?v=character-shared-v9'),
- import('./src/map/motion.js?v=character-shared-v9'),
- import('./src/map/character-visual.js?v=character-shared-v9')
+ import('./src/map/renderer.js?v='+characterModuleVersion),
+ import('./src/map/motion.js?v='+characterModuleVersion),
+ import('./src/map/character-visual.js?v='+characterModuleVersion)
 ]);
 const characterURL=new URL('./assets/characters/hizuki-v35/character.json',document.baseURI);
 // The separate character work publishes JSON + spritesheets independently of map revisions.
