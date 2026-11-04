@@ -26,16 +26,16 @@
 
 ## 再生成
 
-Python + Pillow、NumPy、trimesh、numba。従来の `build_assets.py`,`build_textured.py`,`build_watercolor.py`,`build_landscape.py` は同梱。元v9の`demo-3d2d-sakura-shared-character-v9.html`はリポジトリのルートに必要。
+Python + Pillow、NumPy、trimesh、numba。従来の `build_assets.py`,`build_textured.py`,`build_watercolor.py`,`build_landscape.py` は同梱。元v9のデモHTMLは配布ZIPの `baseline/v9-demo.html` に同梱。再生成用のPython一式とGLB/PNGは本会話のZIP成果物に含む。GitHubのこのREADMEは仕様と検査記録であり、`source/`のコードがリポジトリに配置済みという意味ではない。
 
 ```bash
-cd tools/3d2d-sakura-v10/source
+cd <ZIPを展開したディレクトリ>/hanachigiri_sakura_roots_v10/source
 python build_textured.py            # 共通atlasおよびモデル素材（初回のみ）
 python build_sakura_layers.py       # 桜の3D幹・根と2D花/足元レイヤー
 python make_html_v10.py            # 本編のv9デモからv10版を出力
 python test_sakura_roots_v10.py    # アセット整合・GLB/PNG/レイヤー検査
 ```
 
-`make_html_v10.py`は `tools/3d2d-sakura-v10/hanachigiri_sakura_root_v10.html` を出力する。これを `demo-3d2d-sakura-roots-v10.html` へ配置すればGitHub Pages用デモとなる。現状のv9の画像をインラインに含んだHTMLから新規根だけを差し替えているため、変更しない景物は同じまま。
+`make_html_v10.py`はZIP展開ディレクトリ直下へ `hanachigiri_sakura_root_v10.html` を出力する。これを `demo-3d2d-sakura-roots-v10.html` へ配置すればGitHub Pages用デモとなる。現状のv9の画像をインラインに含んだHTMLから新規根だけを差し替えているため、変更しない景物は同じまま。
 
 `old/`の旧実装は使用していない。最終採用時には根が重なったときの緋月の見え方、現行V35との縮尺、iPhone Safariでの操作を再確認する。
