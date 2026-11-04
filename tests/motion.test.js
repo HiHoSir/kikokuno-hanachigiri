@@ -3,6 +3,17 @@ import assert from 'node:assert/strict';
 import {validateCharacter} from '../src/map/renderer.js';
 import fs from 'node:fs';
 const config=JSON.parse(fs.readFileSync('assets/characters/hizuki-v35/character.json'));
+test('walking and running full-colour atlases use 3D-scale matched dimensions and a shared model anchor',()=>{
+ const pngSize=file=>{const data=fs.readFileSync(file);assert.equal(data.toString('hex',0,8),'89504e470d0a1a0a');return [data.readUInt32BE(16),data.readUInt32BE(20)];};
+ for(const [id,w,h,period] of [['walking',640,1280,1120],['running',768,1280,660]]){
+  const m=config.motions[id];assert.equal(m.smooth,true);assert.equal(m.durationMs,period);
+  assert.deepEqual(pngSize('assets/characters/hizuki/v35-expanded-cells/'+id+'_8dir.png'),[w,h]);
+  assert.deepEqual(m.size,[w/8,h/8]);
+  assert.equal(m.anchor[0],config.anchor[0]+m.padding[0]);
+  assert.equal(m.anchor[1],config.anchor[1]+m.padding[1]);
+ }
+});
+
 test('registered motions load as 8 directions and retain model origin despite different padding',()=>{
  assert.equal(Object.keys(config.motions||{}).length,9);
  validateCharacter(config);

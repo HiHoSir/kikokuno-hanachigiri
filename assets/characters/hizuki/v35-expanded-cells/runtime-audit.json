@@ -1,22 +1,22 @@
 {
   "walking": {
-    "sheet_sha256": "2dc6109c75d988fdcdb059f2956eb507fc28c4e90059bba3bf5b9d5519b02290",
-    "git_blob_sha1": "2a89d468b29f9cf0c72d1c2e43b44aaeb2812acb",
+    "sheet_sha256": "feb574b5e5c054ab91b79c4f38b4d5f9a6e9eacc87518589b1d5c74e1b34ecae",
+    "git_blob_sha1": "1a4e9f2ef117bc5d107f0604e4082fd096a74ce3",
     "cell": [
       80,
-      118
+      160
     ],
     "padding": [
       0,
-      1,
+      32,
       0,
-      5
+      16
     ],
     "source_animation": "V35_Walking",
     "source_period_s": 1.12,
     "source_glb": "Hizuki_V35_RunV20_RelaxedElbows_WalkV11.glb",
     "source_glb_sha256": "bcac08605692bf8aef9d861b6b8586bc8a692a68d128c6f4f0d184f0f7af108e",
-    "camera": "orthographic elevation 40°, camera-facing original front lighting",
+    "camera": "40 degree elevation orthographic, camera-relative original front key/fill",
     "directions": [
       "front",
       "front_right",
@@ -38,11 +38,16 @@
       6,
       7
     ],
-    "appearance": "GLB embedded texture, palette-indexed lossless PNG",
-    "qa": "64 frames checked; no cropped frame",
-    "integration": "runtime image path, cell, anchor, stride and JS unchanged",
-    "previous_sheet_sha256": "1aab81c702def1775ebea9d072be616a3eb954606c2ac61d94cdd319de1cae65",
-    "archive_label": "pre-v20-20261104"
+    "appearance": "Full-color GLB UV-texture RGBA PNG, no pixel-art or palette reduction",
+    "qa": "64/64 nonempty; 0/64 clipping; > 2000 RGB colors in every cell",
+    "integration": "original asset filename and motion logic unchanged; cell/anchor and cache version updated",
+    "previous_sheet_sha256": "2dc6109c75d988fdcdb059f2956eb507fc28c4e90059bba3bf5b9d5519b02290",
+    "archive_label": "pre-v23-20261104",
+    "anchor": [
+      43.6993006993007,
+      129.5212972972973
+    ],
+    "raster_scale": 0.295
   },
   "fall": {
     "sheet_sha256": "3faa1b3f32ca5e387d30ef6f10aaa0138d7c40a9913ba6b54d0d0234600923c6",
@@ -207,23 +212,23 @@
     "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "running": {
-    "sheet_sha256": "88de6f66eb85053a1af63cff04c76748d3309cc64f63b4852c391631b48f9352",
-    "git_blob_sha1": "804fd78f0d79c4dbb63cbe82b0bafd70eb3bc4c9",
+    "sheet_sha256": "7c401ad887b727d3b230a3cb74d2ade4b418aa9880d324dd6eb5b0809fc9f0ae",
+    "git_blob_sha1": "0bc110861ae046946d903abb63ee86cac402ee2e",
     "cell": [
-      80,
-      121
+      96,
+      160
     ],
     "padding": [
-      0,
-      3,
-      0,
-      6
+      8,
+      32,
+      8,
+      16
     ],
     "source_animation": "V35_Running",
     "source_period_s": 0.66,
     "source_glb": "Hizuki_V35_RunV20_RelaxedElbows_WalkV11.glb",
     "source_glb_sha256": "bcac08605692bf8aef9d861b6b8586bc8a692a68d128c6f4f0d184f0f7af108e",
-    "camera": "orthographic elevation 40°, camera-facing original front lighting",
+    "camera": "40 degree elevation orthographic, camera-relative original front key/fill",
     "directions": [
       "front",
       "front_right",
@@ -245,11 +250,16 @@
       6,
       7
     ],
-    "appearance": "GLB embedded texture, palette-indexed lossless PNG",
-    "qa": "64 frames checked; no cropped frame",
-    "integration": "runtime image path, cell, anchor, stride and JS unchanged",
-    "previous_sheet_sha256": "1029cabf130b9764875d1cedd9a50371870242d848379edf576a5535123964d6",
-    "archive_label": "pre-v20-20261104"
+    "appearance": "Full-color GLB UV-texture RGBA PNG, no pixel-art or palette reduction",
+    "qa": "64/64 nonempty; 0/64 clipping; > 2000 RGB colors in every cell",
+    "integration": "original asset filename and motion logic unchanged; cell/anchor and cache version updated",
+    "previous_sheet_sha256": "88de6f66eb85053a1af63cff04c76748d3309cc64f63b4852c391631b48f9352",
+    "archive_label": "pre-v23-20261104",
+    "anchor": [
+      51.6993006993007,
+      129.5212972972973
+    ],
+    "raster_scale": 0.295
   },
   "idle": {
     "sheet_sha256": "5e15c2cfd9458121623c5a60476613f27503de2195a777995e49b99da0b7109c",

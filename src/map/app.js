@@ -75,7 +75,7 @@ function loop(now){
 async function boot(){
  try{
   const response=await fetch(MAP_URL);if(!response.ok)throw new Error('マップを取得できません');original=validateMap(await response.json());
-  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json?v=idle-v21',import.meta.url));
+  hero=await loadCharacter(new URL('../../assets/characters/hizuki-v35/character.json?v=walkrun-v23',import.meta.url));
   motions=new MotionPlayer(hero.config);
   for(const [id,m]of Object.entries(hero.config.motions)){const option=document.createElement('option');option.value=id;option.textContent=m.label;$('motion-select').append(option);}
   for(const [id,m]of Object.entries(hero.config.motions)){

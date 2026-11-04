@@ -1,16 +1,20 @@
 # Hizuki V35 runtime sprite atlases
 
-2026-11-04: walking v11 and running v20, directly rendered from textured GLB at orthographic elevation 40°. Each has 8 directions × 8 frames.
+## Camera-light-matched locomotion 2026-11-04 (v23)
 
-- walking_8dir.png: 640×944 pixels; 80×118 cells; 8 columns × 8 rows.
-- running_8dir.png: 640×968 pixels; 80×121 cells; 8 columns × 8 rows.
-- Row order: front / front_right / right / back_right / back / back_left / left / front_left.
-- Keep exactly the original runtime filenames, dimensions, cell anchors, map distance-driven animation, and rendering code.
-- Previous current sheets are archived under old/pre-v20-20261104/; earlier original sheets under old/ remain untouched.
-- Other motions (fall, attack, cast, hit, victory) unchanged.
-- runtime-audit.json includes exact PNG hashes and provenance.
-- iPhone Safari live runtime approval remains a separate test.
+Walking v11 and running v20 were re-rendered with the *same* 3D source-to-sprite scale (0.295) and the same camera-relative original front lights as idle v21, orthographic 40° above horizontal. Full-color RGBA is preserved (no forced 30-color palette or pixel-art operation).
 
-## Dedicated idle 2026-11-04
+| Motion | PNG dimensions | Cell | Runtime anchor | Source duration |
+| --- | --- | --- | --- | --- |
+| idle v21 | 640×1056 | 80×132 | [43.6993, 106.5213] | 3.6 s |
+| walking v23 (from animation v11) | 640×1280 | 80×160 | [43.6993, 129.5213] | 1.12 s |
+| running v23 (from animation v20) | 768×1280 | 96×160 | [51.6993, 129.5213] | 0.66 s |
 
-`idle_8dir.png` is 8 directions × 8 frames, 80×132 px cells, 640×1056 PNG, 3600 ms loop. The GLB's original front key/fill lighting is rotated with each 40° orthographic camera. Preserves the embedded texture as full-colour RGBA, without palette reduction or pixel art conversion. Shared anchor is [43.6993006993007, 106.52129729729731]. Other animations and approved normal.png are untouched. The game uses this for standing instead of the temporary first fall frame. See runtime-audit.json for SHA-256.
+- Sheet rows: front / front_right / right / back_right / back / back_left / left / front_left.
+- Columns: eight animation phases. No per-frame trimming, mirroring, or pose edits.
+- Walking and running use the source texture and smooth image scaling; other motions stay unchanged.
+- The larger **transparent** cells prevent silhouette clipping, without enlarging actual world sprites beyond the common 0.295 source scale. Runtime scale 0.85, map camera scale, movement speed, and distance-linked gait phase remain as before.
+- Archive snapshots: `old/pre-v23-20261104/` stores the immediately previous (v20-runtime) walking and running PNGs; earlier histories remain intact.
+- `runtime-audit.json` contains image hashes and metadata. The approved `normal.png` is unchanged.
+- 64/64 cells have non-empty alpha, high-color texture content, and no clipped edges (both motions).
+- The apparent difference between front-facing running and rear-facing running at 40° is a projection effect of the **approved run pose**, not a per-direction image scaling operation. Visual final approval and iPhone Safari verification remain separate.

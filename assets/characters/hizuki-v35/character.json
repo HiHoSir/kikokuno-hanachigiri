@@ -30,7 +30,7 @@
       ]
     }
   },
-  "notes": "Original approved normal.png remains unchanged. Dedicated V35_Idle at ortho40 with camera-relative original front light is active while standing; 8 directional frames loop over 3.6 s. Walking, running and all other animation images retain their current contents; no sprite pixel-art conversion was performed for idle.",
+  "notes": "Approved normal.png retained. Dedicated idle v21 and walking v11 / running v20 images were rendered from V35 textured GLB with identical scale 0.295, original front lighting rotated with the orthographic 40° camera, and no palette reduction. Walking/running runtime sheets updated 2026-11-04 to v23 with a single shared 3D root anchor. Other animations unchanged.",
   "runSpeed": 2.8,
   "motions": {
     "idle": {
@@ -71,17 +71,17 @@
       "image": "../hizuki/v35-expanded-cells/walking_8dir.png",
       "size": [
         80,
-        118
+        160
       ],
       "padding": [
         0,
-        1,
+        32,
         0,
-        5
+        16
       ],
       "anchor": [
         43.6993006993007,
-        98.52129729729731
+        129.5212972972973
       ],
       "directions": [
         "front",
@@ -94,10 +94,11 @@
         "front_left"
       ],
       "frames": 8,
-      "durationMs": 1000,
+      "durationMs": 1120,
       "loop": true,
       "holdLast": false,
-      "strideMetres": 0.56
+      "strideMetres": 0.56,
+      "smooth": true
     },
     "fall": {
       "label": "倒れる",
@@ -295,18 +296,18 @@
       "label": "走行",
       "image": "../hizuki/v35-expanded-cells/running_8dir.png",
       "size": [
-        80,
-        121
+        96,
+        160
       ],
       "padding": [
-        0,
-        3,
-        0,
-        6
+        8,
+        32,
+        8,
+        16
       ],
       "anchor": [
-        43.6993006993007,
-        100.52129729729731
+        51.6993006993007,
+        129.5212972972973
       ],
       "directions": [
         "front",
@@ -319,10 +320,11 @@
         "front_left"
       ],
       "frames": 8,
-      "durationMs": 600,
+      "durationMs": 660,
       "loop": true,
       "holdLast": false,
-      "strideMetres": 0.76
+      "strideMetres": 0.76,
+      "smooth": true
     }
   },
   "cameraReferenceHeight": 145.04
