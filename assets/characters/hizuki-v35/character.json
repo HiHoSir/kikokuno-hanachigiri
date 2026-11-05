@@ -30,7 +30,7 @@
       ]
     }
   },
-  "notes": "Approved normal.png retained. Dedicated idle v21 and walking v11 / running v20 images were rendered from V35 textured GLB with identical scale 0.295, original front lighting rotated with the orthographic 40° camera, and no palette reduction. Walking/running runtime sheets updated 2026-11-04 to v23 with a single shared 3D root anchor. Other animations unchanged. User accepted katana v44 on 2026-11-05; full-colour 40-degree 8x8, 1.10s one-shot; old katana image retained for rollback. Sprite atlas v44 direction/scale corrective build 2026-11-05: corrected yaw mapping and 60px/m aligned to approved 108px baseline, independent of animation motion.",
+  "notes": "Approved normal.png retained. Dedicated idle v21 and walking v11 / running v20 images were rendered from V35 textured GLB with identical scale 0.295, original front lighting rotated with the orthographic 40° camera, and no palette reduction. Walking/running runtime sheets updated 2026-11-04 to v23 with a single shared 3D root anchor. Other animations unchanged. User accepted katana v44 on 2026-11-05; full-colour 40-degree 8x8, 1.10s one-shot; old katana image retained for rollback. Sprite atlas v44 direction/scale corrective build 2026-11-05: corrected yaw mapping and 60px/m aligned to approved 108px baseline, independent of animation motion. Lighting match v44 (2026-11-05): exposure was dark relative to idle, walking, and running; camera-relative key/fill/material lighting calibrated to approved 3-motion colors. GLB animation, directions, size and anchor unchanged.",
   "runSpeed": 2.8,
   "motions": {
     "idle": {
@@ -134,7 +134,7 @@
     },
     "attack_katana": {
       "label": "刀",
-      "image": "../hizuki/v35-expanded-cells/attack_katana_v44_corrected_8dir.png",
+      "image": "../hizuki/v35-expanded-cells/attack_katana_v44_lightmatched_8dir.png",
       "size": [
         224,
         256
@@ -166,7 +166,7 @@
       "smooth": true,
       "sourceAnimation": "V35_Attack_Katana",
       "sourceRevision": "v44",
-      "spriteRevision": "v44-corrected-direction-scale"
+      "spriteRevision": "v44-lightmatched-20261105"
     },
     "attack_wakizashi": {
       "label": "脇差",

@@ -1,0 +1,760 @@
+{
+  "status": "lighting_match_candidate",
+  "source": "Hizuki_V44_ThighShinRollBalanced_v43c_Footplanted_Trial.glb",
+  "sourceSHA256": "f50236f3f065b38e8ce776b8494f6922cce17f2040b904766047c7b878f8ccb6",
+  "file": "attack_katana_v44_lightmatched_8dir.png",
+  "sha256": "a5fb017fb84214e2cb34e374f7c8cc7692acd057a2d2424abccce1dab9a89f24",
+  "cell": [
+    224,
+    256
+  ],
+  "dimensions": [
+    1792,
+    2048
+  ],
+  "cameraYawDeg": [
+    0,
+    -45,
+    -90,
+    -135,
+    180,
+    135,
+    90,
+    45
+  ],
+  "elevationDeg": 40,
+  "orthographic": true,
+  "sourcePxPerMetre": 60,
+  "originRaster": [
+    110,
+    206
+  ],
+  "runtimeAnchor": [
+    111.6993006993007,
+    209.5212972972973
+  ],
+  "lighting": {
+    "ambient": 0.65,
+    "diffuse": 0.42,
+    "specular": 0.05,
+    "key": 0.97,
+    "fill": 0.5
+  },
+  "sourceDuration": 1.100000023841858,
+  "framesPerDirection": 8,
+  "clipped": 0,
+  "nonempty": 64,
+  "bboxes": [
+    {
+      "dir": "front",
+      "frame": 0,
+      "bbox": [
+        85,
+        114,
+        162,
+        221
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "front",
+      "frame": 1,
+      "bbox": [
+        85,
+        114,
+        162,
+        221
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "front",
+      "frame": 2,
+      "bbox": [
+        85,
+        115,
+        167,
+        221
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "front",
+      "frame": 3,
+      "bbox": [
+        85,
+        118,
+        139,
+        221
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "front",
+      "frame": 4,
+      "bbox": [
+        59,
+        123,
+        134,
+        222
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "front",
+      "frame": 5,
+      "bbox": [
+        34,
+        127,
+        134,
+        233
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "front",
+      "frame": 6,
+      "bbox": [
+        34,
+        128,
+        134,
+        235
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "front",
+      "frame": 7,
+      "bbox": [
+        34,
+        128,
+        134,
+        235
+      ],
+      "t": 0.9625
+    },
+    {
+      "dir": "front_right",
+      "frame": 0,
+      "bbox": [
+        85,
+        114,
+        140,
+        222
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "front_right",
+      "frame": 1,
+      "bbox": [
+        85,
+        114,
+        140,
+        222
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "front_right",
+      "frame": 2,
+      "bbox": [
+        85,
+        114,
+        156,
+        222
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "front_right",
+      "frame": 3,
+      "bbox": [
+        86,
+        118,
+        178,
+        222
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "front_right",
+      "frame": 4,
+      "bbox": [
+        88,
+        122,
+        136,
+        223
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "front_right",
+      "frame": 5,
+      "bbox": [
+        82,
+        126,
+        139,
+        230
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "front_right",
+      "frame": 6,
+      "bbox": [
+        82,
+        126,
+        140,
+        232
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "front_right",
+      "frame": 7,
+      "bbox": [
+        82,
+        126,
+        140,
+        232
+      ],
+      "t": 0.9625
+    },
+    {
+      "dir": "right",
+      "frame": 0,
+      "bbox": [
+        88,
+        114,
+        136,
+        218
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "right",
+      "frame": 1,
+      "bbox": [
+        88,
+        114,
+        136,
+        218
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "right",
+      "frame": 2,
+      "bbox": [
+        88,
+        114,
+        137,
+        218
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "right",
+      "frame": 3,
+      "bbox": [
+        89,
+        117,
+        178,
+        218
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "right",
+      "frame": 4,
+      "bbox": [
+        88,
+        120,
+        187,
+        216
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "right",
+      "frame": 5,
+      "bbox": [
+        88,
+        123,
+        156,
+        223
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "right",
+      "frame": 6,
+      "bbox": [
+        88,
+        123,
+        158,
+        225
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "right",
+      "frame": 7,
+      "bbox": [
+        88,
+        123,
+        158,
+        225
+      ],
+      "t": 0.9625
+    },
+    {
+      "dir": "back_right",
+      "frame": 0,
+      "bbox": [
+        66,
+        111,
+        135,
+        214
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "back_right",
+      "frame": 1,
+      "bbox": [
+        66,
+        111,
+        135,
+        214
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "back_right",
+      "frame": 2,
+      "bbox": [
+        75,
+        112,
+        135,
+        214
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "back_right",
+      "frame": 3,
+      "bbox": [
+        86,
+        105,
+        145,
+        214
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "back_right",
+      "frame": 4,
+      "bbox": [
+        85,
+        115,
+        199,
+        213
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "back_right",
+      "frame": 5,
+      "bbox": [
+        85,
+        117,
+        192,
+        213
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "back_right",
+      "frame": 6,
+      "bbox": [
+        85,
+        117,
+        191,
+        213
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "back_right",
+      "frame": 7,
+      "bbox": [
+        85,
+        117,
+        191,
+        213
+      ],
+      "t": 0.9625
+    },
+    {
+      "dir": "back",
+      "frame": 0,
+      "bbox": [
+        58,
+        109,
+        135,
+        209
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "back",
+      "frame": 1,
+      "bbox": [
+        58,
+        109,
+        135,
+        209
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "back",
+      "frame": 2,
+      "bbox": [
+        53,
+        109,
+        135,
+        209
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "back",
+      "frame": 3,
+      "bbox": [
+        81,
+        105,
+        135,
+        217
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "back",
+      "frame": 4,
+      "bbox": [
+        86,
+        104,
+        161,
+        220
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "back",
+      "frame": 5,
+      "bbox": [
+        86,
+        113,
+        185,
+        220
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "back",
+      "frame": 6,
+      "bbox": [
+        86,
+        113,
+        186,
+        220
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "back",
+      "frame": 7,
+      "bbox": [
+        86,
+        113,
+        186,
+        220
+      ],
+      "t": 0.9625
+    },
+    {
+      "dir": "back_left",
+      "frame": 0,
+      "bbox": [
+        80,
+        109,
+        135,
+        214
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "back_left",
+      "frame": 1,
+      "bbox": [
+        80,
+        109,
+        135,
+        214
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "back_left",
+      "frame": 2,
+      "bbox": [
+        64,
+        109,
+        135,
+        214
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "back_left",
+      "frame": 3,
+      "bbox": [
+        42,
+        112,
+        134,
+        219
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "back_left",
+      "frame": 4,
+      "bbox": [
+        84,
+        97,
+        132,
+        222
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "back_left",
+      "frame": 5,
+      "bbox": [
+        81,
+        114,
+        138,
+        222
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "back_left",
+      "frame": 6,
+      "bbox": [
+        80,
+        115,
+        138,
+        222
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "back_left",
+      "frame": 7,
+      "bbox": [
+        80,
+        115,
+        138,
+        222
+      ],
+      "t": 0.9625
+    },
+    {
+      "dir": "left",
+      "frame": 0,
+      "bbox": [
+        84,
+        113,
+        132,
+        218
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "left",
+      "frame": 1,
+      "bbox": [
+        84,
+        113,
+        132,
+        218
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "left",
+      "frame": 2,
+      "bbox": [
+        83,
+        114,
+        132,
+        217
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "left",
+      "frame": 3,
+      "bbox": [
+        41,
+        117,
+        131,
+        217
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "left",
+      "frame": 4,
+      "bbox": [
+        34,
+        119,
+        132,
+        218
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "left",
+      "frame": 5,
+      "bbox": [
+        64,
+        122,
+        132,
+        218
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "left",
+      "frame": 6,
+      "bbox": [
+        62,
+        122,
+        132,
+        218
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "left",
+      "frame": 7,
+      "bbox": [
+        62,
+        122,
+        132,
+        218
+      ],
+      "t": 0.9625
+    },
+    {
+      "dir": "front_left",
+      "frame": 0,
+      "bbox": [
+        85,
+        114,
+        155,
+        222
+      ],
+      "t": 0.0
+    },
+    {
+      "dir": "front_left",
+      "frame": 1,
+      "bbox": [
+        85,
+        114,
+        155,
+        222
+      ],
+      "t": 0.1375
+    },
+    {
+      "dir": "front_left",
+      "frame": 2,
+      "bbox": [
+        85,
+        114,
+        146,
+        221
+      ],
+      "t": 0.275
+    },
+    {
+      "dir": "front_left",
+      "frame": 3,
+      "bbox": [
+        75,
+        118,
+        134,
+        215
+      ],
+      "t": 0.4125
+    },
+    {
+      "dir": "front_left",
+      "frame": 4,
+      "bbox": [
+        21,
+        122,
+        135,
+        214
+      ],
+      "t": 0.55
+    },
+    {
+      "dir": "front_left",
+      "frame": 5,
+      "bbox": [
+        29,
+        125,
+        135,
+        222
+      ],
+      "t": 0.6875
+    },
+    {
+      "dir": "front_left",
+      "frame": 6,
+      "bbox": [
+        29,
+        126,
+        135,
+        224
+      ],
+      "t": 0.825
+    },
+    {
+      "dir": "front_left",
+      "frame": 7,
+      "bbox": [
+        29,
+        126,
+        135,
+        224
+      ],
+      "t": 0.9625
+    }
+  ],
+  "originalPoseAndTexturePreserved": true,
+  "reference": "Approved v35 idle/walking/running atlas (hair/red mean Y in front/front_right/right/back); source 2026-11-05 CI lighting audit",
+  "limitations": [
+    "Camera-relative lighting can approximate colour and shadow but pose-dependent pixels cannot match exactly",
+    "iPhone Safari real-device screenshot still required",
+    "Pixel masks should be inspected for anti-aliasing differences"
+  ]
+}

@@ -77,8 +77,8 @@
     "appearance_update": "Accepted V9 rear palette and inner outline from main e47f222; current RGBA differs from original, alpha/cells/directions preserved."
   },
   "attack_katana": {
-    "sheet_sha256": "ec9e7db23e6b2b8baa12ecc28f03b7b762e0c9d4564e704070af2fb217b12ec6",
-    "git_blob_sha1": "13a43b7756f43f35dff39eb69b1066c6314af5ac",
+    "sheet_sha256": "a5fb017fb84214e2cb34e374f7c8cc7692acd057a2d2424abccce1dab9a89f24",
+    "git_blob_sha1": "d43d24a3a37bb65d2c805c8947c4dbc5859b4f7a",
     "source_glb_sha256": "f50236f3f065b38e8ce776b8494f6922cce17f2040b904766047c7b878f8ccb6",
     "source_glb": "Hizuki_V44_ThighShinRollBalanced_v43c_Footplanted_Trial.glb",
     "source_animation": "V35_Attack_Katana",
@@ -107,7 +107,7 @@
       111.6993006993007,
       209.5212972972973
     ],
-    "runtime_image": "attack_katana_v44_corrected_8dir.png",
+    "runtime_image": "attack_katana_v44_lightmatched_8dir.png",
     "raster_pixels_per_metre": 60,
     "directions": [
       "front",
@@ -125,7 +125,7 @@
     "qa": "64/64 nonempty, 0 clipping, approved baseline 108px idle front_right, 8-direction left-right corrected; 1100ms",
     "integration": "v44 GLB animation unchanged. Corrected size/orientation atlas used by runtime; faulty v44 atlas retained only for comparison and is not referenced",
     "accepted_by_user": "2026-11-05",
-    "previous_sheet_sha256": "ccd814bc6d67a7b67791b5b52be5291458d8f6f80e394846f8a3c2e9d4647c6a",
+    "previous_sheet_sha256": "ec9e7db23e6b2b8baa12ecc28f03b7b762e0c9d4564e704070af2fb217b12ec6",
     "previous_record": {
       "sheet_sha256": "ccd814bc6d67a7b67791b5b52be5291458d8f6f80e394846f8a3c2e9d4647c6a",
       "source_frames": [
@@ -168,7 +168,12 @@
       -4
     ],
     "sourceAnimation": "V35_Attack_Katana",
-    "previous_broken_sprite_sheet_sha256": "a83bd5a574877733c9e4fac5c8ce4f69b36e79be913107b2186179538a259c93"
+    "previous_broken_sprite_sheet_sha256": "a83bd5a574877733c9e4fac5c8ce4f69b36e79be913107b2186179538a259c93",
+    "lighting": "camera-relative key(-3,4,5) intensity .97, fill(3,1,-2) intensity .50, body/material ambient .65 diffuse .42",
+    "lighting_baseline": "approved idle/walk/run atlas four shared directions, hair MAE 1.49, red costume MAE 2.09",
+    "lightingQA": "64 frames alpha 100% identical to prior v44 corrected atlas; motion, position, camera, size and orientation unchanged",
+    "previous_lighting_version": "attack_katana_v44_corrected_8dir.png",
+    "approvedMotionV44Unchanged": true
   },
   "attack_wakizashi": {
     "sheet_sha256": "c73d65e93ccf2e498d7b1e23deef428bc87c2fdc81a830f22b4d8f96d0dcb962",

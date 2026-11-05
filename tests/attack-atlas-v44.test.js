@@ -22,7 +22,7 @@ test('v44 corrected: facing right points screen-right, facing left points screen
 
 test('v44 corrected: raster scale matches approved 108 px tall idle reference',()=>{
  const atlas=config.motions.attack_katana;
- assert.equal(atlas.image,'../hizuki/v35-expanded-cells/attack_katana_v44_corrected_8dir.png');
+ assert.equal(atlas.image,'../hizuki/v35-expanded-cells/attack_katana_v44_lightmatched_8dir.png');
  assert.equal(atlas.durationMs,1100);
  assert.equal(atlas.frames,8);
  assert.deepEqual(atlas.size,[224,256]);

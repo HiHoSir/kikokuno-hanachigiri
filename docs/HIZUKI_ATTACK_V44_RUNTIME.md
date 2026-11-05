@@ -28,7 +28,11 @@
 
 ## 再現手順
 
-Python に `numpy`, `scipy`, `Pillow`, `vtk` を入れ、環境変数 `HIZUKI_V44_GLB` に元GLBのパスを渡して `python tools/hizuki-attack-v44/render_atlas.py` を実行。生成された `attack_katana_v44_corrected_8dir.png` と `atlas_qa.json` を品質検査し、ゲームのアセットへ反映する。
+Python に `numpy`, `scipy`, `Pillow`, `vtk` を入れ、環境変数 `HIZUKI_V44_GLB` に元GLBのパスを渡して `python tools/hizuki-attack-v44/render_atlas.py` を実行。生成された `attack_katana_v44_lightmatched_8dir.png` と `atlas_qa.json` を品質検査し、ゲームのアセットへ反映する。
 ## 2026-11-05 修正：方向／表示倍率
 
 最初に公開したアトラスの右向き／左向きが逆で、70px/mと大きすぎた。承認済みモーションv44は維持し、アトラスのみ **60px/m**、カメラyawを`[0,-45,-90,-135,180,135,90,45]`へ修正。共通登録オフセット[-2,-4]、元の足元アンカー・実行時の0.85スケール・1100msは変えない。以前のPNGはランタイムから参照しない。詳細は `docs/HIZUKI_ATTACK_V44_SPRITE_CORRECTION.md`。
+
+## 2026-11-05 追記：ライティング整合
+
+既存の待機・歩行・走行が同じ照明値で描画されたという記述だけでは、実際の画像と合致していなかった。髪と衣装の輝度を既存3動作の四方向の採用画像に照らして照明パラメータを再調整。刀のみ明暗を補正し、alpha・8方向・解像度・基準点・再生時間・v44モーションは維持した。元のPNGは不採用履歴として保存。詳細は `docs/HIZUKI_ATTACK_V44_LIGHTING_MATCH.md`。

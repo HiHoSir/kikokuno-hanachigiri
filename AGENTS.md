@@ -41,3 +41,5 @@
 - 依頼範囲内の通常の可逆作業は重ねて許可を求めず進める。旧データを勝手に復帰させない。
 
 - 刀攻撃スプライトの2026-11-05修正：**サイズ・方向の誤公開を修正**。現行PNGは `attack_katana_v44_corrected_8dir.png`、60px/m、カメラの左右向き修正済み。v44モーションGLBには変更なし。根拠は `docs/HIZUKI_ATTACK_V44_SPRITE_CORRECTION.md` と `tests/attack-atlas-v44.test.js`。
+
+- 2026-11-05 刀攻撃の**照明整合版**は `attack_katana_v44_lightmatched_8dir.png`。v44アニメーション・体型・方向・寸法・足元は変えず、Idle/Walk/Runの採用画像と色値照合して修正。旧 `attack_katana_v44_corrected_8dir.png` は非公開動作・比較用。採用画像の見た目と描画数値の一致を混同しないこと。参照：`docs/HIZUKI_ATTACK_V44_LIGHTING_MATCH.md`。
