@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#142a35">
+<title>花契り｜ブロック式マップエディタ</title>
+<style>
+:root{color-scheme:dark;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;background:#122630;color:#ecf5f0;font-size:14px;--edge:#445e66;--mint:#c1e5d1;--muted:#abc4c8}
+*{box-sizing:border-box}html,body{margin:0;height:100%;overscroll-behavior:none}button,select{font:inherit}button{border:1px solid #52747e;background:#284550;color:#eff7f2;border-radius:9px;min-height:39px;padding:6px 9px;touch-action:manipulation}button:active{filter:brightness(1.2)}button.active{background:var(--mint);color:#1a3438;border-color:var(--mint);font-weight:750}button:disabled{opacity:.4}button.primary{background:#3c756b;border-color:#9ecfc0}select{min-height:39px;border-radius:8px;padding:5px;background:#253f49;color:white;border:1px solid #64848d}strong{font-weight:700}
+#app{height:100dvh;height:100svh;display:flex;flex-direction:column;overflow:hidden}header{min-height:55px;padding:7px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px;background:#192f39;border-bottom:1px solid #3e5d68}h1{font-size:16px;margin:0}header small{display:block;font-size:11px;font-weight:400;color:#b2cfcc;margin-top:3px}#counter{font-size:11px;color:#cee1d9;white-space:nowrap;text-align:right}
+#stage{position:relative;min-height:170px;flex:1;overflow:hidden;background:radial-gradient(ellipse at 50% 30%,#395a60,#243d48 62%,#172d39);touch-action:none}canvas{width:100%;height:100%;display:block;touch-action:none}#stageTools{position:absolute;right:8px;top:8px;display:grid;gap:5px}#stageTools button{background:#142b36e8;min-width:40px;min-height:39px;padding:4px 7px;font-size:17px}#statusLine{position:absolute;left:8px;top:8px;font-size:11px;background:#172e39d9;padding:7px 9px;border:1px solid #375762;border-radius:8px;pointer-events:none;max-width:calc(100% - 120px);line-height:1.55}#stageHint{position:absolute;left:8px;right:8px;bottom:7px;background:#132b36d4;border-radius:8px;text-align:center;padding:5px;font-size:11px;color:#e0eae5;pointer-events:none}
+#panel{background:#1a323b;border-top:1px solid #4a6b73;max-height:min(49svh,425px);overflow-y:auto;padding:9px 10px calc(10px + env(safe-area-inset-bottom));overscroll-behavior:contain}#topRow{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}#topRow button{font-size:13px}.line{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:6px 0}.line label{color:#c2d5d4;font-size:12px}.line select{flex:1;min-width:120px}.line button{min-width:38px}#layerNum{font-size:17px;min-width:30px;text-align:center;font-variant-numeric:tabular-nums}#coord{font-size:11px;flex:1;color:#c8dbd4;min-width:115px}#modes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-bottom:8px}#shapeList{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:7px 0}#shapeList button{min-height:48px;padding:4px 2px;font-size:12px;line-height:1.15}#shapeList button .symbol{display:block;font-size:20px;margin-bottom:4px}#palette{display:flex;gap:5px;overflow-x:auto;padding:3px 0 7px;scrollbar-width:thin}#palette button{flex:0 0 62px;min-width:62px;padding:4px 2px;font-size:11px;min-height:49px;border-width:2px}#palette button.active{color:#14333c;border-color:#f4f1d2;box-shadow:inset 0 0 0 2px #1c343e}#palette button .swatch{display:block;margin:0 auto 3px;width:27px;height:17px;border:1px solid #ffffff76;border-radius:4px}#bottomTools{display:flex;gap:6px;overflow-x:auto;padding:4px 0 2px}#bottomTools button{white-space:nowrap;flex:0 0 auto;font-size:12px}#message{min-height:17px;color:#e6d9a9;font-size:12px;margin:4px 0 0}#help{display:none;border-top:1px solid #49666a;padding-top:7px;font-size:12px;line-height:1.6;color:#c8e0df}#help.open{display:block}#file{display:none}.sub{color:#a8c7c5;font-size:11px;margin:5px 0 0}#ghostWrap{margin-left:auto;font-size:11px;display:flex;align-items:center;gap:4px;color:#c5d9d4;white-space:nowrap}#ghost{width:19px;height:19px;accent-color:#b9d8ca}#role{max-width:160px;min-width:115px}#replaceWarning{color:#e5ca92;font-size:11px}
+@media(min-width:850px){#app{display:grid;grid-template-columns:minmax(0,1fr) 380px;grid-template-rows:56px minmax(0,1fr)}header{grid-column:1/-1;grid-row:1}#stage{grid-column:1;grid-row:2;min-height:0}#panel{grid-column:2;grid-row:2;width:380px;max-height:none;border-left:1px solid #4a6b73;border-top:0;padding:13px;min-height:0}}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div><h1>花契り · ブロック式マップ</h1><small>1マス＝1ブロック ｜ 汎用構造エディタ v2</small></div><div id="counter"><span id="count">0</span> ブロック<br><span id="saveState">端末に自動保存</span></div></header>
+<div id="stage"><canvas id="scene" aria-label="格子状にブロックを配置する編集画面"></canvas><div id="statusLine">選択高さ <strong id="stageY">Y=0</strong><br><span id="sceneMode">立体プレビュー</span>｜<span id="editMode">配置</span></div><div id="stageTools"><button id="zoomIn" aria-label="拡大">＋</button><button id="zoomOut" aria-label="縮小">－</button><button id="viewRotate" aria-label="視点を90度回転">⟳</button><button id="fit" aria-label="画面の大きさに合わせる">⌖</button></div><div id="stageHint">画面をタップしてマスに配置。平面表示ではドラッグで連続配置できます</div></div>
+<section id="panel" aria-label="ブロック編集ツール">
+<div id="topRow"><button id="show3d" class="active">◈ 立体表示</button><button id="showTop">▦ 平面編集</button></div>
+<div id="modes"><button data-mode="place" class="active">＋ 置く</button><button data-mode="erase">× 消す</button><button data-mode="inspect">◎ 調べる</button></div>
+<div class="line"><label>編集する段</label><button id="layerDown" aria-label="ひとつ下の段">−</button><strong id="layerNum">0</strong><button id="layerUp" aria-label="ひとつ上の段">＋</button><span id="coord">X:— Z:—</span><label id="ghostWrap"><input type="checkbox" id="ghost" checked>他の段も表示</label></div>
+<div class="sub">形状（すべて1×1×1マスの範囲内）</div>
+<div id="shapeList" aria-label="形状を選ぶ"></div>
+<div class="line"><label>向き</label><button id="rotateLeft">↶ 90°</button><strong id="heading">0°</strong><button id="rotateRight">90° ↷</button><span id="replaceWarning">同じマスは置換されます</span></div>
+<div class="sub">表面材質（構造とは独立）</div>
+<div id="palette" aria-label="材質を選ぶ"></div>
+<div class="line"><label for="role">役割</label><select id="role"><option value="solid">障害物</option><option value="walkable">歩行面</option><option value="decor">装飾（非衝突）</option></select><button id="changeRole">選択マスに反映</button></div>
+<div id="bottomTools"><button id="undo">↶ 戻す</button><button id="redo">↷ 進める</button><button id="empty">空のマップ</button><button id="terrainSample">段差の見本</button><button id="houseSample">家の見本</button><button id="bridgeSample">橋の見本</button><button id="export" class="primary">JSON保存</button><button id="import">JSON読込</button><button id="toggleHelp">使い方</button></div>
+<div id="message" role="status" aria-live="polite"></div>
+<div id="help">このエディタは<strong>家専用ではありません</strong>。地形・家・橋を、共通の1m四方のマスに同じ規格のブロックを1個ずつ置いて制作します。半ブロックや階段も1マス分の形状バリエーションです。段を変えるとY方向に積めます。配置／削除は立体画面・平面画面どちらでも可能で、立体画面のタップ位置は選択中のY平面との交点で決まります。重なって狙いづらいときは「平面編集」に切り替えてください。材質と「障害物・歩行面・装飾」の役割はブロックごとに保存されます。「調べる」で選択後に役割を変更できます。JSONにはグリッド位置・向き・形状・材質・役割が記録されます。ゲーム用の歩行ルートやPNG/GLBの自動出力はまだ未実装です。</div>
+<input id="file" type="file" accept=".json,application/json">
+</section>
+</div>
+<script>
+(()=>{'use strict';
+const SCHEMA='hanachigiri-voxel-map-v1',STORE='hanachigiri.block-map-editor.v2';
+const GRID={x:12,y:12,z:12,cellSizeMetres:1};
+const SHAPES=[['cube','立方体','▣'],['slab_lower','横ハーフ下','▰'],['slab_upper','横ハーフ上','▱'],['slab_vertical','縦ハーフ','◧'],['stairs','階段','▤'],['roof_slope','斜め屋根','◢'],['terrain_slope','地形斜面','◩'],['post','柱','▥']];
+const MATERIALS={grass:{label:'草',color:'#7caa78'},earth:{label:'土',color:'#a78261'},stone:{label:'石',color:'#9da6a1'},sand:{label:'砂',color:'#dfc792'},wood:{label:'木',color:'#bd9167'},darkwood:{label:'濃木',color:'#6e534a'},plaster:{label:'白壁',color:'#e3ded1'},tile:{label:'瓦',color:'#617a91'},water:{label:'水',color:'#6d9db3'}};
+const ROLES=['solid','walkable','decor'];const validShape=new Set(SHAPES.map(s=>s[0]));
+const $=id=>document.getElementById(id),canvas=$('scene'),ctx=canvas.getContext('2d');
+let cells=new Map(),layer=0,shape='cube',material='grass',role='walkable',rotation=0,mode='place',view='iso',heading=0,zoomFactor=1,showLower=true,selected=null,hover=null;
+let w=400,h=400,pointerActive=false,lastPaintKey=null,moveMade=false,lastPointer=null;
+let history=[],redoStack=[],messageTimer=null,dirty=false;
+const clone=x=>JSON.parse(JSON.stringify(x));const cellKey=(x,y,z)=>`${x},${y},${z}`;const bounds=(x,y,z)=>Number.isInteger(x)&&Number.isInteger(y)&&Number.isInteger(z)&&x>=0&&x<GRID.x&&y>=0&&y<GRID.y&&z>=0&&z<GRID.z;
+const defaultRole=(s,m)=>s==='roof_slope'?'decor':s==='stairs'||s==='terrain_slope'||['grass','earth','sand','stone'].includes(m)?'walkable':'solid';
+function fresh(){return {schema:SCHEMA,version:1,name:'無題のマップ',grid:clone(GRID),blocks:[],meta:{purpose:'general-purpose voxel map blockout',notes:'1 cell accepts at most one block'}};}
+function blockAt(x,y,z){return cells.get(cellKey(x,y,z));}
+function snapshot(){return JSON.stringify({blocks:[...cells.values()].map(clone)});}
+function remember(){history.push(snapshot());if(history.length>80)history.shift();redoStack=[];}
+function updateSaved(){try{localStorage.setItem(STORE,JSON.stringify(exportData()));$('saveState').textContent='● 端末保存済';}catch(e){$('saveState').textContent='保存不可・JSONを推奨';}dirty=true;}
+function updateCounters(){$('count').textContent=cells.size;$('layerNum').textContent=layer;$('stageY').textContent='Y='+layer;$('sceneMode').textContent=view==='iso'?'立体':'平面';$('editMode').textContent=mode==='place'?'配置':mode==='erase'?'削除':'確認';$('heading').textContent=rotation*90+'°';$('ghost').checked=showLower;}
+function render(){updateCounters();draw();}
+function changed(){updateSaved();render();}
+function emit(s){$('message').textContent=s;clearTimeout(messageTimer);messageTimer=setTimeout(()=>$('message').textContent='',3500);}
+function exportData(){return {schema:SCHEMA,version:1,name:'ブロック式マップ',grid:clone(GRID),blocks:[...cells.values()].sort((a,b)=>a.y-b.y||a.z-b.z||a.x-b.x).map(clone),meta:{authoring:'1-block-per-cell',roles:'solid|walkable|decor',coordinateSystem:'x/z ground, y up'}};}
+function validate(d){if(!d||d.schema!==SCHEMA||d.version!==1||!d.grid||d.grid.x!==GRID.x||d.grid.y!==GRID.y||d.grid.z!==GRID.z||d.grid.cellSizeMetres!==1||!Array.isArray(d.blocks)||d.blocks.length>GRID.x*GRID.y*GRID.z)throw Error('対応していないJSON形式またはグリッド寸法です');const used=new Set();for(const b of d.blocks){if(!b||!bounds(b.x,b.y,b.z)||!validShape.has(b.shape)||!Object.hasOwn(MATERIALS,b.material)||!ROLES.includes(b.role)||![0,1,2,3].includes(b.rotation))throw Error('不正なブロック情報があります');let k=cellKey(b.x,b.y,b.z);if(used.has(k))throw Error('同じマスに複数ブロックがあります');used.add(k);}return true;}
+function loadDocument(d,record=true){validate(d);if(record)remember();cells=new Map(d.blocks.map(b=>[cellKey(b.x,b.y,b.z),{x:b.x,y:b.y,z:b.z,shape:b.shape,rotation:b.rotation,material:b.material,role:b.role}]));selected=null;changed();}
+function reset(){if(!confirm('配置済みのブロックをすべて消しますか？'))return;loadDocument(fresh());emit('空のマップにしました');}
+function setCell(x,y,z,tool=mode){if(!bounds(x,y,z))return false;const k=cellKey(x,y,z),before=cells.get(k);selected={x,y,z};$('coord').textContent=`X:${x} Z:${z} / Y:${y}`;
+ if(tool==='inspect'){if(before){shape=before.shape;material=before.material;rotation=before.rotation;role=before.role;renderOptions();emit(`${x},${y},${z}：${SHAPES.find(s=>s[0]===before.shape)[1]}`);}else emit('このマスは空です');render();return true;}
+ if(tool==='erase'){if(!before){render();return false;}remember();cells.delete(k);changed();return true;}
+ const replacement={x,y,z,shape,rotation,material,role};if(before&&JSON.stringify(before)===JSON.stringify(replacement)){render();return false;}
+ remember();cells.set(k,replacement);changed();return true;}
+function doUndo(){if(!history.length)return;redoStack.push(snapshot());let s=JSON.parse(history.pop());cells=new Map(s.blocks.map(b=>[cellKey(b.x,b.y,b.z),b]));changed();emit('戻しました');}
+function doRedo(){if(!redoStack.length)return;history.push(snapshot());let s=JSON.parse(redoStack.pop());cells=new Map(s.blocks.map(b=>[cellKey(b.x,b.y,b.z),b]));changed();emit('進めました');}
+function materialRgb(hex){const s=hex.slice(1);return [parseInt(s.slice(0,2),16),parseInt(s.slice(2,4),16),parseInt(s.slice(4,6),16)];}
+function shade(color,f){const rgb=materialRgb(color).map(v=>Math.max(0,Math.min(255,Math.round(v*f))));return `rgb(${rgb.join(',')})`;}
+const Vec={sub:(a,b)=>a.map((v,i)=>v-b[i]),cross:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2]],dot:(a,b)=>a.reduce((s,v,i)=>s+v*b[i],0),norm:a=>{const l=Math.hypot(...a)||1;return a.map(v=>v/l);}};
+function box(x0,x1,y0,y1,z0,z1){const A=[x0,y0,z0],B=[x1,y0,z0],C=[x1,y0,z1],D=[x0,y0,z1],E=[x0,y1,z0],F=[x1,y1,z0],G=[x1,y1,z1],H=[x0,y1,z1];return [[D,C,G,H],[B,A,E,F],[C,B,F,G],[A,D,H,E],[H,G,F,E],[A,B,C,D]];}
+function makeLocal(s){if(s==='cube')return box(-.5,.5,0,1,-.5,.5);if(s==='slab_lower')return box(-.5,.5,0,.5,-.5,.5);if(s==='slab_upper')return box(-.5,.5,.5,1,-.5,.5);if(s==='slab_vertical')return box(-.5,0,0,1,-.5,.5);if(s==='post')return box(-.16,.16,0,1,-.16,.16);
+ if(s==='stairs')return [...box(-.5,.5,0,.5,-.5,.5),...box(-.5,.5,.5,1,-.5,0)];
+ if(s==='roof_slope'||s==='terrain_slope'){const q=s==='roof_slope'?1:.5;const a=[-.5,0,-.5],b=[.5,0,-.5],c=[.5,0,.5],d=[-.5,0,.5],e=[-.5,q,-.5],f=[.5,q,-.5];return [[a,b,c,d],[a,e,f,b],[d,c,f,e],[a,d,e],[b,f,c]];}return [];
+}
+function worldPoly(p,b){const a=b.rotation*Math.PI/2,c=Math.cos(a),s=Math.sin(a);return p.map(v=>[b.x+.5+v[0]*c+v[2]*s,b.y+v[1],b.z+.5-v[0]*s+v[2]*c]);}
+function camera(){const yaw=(Math.PI/4)+(heading*Math.PI/2),el=Math.PI/5.5,cy=Math.cos(yaw),sy=Math.sin(yaw),ce=Math.cos(el),se=Math.sin(el);return {right:[cy,0,-sy],up:[-sy*se,ce,-cy*se],forward:[sy*ce,se,cy*ce],cy,sy,ce,se};}
+function getUnit(){return Math.max(10,Math.min(41,w/20,h/17))*zoomFactor;}
+function projection(x,y,z){const cam=camera(),unit=getUnit(),v=[x-GRID.x/2,y-layer,z-GRID.z/2];return {x:w/2+Vec.dot(v,cam.right)*unit,y:h*.53-Vec.dot(v,cam.up)*unit};}
+function toCell(px,py){if(view==='top'){const s=Math.min((w-26)/GRID.x,(h-24)/GRID.z)*zoomFactor,ox=w/2-GRID.x*s/2,oy=h/2-GRID.z*s/2;return {x:Math.floor((px-ox)/s),z:Math.floor((py-oy)/s),inside:px>=ox&&px<ox+GRID.x*s&&py>=oy&&py<oy+GRID.z*s};}
+ const cam=camera(),scale=getUnit(),du=(px-w/2)/scale,dv=(py-h*.53)/scale/cam.se;
+ const dx=cam.cy*du+cam.sy*dv,dz=-cam.sy*du+cam.cy*dv,x=Math.floor(dx+GRID.x/2),z=Math.floor(dz+GRID.z/2);return {x,z,inside:bounds(x,layer,z)};}
+function polyPath(pts){ctx.beginPath();pts.forEach((p,i)=>i?ctx.lineTo(p.x,p.y):ctx.moveTo(p.x,p.y));ctx.closePath();}
+function drawIso(){const cam=camera();const light=Vec.norm([-.45,.85,.65]);let faces=[];
+ // grid on selected Y plane
+ for(let x=0;x<GRID.x;x++)for(let z=0;z<GRID.z;z++){
+  const p=[projection(x,layer,z),projection(x+1,layer,z),projection(x+1,layer,z+1),projection(x,layer,z+1)];polyPath(p);ctx.fillStyle=(x+z)%2?'rgba(174,202,194,.055)':'rgba(177,205,193,.11)';ctx.fill();ctx.strokeStyle='rgba(181,220,222,.23)';ctx.lineWidth=.6;ctx.stroke();
+ }
+ for(const b of cells.values()){
+  if(b.y>layer&&!showLower)continue;
+  if(!showLower&&b.y!==layer)continue;
+  const alpha=b.y>layer?.27:b.y<layer?.78:1;
+  for(const local of makeLocal(b.shape)){
+   const poly=worldPoly(local,b),a=Vec.sub(poly[1],poly[0]),c=Vec.sub(poly[2],poly[0]),normal=Vec.norm(Vec.cross(a,c));if(Vec.dot(normal,cam.forward)<.015)continue;
+   const centroid=poly.reduce((acc,p)=>acc.map((v,i)=>v+p[i]/poly.length),[0,0,0]);
+   faces.push({poly:poly.map(v=>projection(...v)),color:MATERIALS[b.material].color,normal,alpha,depth:Vec.dot(centroid,cam.forward),isSelected:selected&&selected.x===b.x&&selected.y===b.y&&selected.z===b.z});
+  }
+ }
+ faces.sort((a,b)=>a.depth-b.depth);
+ for(const f of faces){polyPath(f.poly);const lighting=.76+Math.max(0,Vec.dot(f.normal,light))*.32;ctx.globalAlpha=f.alpha;ctx.fillStyle=shade(f.color,lighting);ctx.fill();ctx.strokeStyle='rgba(22,36,45,.72)';ctx.lineWidth=.8;ctx.stroke();if(f.isSelected){ctx.strokeStyle='#fff3bb';ctx.lineWidth=2;ctx.stroke();}ctx.globalAlpha=1;}
+ // orientation and picked-cell overlay; intentionally stays visible even behind existing geometry
+ const p=hover&&hover.inside?hover:selected&&bounds(selected.x,layer,selected.z)?{x:selected.x,z:selected.z,inside:true}:null;
+ if(p){const q=[projection(p.x,layer+.012,p.z),projection(p.x+1,layer+.012,p.z),projection(p.x+1,layer+.012,p.z+1),projection(p.x,layer+.012,p.z+1)];polyPath(q);ctx.fillStyle='rgba(202,251,205,.16)';ctx.fill();ctx.strokeStyle='#f4e8aa';ctx.lineWidth=2;ctx.stroke();}
+}
+function drawTop(){const unit=Math.min((w-26)/GRID.x,(h-24)/GRID.z)*zoomFactor,ox=w/2-GRID.x*unit/2,oy=h/2-GRID.z*unit/2;
+ for(let x=0;x<GRID.x;x++)for(let z=0;z<GRID.z;z++){
+  const sx=ox+x*unit,sy=oy+z*unit;ctx.fillStyle=(x+z)%2?'#2b4550':'#344e57';ctx.fillRect(sx,sy,unit,unit);ctx.strokeStyle='#648088';ctx.lineWidth=.7;ctx.strokeRect(sx+.3,sy+.3,unit-.6,unit-.6);
+  let b=blockAt(x,layer,z),isLower=false;
+  if(!b&&showLower){for(let y=layer-1;y>=0;y--){b=blockAt(x,y,z);if(b){isLower=true;break;}}}
+  if(b){ctx.globalAlpha=isLower?.33:1;ctx.fillStyle=MATERIALS[b.material].color;let ux=sx+1,uz=sy+1,u=unit-2;
+    if(b.shape==='slab_vertical'){const angle=b.rotation;const rx=angle===0?ux:angle===2?ux+u/2:ux,rz=angle===1?uz:angle===3?uz+u/2:uz;ctx.fillRect(rx,rz,angle%2?u:u/2,angle%2?u/2:u);}
+    else if(b.shape==='post')ctx.fillRect(ux+u*.34,uz+u*.34,u*.32,u*.32);
+    else{ctx.fillRect(ux,uz,u,u);if(b.shape==='stairs'){ctx.fillStyle='rgba(10,20,26,.43)';if(b.rotation%2===0){const zz=b.rotation===0?uz:uz+u/2;ctx.fillRect(ux,zz,u,u/2);}else{const xx=b.rotation===1?ux+u/2:ux;ctx.fillRect(xx,uz,u/2,u);}}else if(b.shape.includes('slope')){ctx.beginPath();const a=b.rotation*Math.PI/2,xc=sx+unit/2,zc=sy+unit/2,r=u*.33;ctx.moveTo(xc+Math.sin(a)*r,zc-Math.cos(a)*r);ctx.lineTo(xc-Math.sin(a)*r,zc+Math.cos(a)*r);ctx.strokeStyle='#182f39';ctx.lineWidth=Math.max(1,unit*.1);ctx.stroke();}}
+    ctx.globalAlpha=1;
+  }
+  if(selected&&selected.x===x&&selected.z===z&&selected.y===layer){ctx.strokeStyle='#ffe9a8';ctx.lineWidth=2.8;ctx.strokeRect(sx+1,sy+1,unit-2,unit-2);}
+ }
+ if(hover&&hover.inside){ctx.fillStyle='rgba(240,255,219,.18)';ctx.fillRect(ox+hover.x*unit,oy+hover.z*unit,unit,unit);ctx.strokeStyle='#fff3b5';ctx.lineWidth=2;ctx.strokeRect(ox+hover.x*unit+1,oy+hover.z*unit+1,unit-2,unit-2);}
+ // coordinate markers
+ ctx.fillStyle='#c7dfd8';ctx.font='11px sans-serif';ctx.fillText('X →',ox+4,oy-5);ctx.fillText('Z ↓',ox+5,oy+GRID.z*unit+14);
+}
+function draw(){if(!w||!h)return;ctx.setTransform(1,0,0,1,0,0);ctx.clearRect(0,0,canvas.width,canvas.height);const dpr=canvas.width/w;ctx.setTransform(dpr,0,0,dpr,0,0);if(view==='iso')drawIso();else drawTop();}
+function resize(){const rect=canvas.getBoundingClientRect();w=Math.max(1,rect.width);h=Math.max(1,rect.height);let dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr);draw();}
+function renderOptions(){document.querySelectorAll('#shapeList button').forEach(b=>b.classList.toggle('active',b.dataset.shape===shape));document.querySelectorAll('#palette button').forEach(b=>b.classList.toggle('active',b.dataset.mat===material));document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('active',b.dataset.mode===mode));$('role').value=role;render();}
+function sample(kind){if(cells.size&&!confirm('今の配置を見本で置き換えますか？'))return;const d=fresh(),s=(x,y,z,sh,m,r,rot=0)=>{d.blocks=d.blocks.filter(b=>!(b.x===x&&b.y===y&&b.z===z));d.blocks.push({x,y,z,shape:sh,material:m,role:r,rotation:rot});};
+ if(kind==='terrain'){for(let x=3;x<9;x++)for(let z=4;z<9;z++){s(x,0,z,'cube','earth','walkable');if(x>=6&&z<7)s(x,1,z,'cube','grass','walkable');else s(x,1,z,'slab_lower','grass','walkable');}for(let z=4;z<7;z++)s(5,1,z,'terrain_slope','grass','walkable',1);}
+ if(kind==='house'){for(let x=3;x<=8;x++)for(let z=3;z<=8;z++)s(x,0,z,'slab_lower','stone','walkable');for(let y=1;y<=3;y++)for(let x=3;x<=8;x++)for(let z=3;z<=8;z++){if(x!==3&&x!==8&&z!==3&&z!==8)continue;if(y===1&&x===5&&z===8)continue;s(x,y,z,'cube',x===3||x===8?'wood':'plaster','solid');}for(let z=2;z<=9;z++)for(let x=2;x<=9;x++){if(x===5||x===6)s(x,5,z,'slab_lower','tile','decor');else s(x,4,z,'roof_slope','tile','decor',x<5?1:3);}s(5,1,9,'slab_lower','stone','walkable');}
+ if(kind==='bridge'){for(let x=2;x<10;x++)for(let z=5;z<=6;z++){s(x,0,z,'slab_lower','stone','walkable');if(x===2||x===9)s(x,1,z,'cube','stone','solid');}for(let x=3;x<=8;x++)for(let z=5;z<=6;z++)s(x,1,z,'slab_lower','wood','walkable');for(let x=3;x<=8;x++){s(x,2,4,'slab_vertical','wood','solid',1);s(x,2,7,'slab_vertical','wood','solid',1);}}
+ loadDocument(d);layer=kind==='house'?4:kind==='bridge'?1:1;heading=0;zoomFactor=1;render();emit(`${{terrain:'段差地形',house:'家の構造',bridge:'橋'}[kind]}の見本を読み込みました`);}
+const shapes=$('shapeList'),palette=$('palette');for(const [id,label,symbol] of SHAPES){const b=document.createElement('button');b.type='button';b.dataset.shape=id;b.innerHTML=`<span class="symbol">${symbol}</span>${label}`;b.addEventListener('click',()=>{shape=id;role=defaultRole(shape,material);renderOptions();});shapes.append(b);}
+for(const [id,m] of Object.entries(MATERIALS)){const b=document.createElement('button');b.type='button';b.dataset.mat=id;const sw=document.createElement('span');sw.className='swatch';sw.style.background=m.color;b.append(sw,document.createTextNode(m.label));b.addEventListener('click',()=>{material=id;role=defaultRole(shape,material);renderOptions();});palette.append(b);}
+function setLayer(n){layer=Math.max(0,Math.min(GRID.y-1,n));selected=null;hover=null;render();}
+function setView(v){view=v;$('show3d').classList.toggle('active',v==='iso');$('showTop').classList.toggle('active',v==='top');$('stageHint').textContent=v==='iso'?'立体では指定した高さの面に配置します。狙いづらければ平面編集へ':'タップ／ドラッグでマスに配置します。下の段は淡色で表示';render();}
+function hitFromEvent(e){const r=canvas.getBoundingClientRect();return toCell(e.clientX-r.left,e.clientY-r.top);}
+function paintEvent(e){const p=hitFromEvent(e);hover=p;const k=cellKey(p.x,layer,p.z);if(p.inside&&k!==lastPaintKey){lastPaintKey=k;setCell(p.x,layer,p.z);}else render();}
+canvas.addEventListener('pointerdown',e=>{if(e.button!==undefined&&e.button!==0)return;pointerActive=true;moveMade=false;lastPaintKey=null;lastPointer={x:e.clientX,y:e.clientY};try{canvas.setPointerCapture(e.pointerId);}catch{}paintEvent(e);});
+canvas.addEventListener('pointermove',e=>{const p=hitFromEvent(e);hover=p;if(pointerActive&&view==='top'&&lastPointer&&Math.hypot(e.clientX-lastPointer.x,e.clientY-lastPointer.y)>4){moveMade=true;paintEvent(e);}else render();});
+for(const event of ['pointerup','pointercancel','lostpointercapture'])canvas.addEventListener(event,()=>{pointerActive=false;lastPaintKey=null;});
+$('show3d').onclick=()=>setView('iso');$('showTop').onclick=()=>setView('top');document.querySelectorAll('#modes button').forEach(b=>b.onclick=()=>{mode=b.dataset.mode;renderOptions();});
+$('layerDown').onclick=()=>setLayer(layer-1);$('layerUp').onclick=()=>setLayer(layer+1);$('rotateLeft').onclick=()=>{rotation=(rotation+3)%4;renderOptions();};$('rotateRight').onclick=()=>{rotation=(rotation+1)%4;renderOptions();};$('ghost').onchange=e=>{showLower=e.target.checked;render();};
+$('role').onchange=e=>{role=e.target.value;};$('changeRole').onclick=()=>{if(!selected||!blockAt(selected.x,selected.y,selected.z)){emit('「調べる」でブロックを選択してください');return;}remember();const b=blockAt(selected.x,selected.y,selected.z);b.role=role;changed();emit('選択マスの役割を変更しました');};
+$('zoomIn').onclick=()=>{zoomFactor=Math.min(2.5,zoomFactor*1.18);render();};$('zoomOut').onclick=()=>{zoomFactor=Math.max(.55,zoomFactor/1.18);render();};$('viewRotate').onclick=()=>{heading=(heading+1)%4;render();};$('fit').onclick=()=>{zoomFactor=1;render();};
+$('undo').onclick=doUndo;$('redo').onclick=doRedo;$('empty').onclick=reset;$('terrainSample').onclick=()=>sample('terrain');$('houseSample').onclick=()=>sample('house');$('bridgeSample').onclick=()=>sample('bridge');
+$('export').onclick=()=>{const text=JSON.stringify(exportData(),null,2),blob=new Blob([text],{type:'application/json;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='hanachigiri-block-map.json';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);emit('JSONを書き出しました');};
+$('import').onclick=()=>$('file').click();$('file').onchange=async e=>{const f=e.target.files?.[0];e.target.value='';if(!f)return;try{if(f.size>2e6)throw Error('ファイルが大きすぎます');const d=JSON.parse(await f.text());loadDocument(d);emit('JSONを読み込みました');}catch(err){emit('読み込み失敗: '+err.message);}};
+$('toggleHelp').onclick=()=>{$('help').classList.toggle('open');};
+try{const saved=JSON.parse(localStorage.getItem(STORE)||'null');if(saved){validate(saved);loadDocument(saved,false);dirty=false;}else{cells=new Map();}}catch(e){cells=new Map();emit('前回のデータを読み込めず、空のマップで開始しました');}
+renderOptions();new ResizeObserver(resize).observe(canvas);setTimeout(resize,50);
+window.__voxelQA={exportData,validate,loadDocument,setCell,blockAt,setLayer,setView,sample,getState:()=>({layer,shape,material,role,rotation,view,mode,blocks:cells.size,dirty}),undo:doUndo,redo:doRedo,projection,toCell,shapes:SHAPES.map(s=>s[0]),grid:GRID};
+})();
+</script>
+</body>
+</html>
